@@ -50,17 +50,6 @@ namespace Repository
                 .HasKey(ip => new { ip.InternshipId, ip.PositionId });
 
 
-
-
-            // Configure Enums
-            builder.Entity<Scholarship>()
-                .Property(s => s.funded)
-                .HasConversion<string>();
-
-            builder.Entity<Scholarship>()
-                .Property(s => s.degree)
-                .HasConversion<string>();
-
             // Configure Dictionary as JSON
 
             builder.Entity<Scholarship>()

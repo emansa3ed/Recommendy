@@ -7,7 +7,7 @@ namespace Entities.Models
         [Key]
         public string StudentId { get; set; }
         public string UrlResume { get; set; }
-        public string Interests { get; set; }
+    
        
     
 
