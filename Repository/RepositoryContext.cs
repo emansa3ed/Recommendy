@@ -39,7 +39,7 @@ namespace Repository
         {
             base.OnModelCreating(builder);
 
-            // Composite keys
+            ///// Composite keys
             builder.Entity<SavedPost>()
                 .HasKey(sp => new { sp.StudentId, sp.PostId });
 
