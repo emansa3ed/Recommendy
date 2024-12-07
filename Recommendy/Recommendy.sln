@@ -5,9 +5,9 @@ VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Recommendy", "Recommendy.csproj", "{CAF88F36-D6E4-400D-928B-B12D7AF03313}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository", "..\Repository\Repository.csproj", "{AFB7C234-9C55-4910-8094-CAF3ADB591F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repository", "..\Repository\Repository.csproj", "{AFB7C234-9C55-4910-8094-CAF3ADB591F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entities", "..\Entities\Entities.csproj", "{EE37ED43-730C-47C3-82CF-09A9F2C4016A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entities", "..\Entities\Entities.csproj", "{EE37ED43-730C-47C3-82CF-09A9F2C4016A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
