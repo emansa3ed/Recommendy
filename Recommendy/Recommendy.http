@@ -1,6 +1,0 @@
-@Recommendy_HostAddress = http://localhost:5291
-
-GET {{Recommendy_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

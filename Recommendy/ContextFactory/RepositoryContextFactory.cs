@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Repository;
 
-namespace test.ContextFactory
+namespace Recommendy.ContextFactory
 {
     
         public class RepositoryContextFactory : IDesignTimeDbContextFactory<RepositoryContext>
