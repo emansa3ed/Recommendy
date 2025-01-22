@@ -1,4 +1,7 @@
 
+using Recommendy.Extensions;
+
+
 namespace Recommendy
 {
     public class Program
@@ -7,11 +10,17 @@ namespace Recommendy
         {
             var builder = WebApplication.CreateBuilder(args);
 
-        
 
-            builder.Services.AddControllers();
+
+            builder.Services.ConfigureRepositoryManager(); ///manager
+            builder.Services.ConfigureServiceManager();   /// service manager
+            builder.Services.ConfigureSqlContext(builder.Configuration);
+            builder.Services.AddControllers()
+           .AddApplicationPart(typeof(Presentation.AssemblyReference).Assembly);
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+     
 
             var app = builder.Build();
 
