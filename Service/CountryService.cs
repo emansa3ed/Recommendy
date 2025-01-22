@@ -21,11 +21,16 @@ namespace Service
 
         public IEnumerable<Country> GetAllCountries(bool trackChanges)
  {
+            try
+            {
                 var companies =
              _repository.Country.GetAllCountries(trackChanges);
 
                 return companies;
-           
+            }
+            catch (Exception ex) {
+                throw new Exception("something error");
+            }
         }
     }
 }
