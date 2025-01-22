@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Repository.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -13,10 +15,11 @@ namespace Repository
 {
     public class RepositoryContext : IdentityDbContext<User>
     {
-        public RepositoryContext(DbContextOptions options)
+        public RepositoryContext(DbContextOptions<RepositoryContext> options)
         : base(options)
         {
         }
+         
 
         public DbSet<User> Users { get; set; }
         public DbSet<Admin> Admins { get; set; }
@@ -37,6 +40,14 @@ namespace Repository
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+
+            // add data to test 
+            builder.ApplyConfiguration(new CountryConfiguration());
+
+
+
+
+
             base.OnModelCreating(builder);
 
             ///// Composite keys

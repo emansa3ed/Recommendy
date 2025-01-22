@@ -22,6 +22,7 @@ namespace Recommendy
                 app.UseSwaggerUI();
             }
 
+        
             app.UseAuthorization();
 
 
