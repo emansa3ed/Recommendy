@@ -19,13 +19,13 @@ namespace Repository
         
         } 
 
-        public async Task<IList<string>> GetType( string id)
+        public async Task<string> GetType( string id)
         {
             User user = await _userManager.FindByIdAsync(id);
             var roles = await _userManager.GetRolesAsync(user);
 
 
-            return roles;
+            return roles.First();
 
         }
     }

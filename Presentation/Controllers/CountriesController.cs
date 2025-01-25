@@ -5,16 +5,21 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace Presentation.Controllers
 {
     [Route("api/[Controller]")]
     [ApiController]
-   public class CountriesController : ControllerBase
+    [Authorize]
+    public class CountriesController : ControllerBase
     {
 
         private readonly IServiceManager _service;
         public CountriesController(IServiceManager service) => _service = service;
+        [Authorize(Roles ="Student")]
+
         [HttpGet]
         public IActionResult GetCompanies()
         {

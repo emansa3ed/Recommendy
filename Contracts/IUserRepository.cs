@@ -9,7 +9,7 @@ namespace Contracts
     public interface IUserRepository
     {
 
-        Task< IList<string>> GetType(string id);
+        Task< string> GetType(string id);
 
     }
 }

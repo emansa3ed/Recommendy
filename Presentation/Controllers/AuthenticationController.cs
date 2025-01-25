@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Entities.Models;
+using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DTO;
 using System;
@@ -18,7 +19,7 @@ namespace Presentation.Controllers
 
 
 
-        [HttpPost]
+        [HttpPost("Register")]
         public async Task<IActionResult> RegisterUser([FromBody] UserForRegistrationDto userForRegistration)
         {
             var result = await
@@ -32,6 +33,18 @@ namespace Presentation.Controllers
                 return BadRequest(ModelState);
             }
             return StatusCode(201);
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> UserLogin([FromBody] UserForLoginDto user)
+        {
+            if (!await _service.AuthenticationService.ValidateUser(user))
+                return Unauthorized();
+            return Ok(new
+            {
+                Token = await _service
+            .AuthenticationService.CreateToken()
+            });
         }
     }
 }

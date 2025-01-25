@@ -12,7 +12,7 @@ namespace Recommendy
 
 
 
-            builder.Services.ConfigureRepositoryManager(); ///manager
+            builder.Services.ConfigureRepositoryManager(); ///manager//////////////
             builder.Services.ConfigureServiceManager();   /// service manager
             builder.Services.ConfigureSqlContext(builder.Configuration);
             builder.Services.AddControllers()
@@ -21,9 +21,10 @@ namespace Recommendy
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
               builder.Services.AddAuthentication();
-            builder.Services.ConfigureIdentity(); ;
+            builder.Services.ConfigureIdentity();
+            builder.Services.ConfigureJWT(builder.Configuration);
 
-     
+
 
             var app = builder.Build();
 
