@@ -14,5 +14,9 @@ D:\Recommendy\Presentation\obj\Debug\net8.0\Presentation.dll
 D:\Recommendy\Presentation\obj\Debug\net8.0\refint\Presentation.dll
 D:\Recommendy\Presentation\obj\Debug\net8.0\Presentation.pdb
 D:\Recommendy\Presentation\obj\Debug\net8.0\ref\Presentation.dll
+D:\Recommendy\Presentation\bin\Debug\net8.0\Shared.dll
+D:\Recommendy\Presentation\bin\Debug\net8.0\Shared.pdb
+D:\Recommendy\Presentation\bin\Debug\net8.0\Contracts.dll
 D:\Recommendy\Presentation\bin\Debug\net8.0\Entities.dll
+D:\Recommendy\Presentation\bin\Debug\net8.0\Contracts.pdb
 D:\Recommendy\Presentation\bin\Debug\net8.0\Entities.pdb

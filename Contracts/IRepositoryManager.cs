@@ -10,6 +10,8 @@ namespace Contracts
     {
 
         ICountryRepository Country { get; }
+        IStudentRepository Student { get; }
+        IUserRepository User { get; }
 
         void Save();
     }

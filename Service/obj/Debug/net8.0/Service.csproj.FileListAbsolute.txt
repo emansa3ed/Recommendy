@@ -18,3 +18,5 @@ D:\Recommendy\Service\obj\Debug\net8.0\Service.pdb
 D:\Recommendy\Service\obj\Debug\net8.0\ref\Service.dll
 D:\Recommendy\Service\bin\Debug\net8.0\Entities.dll
 D:\Recommendy\Service\bin\Debug\net8.0\Entities.pdb
+D:\Recommendy\Service\bin\Debug\net8.0\Shared.dll
+D:\Recommendy\Service\bin\Debug\net8.0\Shared.pdb

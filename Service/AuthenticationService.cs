@@ -1,0 +1,53 @@
+﻿using AutoMapper;
+using Contracts;
+using Entities.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using Service.Contracts;
+using Shared.DTO;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Service
+{
+    internal sealed class AuthenticationService : IAuthenticationService
+    {
+
+        private readonly IMapper _mapper;
+        private readonly UserManager<User> _userManager;
+        private readonly IConfiguration _configuration;
+        private readonly IRepositoryManager _repository;
+
+        public AuthenticationService(IMapper mapper, UserManager<User> userManager, IConfiguration configuration ,IRepositoryManager repository)
+        {
+            _mapper = mapper;
+            _userManager = userManager;
+            _configuration = configuration;
+            _repository = repository;
+        }
+
+        public async Task<IdentityResult> RegisterUser(UserForRegistrationDto userForRegistration)
+        {
+            var user = _mapper.Map<User>(userForRegistration);
+            var result = await _userManager.CreateAsync(user, userForRegistration.Password);
+            if (result.Succeeded)
+            {
+                await _userManager.AddToRolesAsync(user, userForRegistration.Roles);
+                var roles = _repository.User.GetType(user.Id).Result;
+                if (roles.First() == "Student")
+                {
+                    user.Discriminator= roles.First();  
+                    Student student = new Student();
+                    student.StudentId = user.Id;
+                    _repository.Student.CreateStudent(student);
+                    _repository.Save();
+
+                }
+            }
+            return result;
+        }
+    }
+}

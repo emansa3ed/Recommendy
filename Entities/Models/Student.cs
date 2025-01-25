@@ -6,8 +6,7 @@ namespace Entities.Models
     {
         [Key]
         public string StudentId { get; set; }
-        [Required]
-        public string UrlResume { get; set; }
+        public string ? UrlResume { get; set; }
     
        
     

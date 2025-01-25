@@ -10,7 +10,11 @@ D:\Recommendy\Service.Contracts\obj\Debug\net8.0\Service.Contracts.dll
 D:\Recommendy\Service.Contracts\obj\Debug\net8.0\refint\Service.Contracts.dll
 D:\Recommendy\Service.Contracts\obj\Debug\net8.0\Service.Contracts.pdb
 D:\Recommendy\Service.Contracts\obj\Debug\net8.0\ref\Service.Contracts.dll
-D:\Recommendy\Service.Contracts\bin\Debug\net8.0\Entities.dll
-D:\Recommendy\Service.Contracts\bin\Debug\net8.0\Entities.pdb
 D:\Recommendy\Service.Contracts\obj\Debug\net8.0\Service.Contracts.csproj.AssemblyReference.cache
 D:\Recommendy\Service.Contracts\obj\Debug\net8.0\Service..DEC3DE55.Up2Date
+D:\Recommendy\Service.Contracts\bin\Debug\net8.0\Shared.dll
+D:\Recommendy\Service.Contracts\bin\Debug\net8.0\Shared.pdb
+D:\Recommendy\Service.Contracts\bin\Debug\net8.0\Contracts.dll
+D:\Recommendy\Service.Contracts\bin\Debug\net8.0\Entities.dll
+D:\Recommendy\Service.Contracts\bin\Debug\net8.0\Contracts.pdb
+D:\Recommendy\Service.Contracts\bin\Debug\net8.0\Entities.pdb

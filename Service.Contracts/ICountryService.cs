@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Shared.DTO;
 using Entities.Models;
 namespace Service.Contracts
 {
     public interface ICountryService
     {
 
-        IEnumerable<Country> GetAllCountries(bool trackChanges);
+        IEnumerable<CountryDto> GetAllCountries(bool trackChanges);
 
     }
 }

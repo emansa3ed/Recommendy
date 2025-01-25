@@ -426,7 +426,6 @@ namespace Recommendy.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("UrlResume")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("StudentId");
@@ -458,7 +457,6 @@ namespace Recommendy.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Bio")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -469,7 +467,6 @@ namespace Recommendy.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Discriminator")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
@@ -512,7 +509,6 @@ namespace Recommendy.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("UrlPicture")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserName")
@@ -572,6 +568,32 @@ namespace Recommendy.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "44d08b12-4b5b-4f66-83c6-d7a150bd7865",
+                            Name = "Student",
+                            NormalizedName = "STUDENT"
+                        },
+                        new
+                        {
+                            Id = "56bbfc1a-f637-4cc8-ac94-ca6d77b3e946",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "456c684c-12ca-40c2-9a2c-0dcc8d285e31",
+                            Name = "Company",
+                            NormalizedName = "COMPANY"
+                        },
+                        new
+                        {
+                            Id = "13478e0b-a0e5-4dcf-b8e3-0ec3efcb7826",
+                            Name = "University",
+                            NormalizedName = "UNIVERSITY"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

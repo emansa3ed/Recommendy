@@ -17,8 +17,11 @@ namespace Recommendy
             builder.Services.ConfigureSqlContext(builder.Configuration);
             builder.Services.AddControllers()
            .AddApplicationPart(typeof(Presentation.AssemblyReference).Assembly);
+            builder.Services.AddAutoMapper(typeof(Program));
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+              builder.Services.AddAuthentication();
+            builder.Services.ConfigureIdentity(); ;
 
      
 
@@ -31,7 +34,8 @@ namespace Recommendy
                 app.UseSwaggerUI();
             }
 
-        
+
+            app.UseAuthentication();
             app.UseAuthorization();
 
 
