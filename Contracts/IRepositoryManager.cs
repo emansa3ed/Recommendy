@@ -12,6 +12,8 @@ namespace Contracts
         ICountryRepository Country { get; }
         IStudentRepository Student { get; }
         IUserRepository User { get; }
+        ICompanyRepository Company { get; }
+        IUniversityRepository university { get; }
 
         void Save();
     }

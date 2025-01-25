@@ -6,8 +6,8 @@ namespace Entities.Models
     {
         [Key]
         public string CompanyId { get; set; }
-        [Required]
-        public string CompanyUrl { get; set; }
+        
+        public string? CompanyUrl { get; set; }
        
     }
 }

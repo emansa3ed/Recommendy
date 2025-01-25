@@ -18,9 +18,9 @@ namespace Presentation.Controllers
 
         private readonly IServiceManager _service;
         public CountriesController(IServiceManager service) => _service = service;
-        [Authorize(Roles ="Student")]
-
+       
         [HttpGet]
+  
         public IActionResult GetCompanies()
         {
             try

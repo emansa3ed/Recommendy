@@ -36,6 +36,7 @@ namespace Service
 
         public async Task<IdentityResult> RegisterUser(UserForRegistrationDto userForRegistration)
         {
+            
             var user = _mapper.Map<User>(userForRegistration);
             var result = await _userManager.CreateAsync(user, userForRegistration.Password);
             if (result.Succeeded)
@@ -44,12 +45,36 @@ namespace Service
                 var roles = _repository.User.GetType(user.Id).Result;
                 if (roles == "Student")
                 {
-                    user.Discriminator= roles;  
-                    Student student = new Student();
-                    student.StudentId = user.Id;
-                    _repository.Student.CreateStudent(student);
-                    _repository.Save();
+                    
+                        user.Discriminator = roles;
+                        Student student = new Student();
+                        student.StudentId = user.Id;
+                        _repository.Student.CreateStudent(student);
+                        _repository.Save();
+                   
 
+                }
+                else if(roles == "Company")
+                {
+                   
+                        user.Discriminator = roles;
+                        Company company = new Company();
+                        company.CompanyId = user.Id;
+                        _repository.Company.CreateCompany(company);
+                        _repository.Save();
+                   
+
+
+                }
+               else
+                {
+                    
+                        user.Discriminator = roles;
+                        University university = new University();
+                        university.UniversityId = user.Id;
+                        _repository.university.CreateUniversity(university);
+                        _repository.Save();
+                    
                 }
             }
             return result;

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Repository;
 
@@ -11,9 +12,11 @@ using Repository;
 namespace Recommendy.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20250125191809_editss")]
+    partial class editss
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,6 +41,7 @@ namespace Recommendy.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CompanyUrl")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CompanyId");
@@ -571,25 +575,25 @@ namespace Recommendy.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a4d48f37-882c-4fbc-a4fb-429c481da514",
+                            Id = "fdb5c7c0-d6bc-47c7-b35a-f93ea612ca18",
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         },
                         new
                         {
-                            Id = "fe6fd204-0a72-4ebc-afc8-c20b9aa5e569",
+                            Id = "d4505a6c-e6e3-46a3-ae57-34a02982d64e",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "38848543-f4bb-469d-942b-078b5b9e647e",
+                            Id = "1672c939-808f-438d-b166-dea528915eb6",
                             Name = "Company",
                             NormalizedName = "COMPANY"
                         },
                         new
                         {
-                            Id = "03835126-bde0-45a4-99d0-43ca03fbfffe",
+                            Id = "7a04098b-fd16-4d69-aada-dee9c148facd",
                             Name = "University",
                             NormalizedName = "UNIVERSITY"
                         });
