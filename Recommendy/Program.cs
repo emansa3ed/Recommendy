@@ -21,6 +21,7 @@ namespace Recommendy
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
               builder.Services.AddAuthentication();
+            builder.Services.AddAuthorization();
             builder.Services.ConfigureIdentity();
             builder.Services.ConfigureJWT(builder.Configuration);
 

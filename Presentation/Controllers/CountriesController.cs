@@ -12,7 +12,7 @@ namespace Presentation.Controllers
 {
     [Route("api/[Controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "Student")]
     public class CountriesController : ControllerBase
     {
 

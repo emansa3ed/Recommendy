@@ -42,11 +42,12 @@ namespace Service
             if (result.Succeeded)
             {
                 await _userManager.AddToRolesAsync(user, userForRegistration.Roles);
-                var roles = _repository.User.GetType(user.Id).Result;
-                if (roles == "Student")
+                var roles = await _userManager.GetRolesAsync(user);
+                user.Discriminator = roles.FirstOrDefault();
+                await _userManager.UpdateAsync(user);
+                if (roles.First() == "Student")
                 {
-                    
-                        user.Discriminator = roles;
+                   
                         Student student = new Student();
                         student.StudentId = user.Id;
                         _repository.Student.CreateStudent(student);
@@ -54,10 +55,10 @@ namespace Service
                    
 
                 }
-                else if(roles == "Company")
+                else if(roles.First() == "Company")
                 {
                    
-                        user.Discriminator = roles;
+                       
                         Company company = new Company();
                         company.CompanyId = user.Id;
                         _repository.Company.CreateCompany(company);
@@ -68,8 +69,7 @@ namespace Service
                 }
                else
                 {
-                    
-                        user.Discriminator = roles;
+      
                         University university = new University();
                         university.UniversityId = user.Id;
                         _repository.university.CreateUniversity(university);
