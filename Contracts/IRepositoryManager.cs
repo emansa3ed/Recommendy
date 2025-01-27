@@ -14,6 +14,7 @@ namespace Contracts
         IUserRepository User { get; }
         ICompanyRepository Company { get; }
         IUniversityRepository university { get; }
+        IScholarshipReposiyory scholarship { get; } 
 
         void Save();
     }

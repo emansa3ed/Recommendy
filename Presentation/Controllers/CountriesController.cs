@@ -12,7 +12,7 @@ namespace Presentation.Controllers
 {
     [Route("api/[Controller]")]
     [ApiController]
-    [Authorize(Roles = "Student")]
+    [Authorize]
     public class CountriesController : ControllerBase
     {
 
@@ -28,6 +28,7 @@ namespace Presentation.Controllers
                 var companies =
                 _service.CountryService.GetAllCountries(trackChanges: false);
                 return Ok(companies);
+                
             }
             catch
             {
