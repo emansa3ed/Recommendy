@@ -1,4 +1,5 @@
 ﻿using Entities.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DTO;
@@ -22,6 +23,14 @@ namespace Presentation.Controllers
         [HttpPost("Register")]
         public async Task<IActionResult> RegisterUser([FromBody] UserForRegistrationDto userForRegistration)
         {
+
+            if (userForRegistration.ImageFile?.Length > 1 * 1024 * 1024)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, "File size should not exceed 1 MB");
+            }
+            string createdImageName = await _service.fileService.SaveFileAsync(userForRegistration.ImageFile);
+            userForRegistration.UrlPicture = createdImageName;
+
             var result = await
            _service.AuthenticationService.RegisterUser(userForRegistration);
             if (!result.Succeeded)
