@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -17,10 +16,7 @@ namespace Shared.DTO
         public string Password { get; init; }
         public string Email { get; init; }
         public string? PhoneNumber { get; init; }
-        [Required(ErrorMessage =" Photo is required")]
-
         public string? UrlPicture { get; set; }
-        public IFormFile? ImageFile { get; set; }
         public string? Bio { get; set; }
         public ICollection<string> Roles { get; init; }
     }

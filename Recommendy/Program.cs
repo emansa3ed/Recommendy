@@ -1,5 +1,4 @@
 
-using Microsoft.Extensions.FileProviders;
 using Recommendy.Extensions;
 
 
@@ -39,12 +38,6 @@ namespace Recommendy
                 app.UseSwaggerUI();
             }
 
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(
-                Path.Combine(builder.Environment.ContentRootPath, "Uploads")),
-                RequestPath = "/Resources"
-             });
 
             app.UseAuthentication();
             app.UseAuthorization();
