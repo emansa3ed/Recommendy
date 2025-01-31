@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Contracts;
 using Entities.Models;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -17,16 +18,19 @@ namespace Service
     {
         private readonly Lazy<ICountryService> _countryService;
         private readonly Lazy<IAuthenticationService> _authenticationService;
+       
 
-        public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<User> userManager,IConfiguration configuration)
+        public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<User> userManager,IConfiguration configuration,  IWebHostEnvironment _webHostEnvironment )
         {
             _countryService = new Lazy<ICountryService>(() => new  CountryService(repositoryManager, mapper));
             _authenticationService = new Lazy<IAuthenticationService>(() => new AuthenticationService(mapper, userManager, configuration, repositoryManager));
-        }
+          
+        } 
 
 
 
         public ICountryService CountryService => _countryService.Value;
         public IAuthenticationService AuthenticationService => _authenticationService.Value;
+       
     }
 }

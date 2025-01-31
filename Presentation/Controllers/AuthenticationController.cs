@@ -1,4 +1,5 @@
 ﻿using Entities.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DTO;
@@ -20,8 +21,9 @@ namespace Presentation.Controllers
 
 
         [HttpPost("Register")]
-        public async Task<IActionResult> RegisterUser([FromBody] UserForRegistrationDto userForRegistration)
-        {
+       
+        public async Task<IActionResult> RegisterUser([FromBody] UserForRegistrationDto userForRegistration )
+        { 
             var result = await
            _service.AuthenticationService.RegisterUser(userForRegistration);
             if (!result.Succeeded)

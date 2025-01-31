@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Contracts;
 using Entities.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -23,6 +24,8 @@ namespace Service
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
         private readonly IRepositoryManager _repository;
+      
+
 
         private User? _user;
 
@@ -32,6 +35,8 @@ namespace Service
             _userManager = userManager;
             _configuration = configuration;
             _repository = repository;
+            
+           
         }
 
         public async Task<IdentityResult> RegisterUser(UserForRegistrationDto userForRegistration)
@@ -45,6 +50,13 @@ namespace Service
                 var roles = await _userManager.GetRolesAsync(user);
                 user.Discriminator = roles.FirstOrDefault();
                 await _userManager.UpdateAsync(user);
+                //////////////////
+               
+                string url = _repository.File.UploadImage("Uploads", userForRegistration.UserImage).Result;            
+                user.UrlPicture = url;
+
+                await _userManager.UpdateAsync(user);
+                ///////////////////////////////////////
                 if (roles.First() == "Student")
                 {
                    

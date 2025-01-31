@@ -1,5 +1,6 @@
 ﻿using Contracts;
 using Entities.Models;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -18,8 +19,9 @@ namespace Repository
         private readonly Lazy<ICompanyRepository> _companyRepository;
         private readonly Lazy<IUniversityRepository> _universityRepository;
         private readonly Lazy<IScholarshipReposiyory> _scholarshipReposiyory;
+        private readonly Lazy<IFileRepository> _fileRepository;
 
-        public RepositoryManager(RepositoryContext repositoryContext , UserManager<Entities.Models.User> userManager)
+        public RepositoryManager(RepositoryContext repositoryContext , UserManager<User> userManager , IWebHostEnvironment webHostEnvironment)
         {
             _repositoryContext = repositoryContext;
 
@@ -29,6 +31,7 @@ namespace Repository
             _companyRepository = new Lazy<ICompanyRepository>(() => new CompanyRepository(repositoryContext));
             _universityRepository = new Lazy<IUniversityRepository>(() => new UniversityRepository(repositoryContext));
             _scholarshipReposiyory = new Lazy<IScholarshipReposiyory>(() => new ScholarshipReposiyory(repositoryContext));
+            _fileRepository = new Lazy<IFileRepository>(() => new FileRepository(webHostEnvironment));
         }
 
         public ICountryRepository Country => _countryRepository.Value;
@@ -38,6 +41,7 @@ namespace Repository
         public IUniversityRepository university => _universityRepository.Value; 
 
         public IScholarshipReposiyory scholarship => _scholarshipReposiyory.Value;
+        public IFileRepository File => _fileRepository.Value;   
         public void Save() => _repositoryContext.SaveChanges();
 
     }

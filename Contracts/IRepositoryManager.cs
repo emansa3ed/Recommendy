@@ -16,6 +16,11 @@ namespace Contracts
         IUniversityRepository university { get; }
         IScholarshipReposiyory scholarship { get; } 
 
+        IFileRepository File { get; }
+        
+       
+
+
         void Save();
     }
 }
