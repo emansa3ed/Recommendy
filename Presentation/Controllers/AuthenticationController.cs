@@ -41,11 +41,21 @@ namespace Presentation.Controllers
         public async Task<IActionResult> UserLogin([FromBody] UserForLoginDto user)
         {
             if (!await _service.AuthenticationService.ValidateUser(user))
-                return Unauthorized();
+                return Unauthorized("Invalid username or password.");
+            User user1 = _service.UserService.GetDetails(user.UserName).Result;
+
+
             return Ok(new
             {
-                Token = await _service
-            .AuthenticationService.CreateToken()
+                Token = await _service.AuthenticationService.CreateToken(),
+                user1.Email,
+                user1.Discriminator,
+                user1.UrlPicture,
+                user1.UserName,
+                user1.Bio,
+                user1.Id,
+                user1.PhoneNumber
+             
             });
         }
     }

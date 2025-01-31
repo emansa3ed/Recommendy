@@ -10,7 +10,8 @@ namespace Service.Contracts
     {
         ICountryService CountryService { get; }
         IAuthenticationService AuthenticationService { get; }
-      
+        IUserService UserService { get; }
+
 
     }
 }

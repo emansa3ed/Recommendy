@@ -18,19 +18,21 @@ namespace Service
     {
         private readonly Lazy<ICountryService> _countryService;
         private readonly Lazy<IAuthenticationService> _authenticationService;
+        private readonly Lazy<IUserService> _userService;
        
 
         public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<User> userManager,IConfiguration configuration,  IWebHostEnvironment _webHostEnvironment )
         {
             _countryService = new Lazy<ICountryService>(() => new  CountryService(repositoryManager, mapper));
             _authenticationService = new Lazy<IAuthenticationService>(() => new AuthenticationService(mapper, userManager, configuration, repositoryManager));
-          
+           _userService = new Lazy<IUserService>(()=>  new UserService(repositoryManager,userManager));
         } 
 
 
 
         public ICountryService CountryService => _countryService.Value;
         public IAuthenticationService AuthenticationService => _authenticationService.Value;
+        public IUserService UserService => _userService.Value;
        
     }
 }

@@ -5,13 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Contracts
+namespace Service.Contracts
 {
-    public interface IUserRepository
+    public  interface IUserService
     {
-
-        Task< string> GetType(string id);
-        
-
+        Task<User> GetDetails(string username);
     }
 }
