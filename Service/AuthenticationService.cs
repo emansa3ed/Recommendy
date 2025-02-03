@@ -87,7 +87,7 @@ namespace Service
                     Student student = new Student();
                     student.StudentId = user.Id;
                     _repository.Student.CreateStudent(student);
-                    _repository.SaveAsync();
+                    _repository.SaveAsync().Wait();
 
 
                 }
@@ -99,7 +99,7 @@ namespace Service
                     company.CompanyId = user.Id;
                     company.CompanyUrl = userForRegistration.Url;
                     _repository.Company.CreateCompany(company);
-                    _repository.SaveAsync();
+                    _repository.SaveAsync().Wait();
 
 
 
@@ -110,7 +110,7 @@ namespace Service
                     university.UniversityId = user.Id;
                     university.UniversityUrl = userForRegistration.Url;
                     _repository.university.CreateUniversity(university);
-                    _repository.SaveAsync();
+                    _repository.SaveAsync().Wait();
                 }
                 else
                 {

@@ -11,7 +11,7 @@ namespace Service.Contracts
 {
     public interface IInternshipService
     {
-        Task<ApiResponse<Internship>> CreateInternship(InternshipCreationDto intersnhip);
+       Task< ApiResponse<Internship>> CreateInternship(InternshipCreationDto intersnhip);
         Task UpdateInternship(Internship intersnhip);
 
         Task DeleteInternship(Internship intersnhip);

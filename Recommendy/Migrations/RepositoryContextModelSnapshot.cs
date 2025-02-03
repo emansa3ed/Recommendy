@@ -189,10 +189,6 @@ namespace Recommendy.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("CompanysCompanyId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -220,8 +216,6 @@ namespace Recommendy.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
-
-                    b.HasIndex("CompanysCompanyId");
 
                     b.ToTable("Internships");
                 });
@@ -702,25 +696,25 @@ namespace Recommendy.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a74b6317-af2b-40ce-910f-bcea4be55957",
+                            Id = "4cf9e018-d5bc-464d-af68-ac50938d405c",
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         },
                         new
                         {
-                            Id = "d830ab28-f1f1-459a-bbef-73dd5ec771fc",
+                            Id = "ba20ec96-ff56-44b8-b040-074414386d19",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "c083ff85-764c-446a-abd9-4f234852d31c",
+                            Id = "4fe3caa9-b3cc-4197-9c7e-86ee79de3d66",
                             Name = "Company",
                             NormalizedName = "COMPANY"
                         },
                         new
                         {
-                            Id = "d036c778-ef81-4932-9a1e-7b22516668ce",
+                            Id = "ad4b9f6c-e26e-4157-86df-ed2959511524",
                             Name = "University",
                             NormalizedName = "UNIVERSITY"
                         });
@@ -866,14 +860,6 @@ namespace Recommendy.Migrations
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Entities.Models.Company", "Companys")
-                        .WithMany()
-                        .HasForeignKey("CompanysCompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Companys");
                 });
 
             modelBuilder.Entity("Entities.Models.InternshipPosition", b =>

@@ -36,7 +36,8 @@ namespace Service
                 string url = _repositoryManager.File.UploadImage("Internships", internshipDto.Image).Result;
                  internship.UrlPicture = url;
 
-                _repositoryManager.Intership.CreateIntership(internship);
+                 _repositoryManager.Intership.CreateIntership(internship);
+               
                  await _repositoryManager.SaveAsync();
                 return new ApiResponse<Internship>
                 {
@@ -47,21 +48,15 @@ namespace Service
 
 
             }
-            catch (Exception ex   ) {
-
-
+            catch (Exception ex)
+            {
                 return new ApiResponse<Internship>
                 {
                     Success = false,
-                    Message = "Failed to create internship. Please try again later." + ex.Message,
-
+                    Message = $"Failed to create internship. {ex.Message} | Inner Exception: {ex.InnerException?.Message}",
                     Data = null
                 };
-
             }
-
-          
-
 
         }
         public Task DeleteInternship(Internship internship) {

@@ -32,7 +32,7 @@ namespace Service
                 var internshipPosition =   _mapper.Map<InternshipPosition>(internshipPositionDto);
 
                  _repositoryManager.InternshipPosition.CreateInternshipPosition(internshipPosition);
-               await  _repositoryManager.SaveAsync();
+                 _repositoryManager.SaveAsync().Wait();
             }
             catch (Exception ex) {
 
