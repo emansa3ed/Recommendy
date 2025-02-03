@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Entities.Models;
 using Contracts;
+using Microsoft.EntityFrameworkCore;
 
 namespace Repository
 {
@@ -23,7 +24,14 @@ namespace Repository
 
         public void UpdateIntership(Internship internship) => Update(internship);
 
-       
+        public async Task<List<Internship>> GetInternshipsByCompanyId(string companyId, bool trackChanges)
+        {
+            return await FindByCondition(i => i.CompanyId == companyId, trackChanges)
+                .Include(i => i.InternshipPositions)
+                    .ThenInclude(ip => ip.Position)
+                .ToListAsync();
+        }
+
 
 
     }

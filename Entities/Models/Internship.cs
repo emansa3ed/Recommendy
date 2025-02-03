@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Entities.Models
 {
@@ -34,8 +35,13 @@ namespace Entities.Models
 
           
             public string  Approach { get; set; }
-        }
+
+      
+        public virtual ICollection<InternshipPosition> InternshipPositions { get; set; } = new List<InternshipPosition>();
+        public virtual Company Companys { get; set; } 
+
     }
+}
 
 
 

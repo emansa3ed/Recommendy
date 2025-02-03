@@ -75,5 +75,18 @@ namespace Presentation.Controllers
            
         }
 
+        [HttpGet("Company/{id:Guid}")]
+        public async Task<IActionResult> GetInternshipByCompanyId(string id)
+        {
+            var internshipDto = await _service.InternshipService.GetInternshipsByCompanyId(id);
+
+            if (internshipDto == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(internshipDto);
+        }
+
     }
 }

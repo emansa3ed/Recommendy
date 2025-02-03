@@ -112,23 +112,23 @@ namespace Repository
                 .HasForeignKey(s => s.UniversityId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.Entity<Internship>()
-                .HasOne<Company>()
-                .WithMany()
+            builder.Entity<Company>()
+                .HasMany(c => c.Internships)
+                .WithOne()
                 .HasForeignKey(i => i.CompanyId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<InternshipPosition>()
-                .HasOne<Internship>()
-                .WithMany()
+            builder.Entity<Internship>()
+                .HasMany(i => i.InternshipPositions)
+                .WithOne(ip => ip.Internship)
                 .HasForeignKey(ip => ip.InternshipId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<InternshipPosition>()
-                .HasOne<Position>()
+                .HasOne(ip => ip.Position)
                 .WithMany()
                 .HasForeignKey(ip => ip.PositionId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.NoAction); ;
 
             builder.Entity<Feedback>()
                 .HasOne<Student>()

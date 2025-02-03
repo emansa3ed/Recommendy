@@ -15,6 +15,7 @@ namespace Service.Contracts
         Task UpdateInternship(Internship intersnhip);
 
         Task DeleteInternship(Internship intersnhip);
+        Task<List<InternshipDto>> GetInternshipsByCompanyId(string companyId);
 
 
     }

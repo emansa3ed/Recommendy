@@ -14,6 +14,9 @@ namespace Contracts
         void UpdateIntership(Internship intership);
 
         void DeleteIntership(Internship intership);
+       
+       Task<List<Internship>> GetInternshipsByCompanyId(string  id, bool trackChanges);
+        
 
     }
 }

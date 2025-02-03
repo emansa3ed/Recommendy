@@ -8,6 +8,8 @@ namespace Entities.Models
         public string CompanyId { get; set; }
         
         public string? CompanyUrl { get; set; }
-       
+
+        public virtual ICollection<Internship> Internships { get; set; }
+
     }
 }
