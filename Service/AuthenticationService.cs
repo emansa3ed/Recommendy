@@ -42,25 +42,28 @@ namespace Service
         public async Task<IdentityResult> RegisterUser(UserForRegistrationDto userForRegistration)
         {
 
-            if (userForRegistration.Roles.Any(role => role.Equals("University", StringComparison.OrdinalIgnoreCase)))
+          if (userForRegistration.Roles.Any(role => role.Equals("University", StringComparison.OrdinalIgnoreCase) ||  role.Equals("Company", StringComparison.OrdinalIgnoreCase)))
             {
-                if (string.IsNullOrEmpty(userForRegistration.UniversityUrl))
+                
+                if (string.IsNullOrEmpty(userForRegistration.Url))
                 {
                     return IdentityResult.Failed(new IdentityError
                     {
-                        Code = "UniversityUrlRequired",
-                        Description = "University URL is required for university registration."
+                        Code = "UrlRequired",
+                        Description = "URL is required for university or company registration."
                     });
                 }
 
-                if (!Uri.TryCreate(userForRegistration.UniversityUrl, UriKind.Absolute, out _))
+                if (!Uri.TryCreate(userForRegistration.Url, UriKind.Absolute, out _))
                 {
                     return IdentityResult.Failed(new IdentityError
                     {
-                        Code = "InvalidUniversityUrl",
-                        Description = "Invalid URL format for University URL."
+                        Code = "InvalidUrl",
+                        Description = "Invalid URL format for University or Company URL."
                     });
                 }
+
+                
             }
 
             var user = _mapper.Map<User>(userForRegistration);
@@ -94,6 +97,7 @@ namespace Service
 
                     Company company = new Company();
                     company.CompanyId = user.Id;
+                    company.CompanyUrl = userForRegistration.Url;
                     _repository.Company.CreateCompany(company);
                     _repository.SaveAsync();
 
@@ -104,7 +108,7 @@ namespace Service
                 {
                     University university = new University();
                     university.UniversityId = user.Id;
-                    university.UniversityUrl = userForRegistration.UniversityUrl;
+                    university.UniversityUrl = userForRegistration.Url;
                     _repository.university.CreateUniversity(university);
                     _repository.SaveAsync();
                 }

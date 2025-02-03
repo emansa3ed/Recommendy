@@ -12,6 +12,9 @@ namespace Service.Contracts
         IAuthenticationService AuthenticationService { get; }
         IUserService UserService { get; }
         IInternshipService InternshipService { get; }
+         
+        IInternshipPositionService InternshipPosition {  get; }
+
 
 
     }

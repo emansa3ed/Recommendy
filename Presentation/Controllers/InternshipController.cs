@@ -50,5 +50,30 @@ namespace Presentation.Controllers
             }
         }
 
+
+
+
+
+        [HttpPost("Positions")]
+        public async Task<IActionResult> CreatePosition( [FromBody]InternshipPositionDto internshipPositionDto)
+        {
+            try
+            {
+                var result =   await _service.InternshipPosition.CreateInternshipPosition(internshipPositionDto);
+                return Ok(result);
+            }
+            catch (Exception ex) {
+
+                return StatusCode(500, new ApiResponse<int>
+                {
+                    Success = false,
+                    Message = "An error occurred while creating the internshipPosition." + ex.Message,
+                 
+                });
+            }
+
+           
+        }
+
     }
 }

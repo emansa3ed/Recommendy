@@ -20,7 +20,9 @@ namespace Service
         private readonly Lazy<IAuthenticationService> _authenticationService;
         private readonly Lazy<IUserService> _userService;
         private readonly Lazy<IInternshipService> _internshipService;
-       
+        private readonly Lazy<IInternshipPositionService> _internshipPositionService;
+
+
 
         public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<User> userManager,IConfiguration configuration,  IWebHostEnvironment _webHostEnvironment )
         {
@@ -28,6 +30,7 @@ namespace Service
             _authenticationService = new Lazy<IAuthenticationService>(() => new AuthenticationService(mapper, userManager, configuration, repositoryManager));
            _userService = new Lazy<IUserService>(()=>  new UserService(repositoryManager,userManager));
             _internshipService =    new Lazy<IInternshipService>(() =>  new InternshipService(repositoryManager , mapper));
+            _internshipPositionService = new Lazy<IInternshipPositionService>(() => new InternshipPositionService(repositoryManager ,mapper));  
         } 
 
 
@@ -36,6 +39,7 @@ namespace Service
         public IAuthenticationService AuthenticationService => _authenticationService.Value;
         public IUserService UserService => _userService.Value;
         public IInternshipService InternshipService => _internshipService.Value;
+        public IInternshipPositionService InternshipPosition => _internshipPositionService.Value;
        
     }
 }
