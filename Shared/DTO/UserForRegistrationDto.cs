@@ -19,6 +19,9 @@ namespace Shared.DTO
         public string? PhoneNumber { get; init; }
         public IFormFile? UserImage { get; init; }
         public string? Bio { get; set; }
+        public string? UniversityUrl { get; set; } 
+        [Required(ErrorMessage = "Role is required.")]
         public ICollection<string> Roles { get; init; }
+
     }
 }

@@ -181,24 +181,22 @@ namespace Recommendy.Migrations
                     b.Property<DateTime>("ApplicationDeadline")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Approach")
-                        .HasColumnType("int");
+                    b.Property<string>("Approach")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CompanyId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsBanned")
+                    b.Property<bool?>("IsBanned")
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
@@ -208,15 +206,11 @@ namespace Recommendy.Migrations
                     b.Property<bool>("Paid")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("UrlApplicationForm")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UrlPicture")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -440,6 +434,10 @@ namespace Recommendy.Migrations
                     b.Property<int?>("CountryId")
                         .HasColumnType("int");
 
+                    b.Property<string>("UniversityUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("UniversityId");
 
                     b.HasIndex("CountryId");
@@ -571,25 +569,25 @@ namespace Recommendy.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a4d48f37-882c-4fbc-a4fb-429c481da514",
+                            Id = "4f9dc469-33c5-495d-8d0b-6d80862e5bbe",
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         },
                         new
                         {
-                            Id = "fe6fd204-0a72-4ebc-afc8-c20b9aa5e569",
+                            Id = "5b8704c4-fb32-429d-92c3-dcd46124394e",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "38848543-f4bb-469d-942b-078b5b9e647e",
+                            Id = "29251520-9478-4406-9c70-06c4cf7a126e",
                             Name = "Company",
                             NormalizedName = "COMPANY"
                         },
                         new
                         {
-                            Id = "03835126-bde0-45a4-99d0-43ca03fbfffe",
+                            Id = "8015004c-f6f5-451e-a426-aba84d949623",
                             Name = "University",
                             NormalizedName = "UNIVERSITY"
                         });

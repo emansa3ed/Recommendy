@@ -7,7 +7,7 @@ using Entities.Models;
 
 namespace Contracts
 {
-    public  interface IIntershipRepository
+    public  interface IInternshipRepository
     {
 
         void CreateIntership(Internship intership);

@@ -7,6 +7,7 @@ namespace Entities.Models
     {
         [Key]
         public string UniversityId { get; set; }
+         public string UniversityUrl { get; set; }
         public int ? CountryId { get; set; }
      
     }

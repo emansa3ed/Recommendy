@@ -1,5 +1,7 @@
 
+using Contracts;
 using Recommendy.Extensions;
+using Repository;
 
 
 namespace Recommendy
@@ -16,6 +18,7 @@ namespace Recommendy
             builder.Services.ConfigureServiceManager();   /// service manager
             builder.Services.ConfigureSqlContext(builder.Configuration);
             builder.Services.ConfigureCors();
+            builder.Services.AddScoped<IFileRepository, FileRepository>();
 
             builder.Services.AddControllers()
            .AddApplicationPart(typeof(Presentation.AssemblyReference).Assembly);

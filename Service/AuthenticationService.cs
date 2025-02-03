@@ -41,7 +41,28 @@ namespace Service
 
         public async Task<IdentityResult> RegisterUser(UserForRegistrationDto userForRegistration)
         {
-            
+
+            if (userForRegistration.Roles.Any(role => role.Equals("University", StringComparison.OrdinalIgnoreCase)))
+            {
+                if (string.IsNullOrEmpty(userForRegistration.UniversityUrl))
+                {
+                    return IdentityResult.Failed(new IdentityError
+                    {
+                        Code = "UniversityUrlRequired",
+                        Description = "University URL is required for university registration."
+                    });
+                }
+
+                if (!Uri.TryCreate(userForRegistration.UniversityUrl, UriKind.Absolute, out _))
+                {
+                    return IdentityResult.Failed(new IdentityError
+                    {
+                        Code = "InvalidUniversityUrl",
+                        Description = "Invalid URL format for University URL."
+                    });
+                }
+            }
+
             var user = _mapper.Map<User>(userForRegistration);
             var result = await _userManager.CreateAsync(user, userForRegistration.Password);
             if (result.Succeeded)
@@ -50,43 +71,51 @@ namespace Service
                 var roles = await _userManager.GetRolesAsync(user);
                 user.Discriminator = roles.FirstOrDefault();
                 await _userManager.UpdateAsync(user);
-                //////////////////
+                ////////////////// photo 
                
                 string url = _repository.File.UploadImage("Uploads", userForRegistration.UserImage).Result;            
                 user.UrlPicture = url;
 
                 await _userManager.UpdateAsync(user);
                 ///////////////////////////////////////
-                if (roles.First() == "Student")
+                if (roles.Any(role => role.Equals("Student", StringComparison.OrdinalIgnoreCase)))
                 {
-                   
-                        Student student = new Student();
-                        student.StudentId = user.Id;
-                        _repository.Student.CreateStudent(student);
-                        _repository.Save();
-                   
 
-                }
-                else if(roles.First() == "Company")
-                {
-                   
-                       
-                        Company company = new Company();
-                        company.CompanyId = user.Id;
-                        _repository.Company.CreateCompany(company);
-                        _repository.Save();
-                   
+                    Student student = new Student();
+                    student.StudentId = user.Id;
+                    _repository.Student.CreateStudent(student);
+                    _repository.SaveAsync();
 
 
                 }
-               else
+                else if (roles.Any(role => role.Equals("Company", StringComparison.OrdinalIgnoreCase)))
                 {
-      
-                        University university = new University();
-                        university.UniversityId = user.Id;
-                        _repository.university.CreateUniversity(university);
-                        _repository.Save();
-                    
+
+
+                    Company company = new Company();
+                    company.CompanyId = user.Id;
+                    _repository.Company.CreateCompany(company);
+                    _repository.SaveAsync();
+
+
+
+                }
+                else if (roles.Any(role => role.Equals("University", StringComparison.OrdinalIgnoreCase)))
+                {
+                    University university = new University();
+                    university.UniversityId = user.Id;
+                    university.UniversityUrl = userForRegistration.UniversityUrl;
+                    _repository.university.CreateUniversity(university);
+                    _repository.SaveAsync();
+                }
+                else
+                {
+                    return IdentityResult.Failed(new IdentityError
+                    {
+                      //  Code = "InvalidRole",
+                      //  Description = "The specified role is not allowed. Allowed roles are: Student, Company, University."
+                    });
+
                 }
             }
             return result;

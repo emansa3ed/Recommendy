@@ -11,6 +11,7 @@ namespace Recommendy
 
             CreateMap<Country, CountryDto>();
             CreateMap<UserForRegistrationDto, User>();
+            CreateMap<InternshipCreationDto, Internship>();
 
 
         }

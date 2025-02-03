@@ -3,12 +3,7 @@
 namespace Entities.Models
 {
    
-       public enum Approach
-        {
-            OnSite,
-            Hybrid,
-            Online
-        }
+    
 
         public class Internship
         {
@@ -26,24 +21,19 @@ namespace Entities.Models
             public string Description { get; set; }
 
           
-            public string UrlPicture { get; set; }
+            public string ? UrlPicture { get; set; }
 
-            public bool IsBanned { get; set; }
+            public bool? IsBanned { get; set; }=false;
 
         
             public string  CompanyId { get; set; }
 
-            public DateTime CreatedAt { get; set; }
-
-          
-            public DateTime StartDate { get; set; }
-
-            public DateTime EndDate { get; set; }
+            public DateTime? CreatedAt { get; set; }= DateTime.Now;
 
             public bool Paid { get; set; }
 
           
-            public Approach Approach { get; set; }
+            public string  Approach { get; set; }
         }
     }
 

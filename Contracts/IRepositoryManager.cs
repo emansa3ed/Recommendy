@@ -17,10 +17,14 @@ namespace Contracts
         IScholarshipReposiyory scholarship { get; } 
 
         IFileRepository File { get; }
-        
-       
+
+        IInternshipRepository Intership { get; }
+
+        IInternshipPositionRepository InternshipPosition { get; }   
 
 
-        void Save();
+
+
+        Task SaveAsync();
     }
 }
