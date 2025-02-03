@@ -28,7 +28,7 @@ namespace Service
         {
             _countryService = new Lazy<ICountryService>(() => new  CountryService(repositoryManager, mapper));
             _authenticationService = new Lazy<IAuthenticationService>(() => new AuthenticationService(mapper, userManager, configuration, repositoryManager));
-           _userService = new Lazy<IUserService>(()=>  new UserService(repositoryManager,userManager));
+           _userService = new Lazy<IUserService>(()=>  new UserService(repositoryManager,userManager ,mapper));
             _internshipService =    new Lazy<IInternshipService>(() =>  new InternshipService(repositoryManager , mapper));
             _internshipPositionService = new Lazy<IInternshipPositionService>(() => new InternshipPositionService(repositoryManager ,mapper));  
             _positionService = new Lazy<IPositionService>(()=> new PositionService(repositoryManager));

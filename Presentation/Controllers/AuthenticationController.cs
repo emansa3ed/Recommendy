@@ -42,7 +42,7 @@ namespace Presentation.Controllers
         {
             if (!await _service.AuthenticationService.ValidateUser(user))
                 return Unauthorized("Invalid username or password.");
-            User user1 = _service.UserService.GetDetails(user.UserName).Result;
+            User user1 =   _service.UserService.GetDetailsByUserName(user.UserName).Result;
 
 
             return Ok(new
@@ -58,5 +58,28 @@ namespace Presentation.Controllers
              
             });
         }
+
+        [HttpGet("GetMe")]
+
+        public async Task<IActionResult> GetMe(string token)
+        {
+            try
+            {
+                var result =   await  _service.UserService.GetDetailsbyId(_service.AuthenticationService.ExtractUserIdFromToken(token));
+
+                return Ok(result);
+            }
+            catch (Exception ex) {
+
+                return StatusCode(500, new ApiResponse<int>
+                {
+                    Success = false,
+                    Message = "An error occurred ." + ex.Message,
+
+                });
+
+            }
+        }
+        
     }
 }

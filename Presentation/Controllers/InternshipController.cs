@@ -79,7 +79,7 @@ namespace Presentation.Controllers
         {
             try
             {
-                var result = _service.PositionService.GetAllPositions(false);
+                var result =  _service.PositionService.GetAllPositions(false);
                 return Ok(result);
 
             }

@@ -143,18 +143,22 @@ namespace Service
             return new JwtSecurityTokenHandler().WriteToken(tokenOptions);
         }
 
-        private SigningCredentials GetSigningCredentials() /////////// return secret key as a byte array with the security algorithm
+        private SigningCredentials GetSigningCredentials()
         {
             var jwtSettings = _configuration.GetSection("JWT");
-            var key = Encoding.UTF8.GetBytes((jwtSettings["SecretKey"]));
+            var key = Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]);
             var secret = new SymmetricSecurityKey(key);
 
             return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
         }
 
-        private async Task<List<Claim>> GetClaims()// creates a list of claims with the user name inside and all the roles the user belongs to
+        private async Task<List<Claim>> GetClaims()
         {
-            var claims = new List<Claim>{new Claim(ClaimTypes.Name, _user.UserName)};
+            var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.Name, _user.UserName),
+        new Claim("Id", _user.Id) // Add the user ID as a claim
+    };
 
             var roles = await _userManager.GetRolesAsync(_user);
             foreach (var role in roles)
@@ -165,18 +169,40 @@ namespace Service
             return claims;
         }
 
-        private JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials,List<Claim> claims) // creates an object of the JwtSecurityToken 
+        private JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials, List<Claim> claims)
         {
             var jwtSettings = _configuration.GetSection("JWT");
-            var tokenOptions = new JwtSecurityToken
-            (
-            issuer: jwtSettings["validIssuer"],
-            audience: jwtSettings["validAudience"],
-            claims: claims,
-            expires: DateTime.Now.AddMinutes(Convert.ToDouble(jwtSettings["expires"])),
-            signingCredentials: signingCredentials
+            var tokenOptions = new JwtSecurityToken(
+                issuer: jwtSettings["validIssuer"],
+                audience: jwtSettings["validAudience"],
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(Convert.ToDouble(jwtSettings["expires"])),
+                signingCredentials: signingCredentials
             );
             return tokenOptions;
+        }
+
+        public string ExtractUserIdFromToken(string token)
+        {
+            var handler = new JwtSecurityTokenHandler();
+
+            // Validate if the token is a valid JWT
+            if (!handler.CanReadToken(token))
+            {
+                throw new ArgumentException("Invalid JWT token");
+            }
+
+            var jwtToken = handler.ReadJwtToken(token);
+
+            // Extract the user ID claim
+            var userId = jwtToken?.Claims?.FirstOrDefault(c => c.Type == "Id")?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new ArgumentException("User ID claim not found in the token");
+            }
+
+            return userId;
         }
     }
 }

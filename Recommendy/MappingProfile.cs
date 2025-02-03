@@ -18,6 +18,8 @@ namespace Recommendy
           .ForMember(dest => dest.Positions, opt => opt.MapFrom(src => src.InternshipPositions));
             CreateMap<InternshipPosition, InternshipPositionDto>();
 
+            CreateMap<User, UserDto>();
+
 
 
 
