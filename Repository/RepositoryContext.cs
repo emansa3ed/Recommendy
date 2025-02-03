@@ -74,28 +74,24 @@ namespace Repository
 
 
             ////relations 
-            builder.Entity<University>()
-        .HasOne<User>()
-        .WithMany()
-        .HasForeignKey(u => u.UniversityId)
-        .OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<User>()
+                     .HasOne(u => u.Company)
+                     .WithOne(c => c.User)
+                     .HasForeignKey<User>(u => u.CompanyId)
+                     .OnDelete(DeleteBehavior.NoAction);
 
-            builder.Entity<Company>()
-                .HasOne<User>()
-                .WithMany()
-                .HasForeignKey(u => u.CompanyId)
-                .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<Student>()
-                .HasOne<User>()
-                .WithMany()
-                .HasForeignKey(u => u.StudentId)
-                .OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<User>()
+                .HasOne(u => u.University)
+                .WithOne(u => u.User)
+                .HasForeignKey<University>(u => u.UniversityId)
+                .OnDelete(DeleteBehavior.NoAction);
 
-            builder.Entity<Admin>()
-                .HasOne<User>()
-                .WithMany()
-                .HasForeignKey(u => u.AdminId)
+
+            builder.Entity<User>()
+                .HasOne(u => u.Student)
+                .WithOne(s => s.User)
+                .HasForeignKey<Student>(s => s.StudentId)
                 .OnDelete(DeleteBehavior.NoAction);
 
 

@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-
+//using  Shared.Enums;
 namespace Entities.Models
 {
     public enum Funded
@@ -30,12 +30,12 @@ namespace Entities.Models
         public string EligibleGrade { get; set; }
         public DateTime StartDate { get; set; }
         public int Duration { get; set; }
-        public Degree degree { get; set; } 
-        public Funded funded { get; set; } 
-        public string  UniversityId { get; set; }
+        public Degree Degree { get; set; }
+        public Funded Funded { get; set; }
+        public string UniversityId { get; set; }
         public DateTime CreatedAt { get; set; }
         public Dictionary<string, string> Requirements { get; set; }
-    
-       
+
+
     }
 }

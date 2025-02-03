@@ -486,6 +486,9 @@ namespace Recommendy.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("Degree")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -496,6 +499,9 @@ namespace Recommendy.Migrations
                     b.Property<string>("EligibleGrade")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Funded")
+                        .HasColumnType("int");
 
                     b.Property<string>("Grants")
                         .IsRequired()
@@ -527,12 +533,6 @@ namespace Recommendy.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("degree")
-                        .HasColumnType("int");
-
-                    b.Property<int>("funded")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("UniversityId");
@@ -561,6 +561,9 @@ namespace Recommendy.Migrations
                     b.Property<int?>("CountryId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("Revised")
+                        .HasColumnType("bit");
+
                     b.Property<string>("UniversityUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -582,6 +585,9 @@ namespace Recommendy.Migrations
 
                     b.Property<string>("Bio")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CompanyId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -629,8 +635,14 @@ namespace Recommendy.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("StudentId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
+
+                    b.Property<string>("UniversityId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UrlPicture")
                         .HasColumnType("nvarchar(max)");
@@ -640,6 +652,10 @@ namespace Recommendy.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CompanyId")
+                        .IsUnique()
+                        .HasFilter("[CompanyId] IS NOT NULL");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -696,25 +712,25 @@ namespace Recommendy.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "4cf9e018-d5bc-464d-af68-ac50938d405c",
+                            Id = "51f305e8-df06-4da1-9d5c-6f07801bb2a7",
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         },
                         new
                         {
-                            Id = "ba20ec96-ff56-44b8-b040-074414386d19",
+                            Id = "463aac3c-974d-4b7b-a4f1-b9bb8ba5a1ad",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "4fe3caa9-b3cc-4197-9c7e-86ee79de3d66",
+                            Id = "2109bae5-c039-43ea-98a2-99df924a5b0d",
                             Name = "Company",
                             NormalizedName = "COMPANY"
                         },
                         new
                         {
-                            Id = "ad4b9f6c-e26e-4157-86df-ed2959511524",
+                            Id = "1ac13f3b-f286-4f4f-8090-889383cb8d06",
                             Name = "University",
                             NormalizedName = "UNIVERSITY"
                         });
@@ -826,24 +842,6 @@ namespace Recommendy.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Entities.Models.Admin", b =>
-                {
-                    b.HasOne("Entities.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("AdminId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Entities.Models.Company", b =>
-                {
-                    b.HasOne("Entities.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Entities.Models.Feedback", b =>
                 {
                     b.HasOne("Entities.Models.Student", null)
@@ -919,11 +917,13 @@ namespace Recommendy.Migrations
 
             modelBuilder.Entity("Entities.Models.Student", b =>
                 {
-                    b.HasOne("Entities.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("Entities.Models.User", "User")
+                        .WithOne("Student")
+                        .HasForeignKey("Entities.Models.Student", "StudentId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Entities.Models.University", b =>
@@ -933,11 +933,23 @@ namespace Recommendy.Migrations
                         .HasForeignKey("CountryId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("Entities.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("UniversityId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("Entities.Models.User", "User")
+                        .WithOne("University")
+                        .HasForeignKey("Entities.Models.University", "UniversityId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Entities.Models.User", b =>
+                {
+                    b.HasOne("Entities.Models.Company", "Company")
+                        .WithOne("User")
+                        .HasForeignKey("Entities.Models.User", "CompanyId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("Entities.Models.UserInterest", b =>
@@ -1009,11 +1021,23 @@ namespace Recommendy.Migrations
             modelBuilder.Entity("Entities.Models.Company", b =>
                 {
                     b.Navigation("Internships");
+
+                    b.Navigation("User")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Entities.Models.Internship", b =>
                 {
                     b.Navigation("InternshipPositions");
+                });
+
+            modelBuilder.Entity("Entities.Models.User", b =>
+                {
+                    b.Navigation("Student")
+                        .IsRequired();
+
+                    b.Navigation("University")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

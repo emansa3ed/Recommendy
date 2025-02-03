@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Contracts
 {
     public interface IRepositoryManager
@@ -14,7 +15,7 @@ namespace Contracts
         IUserRepository User { get; }
         ICompanyRepository Company { get; }
         IUniversityRepository university { get; }
-        IScholarshipReposiyory scholarship { get; } 
+        IScholarshipRepository Scholarship { get; } 
 
         IFileRepository File { get; }
 
@@ -26,7 +27,7 @@ namespace Contracts
 
 
 
-
+        void Save();
         Task SaveAsync();
     }
 }

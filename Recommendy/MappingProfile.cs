@@ -21,6 +21,33 @@ namespace Recommendy
             CreateMap<User, UserDto>();
 
 
+            CreateMap<Scholarship, ScholarshipDto>();
+
+            CreateMap<University, UniversityViewDto>()
+                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
+                 .ForMember(dest => dest.Bio, opt => opt.MapFrom(src => src.User.Bio))
+                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.User.PhoneNumber));
+
+
+            CreateMap<UserForRegistrationDto, User>();
+
+
+
+
+            CreateMap<Scholarship, GetScholarshipDto>();
+            CreateMap<ScholarshipForCreationDto, Scholarship>()
+                     .ForMember(dest => dest.CreatedAt,
+                         opt => opt.MapFrom(src => src.CreatedAt == default ? DateTime.UtcNow : src.CreatedAt));
+          
+            
+            CreateMap<University, UniversityDto>()
+               .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
+               .ForMember(dest => dest.Bio, opt => opt.MapFrom(src => src.User.Bio))
+               .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.User.PhoneNumber));
+
+
+
+
 
 
         }

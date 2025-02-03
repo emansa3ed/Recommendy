@@ -9,6 +9,8 @@ namespace Entities.Models
         
         public string? CompanyUrl { get; set; }
 
+        public User User { get; set; }
+
         public virtual ICollection<Internship> Internships { get; set; }
 
     }

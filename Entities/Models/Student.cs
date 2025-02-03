@@ -7,9 +7,10 @@ namespace Entities.Models
         [Key]
         public string StudentId { get; set; }
         public string ? UrlResume { get; set; }
-    
-       
-    
+
+        public User User { get; set; }
+
+
 
     }
 

@@ -11,3 +11,6 @@ D:\Recommendy\Shared\obj\Debug\net8.0\refint\Shared.dll
 D:\Recommendy\Shared\obj\Debug\net8.0\Shared.pdb
 D:\Recommendy\Shared\obj\Debug\net8.0\ref\Shared.dll
 D:\Recommendy\Shared\obj\Debug\net8.0\Shared.csproj.AssemblyReference.cache
+D:\Recommendy\Shared\bin\Debug\net8.0\Entities.dll
+D:\Recommendy\Shared\bin\Debug\net8.0\Entities.pdb
+D:\Recommendy\Shared\obj\Debug\net8.0\Shared.csproj.Up2Date

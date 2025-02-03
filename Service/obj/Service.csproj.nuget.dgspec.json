@@ -369,7 +369,11 @@
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
-            "projectReferences": {}
+            "projectReferences": {
+              "D:\\Recommendy\\Entities\\Entities.csproj": {
+                "projectPath": "D:\\Recommendy\\Entities\\Entities.csproj"
+              }
+            }
           }
         },
         "warningProperties": {

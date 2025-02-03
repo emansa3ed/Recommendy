@@ -1799,6 +1799,7 @@
       },
       "Shared/1.0.0": {
         "dependencies": {
+          "Entities": "1.0.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "8.0.11"
         },
         "runtime": {

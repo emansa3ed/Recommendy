@@ -18,7 +18,7 @@ namespace Repository
         private readonly Lazy<IUserRepository> _userRepository;
         private readonly Lazy<ICompanyRepository> _companyRepository;
         private readonly Lazy<IUniversityRepository> _universityRepository;
-        private readonly Lazy<IScholarshipReposiyory> _scholarshipReposiyory;
+        private readonly Lazy<IScholarshipRepository> _scholarshipReposiyory;
         private readonly Lazy<IFileRepository> _fileRepository;
         private readonly Lazy<IInternshipRepository> _intershipRepository;
         private readonly Lazy<IInternshipPositionRepository> _internshipPositionRepository;
@@ -32,7 +32,7 @@ namespace Repository
             _userRepository = new Lazy<IUserRepository>(() => new UserRepository(repositoryContext,userManager));
             _companyRepository = new Lazy<ICompanyRepository>(() => new CompanyRepository(repositoryContext));
             _universityRepository = new Lazy<IUniversityRepository>(() => new UniversityRepository(repositoryContext));
-            _scholarshipReposiyory = new Lazy<IScholarshipReposiyory>(() => new ScholarshipReposiyory(repositoryContext));
+            _scholarshipReposiyory = new Lazy<IScholarshipRepository>(() => new ScholarshipRepository(repositoryContext));
             _fileRepository = new Lazy<IFileRepository>(() => new FileRepository(webHostEnvironment));
             _intershipRepository = new Lazy<IInternshipRepository>(() => new InternshipRepository(repositoryContext));
             _internshipPositionRepository = new Lazy<IInternshipPositionRepository>(()=> new InternshipPositionRepository(repositoryContext));
@@ -45,7 +45,7 @@ namespace Repository
         public ICompanyRepository Company => _companyRepository.Value;
         public IUniversityRepository university => _universityRepository.Value; 
 
-        public IScholarshipReposiyory scholarship => _scholarshipReposiyory.Value;
+        public IScholarshipRepository Scholarship => _scholarshipReposiyory.Value;
         public IFileRepository File => _fileRepository.Value;  
         
         public IInternshipRepository Intership => _intershipRepository.Value;
@@ -54,6 +54,8 @@ namespace Repository
 
         public IPositionRepository PositionRepository => _positionRepository.Value;
         public async Task SaveAsync() => await _repositoryContext.SaveChangesAsync();
+        public void Save() => _repositoryContext.SaveChanges();
+
 
     }
 }

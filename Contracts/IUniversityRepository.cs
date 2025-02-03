@@ -9,6 +9,8 @@ namespace Contracts
 {
     public interface IUniversityRepository
     {
-      void CreateUniversity(University university);
+        University GetUniversity(string universityId, bool trackChanges);
+        void CreateUniversity(University university);
+        public void UpdateUniversity(University university);
     }
 }

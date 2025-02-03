@@ -22,17 +22,27 @@ namespace Service
         private readonly Lazy<IInternshipService> _internshipService;
         private readonly Lazy<IInternshipPositionService> _internshipPositionService;
         private readonly Lazy<IPositionService> _positionService;
+        private readonly Lazy<IScholarshipService> _scholarshipService;
+        private readonly Lazy< IUniversityService> _universityService;
+        private readonly ILogger<ServiceManager> _logger;
 
 
-        public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<User> userManager,IConfiguration configuration,  IWebHostEnvironment _webHostEnvironment )
+        public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<User> userManager,IConfiguration configuration,  IWebHostEnvironment _webHostEnvironment, ILogger<ServiceManager> logger, ILoggerFactory loggerFactory)
         {
+            _logger = logger;
+
             _countryService = new Lazy<ICountryService>(() => new  CountryService(repositoryManager, mapper));
             _authenticationService = new Lazy<IAuthenticationService>(() => new AuthenticationService(mapper, userManager, configuration, repositoryManager));
            _userService = new Lazy<IUserService>(()=>  new UserService(repositoryManager,userManager ,mapper));
             _internshipService =    new Lazy<IInternshipService>(() =>  new InternshipService(repositoryManager , mapper));
             _internshipPositionService = new Lazy<IInternshipPositionService>(() => new InternshipPositionService(repositoryManager ,mapper));  
             _positionService = new Lazy<IPositionService>(()=> new PositionService(repositoryManager));
-        } 
+
+            var scholarshipServiceLogger = loggerFactory.CreateLogger<ScholarshipService>();
+            _scholarshipService = new Lazy<IScholarshipService>(() => new ScholarshipService(repositoryManager, mapper,  scholarshipServiceLogger));
+           _universityService  = new Lazy<IUniversityService>(() => new UniversityService(repositoryManager, mapper , userManager));
+        
+        }
 
 
 
@@ -43,5 +53,9 @@ namespace Service
         public IInternshipPositionService InternshipPosition => _internshipPositionService.Value;
        
         public IPositionService PositionService => _positionService.Value;
+
+        public IScholarshipService ScholarshipService => _scholarshipService.Value;
+
+        public IUniversityService UniversityService => _universityService.Value;
     }
 }
