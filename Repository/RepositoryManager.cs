@@ -22,7 +22,7 @@ namespace Repository
         private readonly Lazy<IFileRepository> _fileRepository;
         private readonly Lazy<IInternshipRepository> _intershipRepository;
         private readonly Lazy<IInternshipPositionRepository> _internshipPositionRepository;
-
+        private readonly Lazy<IPositionRepository> _positionRepository;
         public RepositoryManager(RepositoryContext repositoryContext , UserManager<User> userManager , IWebHostEnvironment webHostEnvironment)
         {
             _repositoryContext = repositoryContext;
@@ -36,6 +36,7 @@ namespace Repository
             _fileRepository = new Lazy<IFileRepository>(() => new FileRepository(webHostEnvironment));
             _intershipRepository = new Lazy<IInternshipRepository>(() => new InternshipRepository(repositoryContext));
             _internshipPositionRepository = new Lazy<IInternshipPositionRepository>(()=> new InternshipPositionRepository(repositoryContext));
+            _positionRepository= new Lazy<IPositionRepository>(() => new PositionRepository(repositoryContext));
         }
 
         public ICountryRepository Country => _countryRepository.Value;
@@ -50,6 +51,8 @@ namespace Repository
         public IInternshipRepository Intership => _intershipRepository.Value;
 
         public IInternshipPositionRepository InternshipPosition => _internshipPositionRepository.Value;
+
+        public IPositionRepository PositionRepository => _positionRepository.Value;
         public async Task SaveAsync() => await _repositoryContext.SaveChangesAsync();
 
     }

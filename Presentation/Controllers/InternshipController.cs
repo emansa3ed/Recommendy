@@ -74,6 +74,26 @@ namespace Presentation.Controllers
 
            
         }
+        [HttpGet("Positions")]
+        public async Task<IActionResult> GetPosition()
+        {
+            try
+            {
+                var result = _service.PositionService.GetAllPositions(false);
+                return Ok(result);
+
+            }
+            catch (Exception ex) {
+
+                 return StatusCode(500, new ApiResponse<int>
+                {
+                    Success = false,
+                    Message = "An error occurred while Geting the Positions." + ex.Message,
+
+                });
+            }
+
+        }
 
         [HttpGet("Company/{id:Guid}")]
         public async Task<IActionResult> GetInternshipByCompanyId(string id)

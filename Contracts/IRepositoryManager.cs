@@ -20,7 +20,9 @@ namespace Contracts
 
         IInternshipRepository Intership { get; }
 
-        IInternshipPositionRepository InternshipPosition { get; }   
+        IInternshipPositionRepository InternshipPosition { get; }
+
+        IPositionRepository PositionRepository { get; }
 
 
 

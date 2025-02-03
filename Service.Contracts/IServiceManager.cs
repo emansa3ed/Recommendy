@@ -14,6 +14,7 @@ namespace Service.Contracts
         IInternshipService InternshipService { get; }
          
         IInternshipPositionService InternshipPosition {  get; }
+        IPositionService PositionService { get; }
 
 
 
