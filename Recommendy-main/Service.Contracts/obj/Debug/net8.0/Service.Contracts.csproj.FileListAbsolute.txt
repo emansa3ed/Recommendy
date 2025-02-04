@@ -1,0 +1,39 @@
+D:\Recommendy\Service.Contracts\bin\Debug\net8.0\Service.Contracts.deps.json
+D:\Recommendy\Service.Contracts\bin\Debug\net8.0\Service.Contracts.dll
+D:\Recommendy\Service.Contracts\bin\Debug\net8.0\Service.Contracts.pdb
+D:\Recommendy\Service.Contracts\obj\Debug\net8.0\Service.Contracts.GeneratedMSBuildEditorConfig.editorconfig
+D:\Recommendy\Service.Contracts\obj\Debug\net8.0\Service.Contracts.AssemblyInfoInputs.cache
+D:\Recommendy\Service.Contracts\obj\Debug\net8.0\Service.Contracts.AssemblyInfo.cs
+D:\Recommendy\Service.Contracts\obj\Debug\net8.0\Service.Contracts.csproj.CoreCompileInputs.cache
+D:\Recommendy\Service.Contracts\obj\Debug\net8.0\Service.Contracts.sourcelink.json
+D:\Recommendy\Service.Contracts\obj\Debug\net8.0\Service.Contracts.dll
+D:\Recommendy\Service.Contracts\obj\Debug\net8.0\refint\Service.Contracts.dll
+D:\Recommendy\Service.Contracts\obj\Debug\net8.0\Service.Contracts.pdb
+D:\Recommendy\Service.Contracts\obj\Debug\net8.0\ref\Service.Contracts.dll
+D:\Recommendy\Service.Contracts\obj\Debug\net8.0\Service.Contracts.csproj.AssemblyReference.cache
+D:\Recommendy\Service.Contracts\obj\Debug\net8.0\Service..DEC3DE55.Up2Date
+D:\Recommendy\Service.Contracts\bin\Debug\net8.0\Shared.dll
+D:\Recommendy\Service.Contracts\bin\Debug\net8.0\Shared.pdb
+D:\Recommendy\Service.Contracts\bin\Debug\net8.0\Contracts.dll
+D:\Recommendy\Service.Contracts\bin\Debug\net8.0\Entities.dll
+D:\Recommendy\Service.Contracts\bin\Debug\net8.0\Contracts.pdb
+D:\Recommendy\Service.Contracts\bin\Debug\net8.0\Entities.pdb
+D:\A last Year\Graduation project\weekthree\Recommendy-main\Service.Contracts\bin\Debug\net8.0\Service.Contracts.deps.json
+D:\A last Year\Graduation project\weekthree\Recommendy-main\Service.Contracts\bin\Debug\net8.0\Service.Contracts.dll
+D:\A last Year\Graduation project\weekthree\Recommendy-main\Service.Contracts\bin\Debug\net8.0\Service.Contracts.pdb
+D:\A last Year\Graduation project\weekthree\Recommendy-main\Service.Contracts\bin\Debug\net8.0\Contracts.dll
+D:\A last Year\Graduation project\weekthree\Recommendy-main\Service.Contracts\bin\Debug\net8.0\Entities.dll
+D:\A last Year\Graduation project\weekthree\Recommendy-main\Service.Contracts\bin\Debug\net8.0\Shared.dll
+D:\A last Year\Graduation project\weekthree\Recommendy-main\Service.Contracts\bin\Debug\net8.0\Contracts.pdb
+D:\A last Year\Graduation project\weekthree\Recommendy-main\Service.Contracts\bin\Debug\net8.0\Entities.pdb
+D:\A last Year\Graduation project\weekthree\Recommendy-main\Service.Contracts\bin\Debug\net8.0\Shared.pdb
+D:\A last Year\Graduation project\weekthree\Recommendy-main\Service.Contracts\obj\Debug\net8.0\Service.Contracts.csproj.AssemblyReference.cache
+D:\A last Year\Graduation project\weekthree\Recommendy-main\Service.Contracts\obj\Debug\net8.0\Service.Contracts.GeneratedMSBuildEditorConfig.editorconfig
+D:\A last Year\Graduation project\weekthree\Recommendy-main\Service.Contracts\obj\Debug\net8.0\Service.Contracts.AssemblyInfoInputs.cache
+D:\A last Year\Graduation project\weekthree\Recommendy-main\Service.Contracts\obj\Debug\net8.0\Service.Contracts.AssemblyInfo.cs
+D:\A last Year\Graduation project\weekthree\Recommendy-main\Service.Contracts\obj\Debug\net8.0\Service.Contracts.csproj.CoreCompileInputs.cache
+D:\A last Year\Graduation project\weekthree\Recommendy-main\Service.Contracts\obj\Debug\net8.0\Service..DEC3DE55.Up2Date
+D:\A last Year\Graduation project\weekthree\Recommendy-main\Service.Contracts\obj\Debug\net8.0\Service.Contracts.dll
+D:\A last Year\Graduation project\weekthree\Recommendy-main\Service.Contracts\obj\Debug\net8.0\refint\Service.Contracts.dll
+D:\A last Year\Graduation project\weekthree\Recommendy-main\Service.Contracts\obj\Debug\net8.0\Service.Contracts.pdb
+D:\A last Year\Graduation project\weekthree\Recommendy-main\Service.Contracts\obj\Debug\net8.0\ref\Service.Contracts.dll
