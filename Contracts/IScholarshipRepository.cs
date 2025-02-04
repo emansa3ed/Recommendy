@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,7 +15,9 @@ namespace Contracts
             void CreateScholarship(Scholarship scholarship);
             void UpdateScholarship(Scholarship scholarship);
             void DeleteScholarship(Scholarship scholarship);
-        }
+            IEnumerable<Scholarship> GetAllScholarships(bool trackChanges);
+            Scholarship GetScholarshipById(int id, bool trackChanges);
+    }
 
     
 }
