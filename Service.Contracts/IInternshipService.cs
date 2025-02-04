@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,6 +16,12 @@ namespace Service.Contracts
 
         Task DeleteInternship(Internship intersnhip);
         Task<List<InternshipDto>> GetInternshipsByCompanyId(string companyId);
+
+
+        
+        Task<InternshipDto> GetInternshipById(int id, bool trackChanges);
+
+        Task<IEnumerable<InternshipDto>> GetAllInternships(bool trackChanges);
 
 
     }
