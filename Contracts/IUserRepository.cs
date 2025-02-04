@@ -11,7 +11,7 @@ namespace Contracts
     {
 
         Task< string> GetType(string id);
-        
 
+        Task<User> GetById(string id);
     }
 }

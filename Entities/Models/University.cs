@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.Metrics;
+using System.Text.Json.Serialization;
 
 namespace Entities.Models
 {
@@ -10,7 +11,8 @@ namespace Entities.Models
         public int? CountryId { get; set; }
         public bool Revised { get; set; } = true;
         public string UniversityUrl { get; set; }
-        public User User { get; set; }
+        [JsonIgnore]
+        public virtual User User { get; set; }
 
     }
 }

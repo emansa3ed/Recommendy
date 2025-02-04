@@ -34,8 +34,10 @@ namespace Service
 
         public async Task<UserDto> GetDetailsbyId(string Id)
         {
-            var user = await  _userManager.FindByIdAsync(Id);
-           var result = _mapper.Map< UserDto>(user);
+            var user = await  _repository.User.GetById(Id);
+          var result = _mapper.Map< UserDto>(user);
+
+
             return result;
         }
     }

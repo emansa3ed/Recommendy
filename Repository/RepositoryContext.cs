@@ -75,11 +75,10 @@ namespace Repository
 
             ////relations 
             builder.Entity<User>()
-                     .HasOne(u => u.Company)
-                     .WithOne(c => c.User)
-                     .HasForeignKey<User>(u => u.CompanyId)
-                     .OnDelete(DeleteBehavior.NoAction);
-
+                .HasOne(u => u.Company)
+                .WithOne(c => c.User)
+                .HasForeignKey<Company>(u => u.CompanyId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<User>()
                 .HasOne(u => u.University)
@@ -87,11 +86,10 @@ namespace Repository
                 .HasForeignKey<University>(u => u.UniversityId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-
             builder.Entity<User>()
                 .HasOne(u => u.Student)
                 .WithOne(s => s.User)
-                .HasForeignKey<Student>(s => s.StudentId)
+                .HasForeignKey<Student>(u => u.StudentId)
                 .OnDelete(DeleteBehavior.NoAction);
 
 

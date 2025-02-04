@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Repository;
 
@@ -11,9 +12,11 @@ using Repository;
 namespace Recommendy.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20250204204733_editinreltionsUser")]
+    partial class editinreltionsUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -536,6 +539,9 @@ namespace Recommendy.Migrations
                     b.Property<string>("Bio")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("CompanyId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -582,8 +588,14 @@ namespace Recommendy.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("StudentId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
+
+                    b.Property<string>("UniversityId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("UrlPicture")
                         .HasColumnType("nvarchar(max)");
@@ -594,6 +606,10 @@ namespace Recommendy.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CompanyId")
+                        .IsUnique()
+                        .HasFilter("[CompanyId] IS NOT NULL");
+
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -601,6 +617,14 @@ namespace Recommendy.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("StudentId")
+                        .IsUnique()
+                        .HasFilter("[StudentId] IS NOT NULL");
+
+                    b.HasIndex("UniversityId")
+                        .IsUnique()
+                        .HasFilter("[UniversityId] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -698,25 +722,25 @@ namespace Recommendy.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a441b1b8-8f9b-488a-932e-7abccfb2ee9e",
+                            Id = "a51cc029-b756-49d1-b86d-3d02afd09fa2",
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         },
                         new
                         {
-                            Id = "3fba9c2d-8c68-4b44-902d-9ccd02ea4f03",
+                            Id = "eaef21e1-61b0-44f3-8f61-9af87cb25694",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "d16ec645-448e-4339-8ce2-b37775a19aee",
+                            Id = "552a31c5-3c72-4be3-99bf-4f840e8a2253",
                             Name = "Company",
                             NormalizedName = "COMPANY"
                         },
                         new
                         {
-                            Id = "02a6b958-afa8-4c2f-a5f1-61dbf0ebd396",
+                            Id = "3b9aeef9-28b6-4cc2-9c3c-0cce5f5e75e2",
                             Name = "University",
                             NormalizedName = "UNIVERSITY"
                         });
@@ -828,17 +852,6 @@ namespace Recommendy.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Entities.Models.Company", b =>
-                {
-                    b.HasOne("Entities.Models.User", "User")
-                        .WithOne("Company")
-                        .HasForeignKey("Entities.Models.Company", "CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Entities.Models.Feedback", b =>
                 {
                     b.HasOne("Entities.Models.Student", null)
@@ -903,31 +916,36 @@ namespace Recommendy.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Entities.Models.Student", b =>
-                {
-                    b.HasOne("Entities.Models.User", "User")
-                        .WithOne("Student")
-                        .HasForeignKey("Entities.Models.Student", "StudentId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Entities.Models.University", b =>
                 {
                     b.HasOne("Entities.Models.Country", null)
                         .WithMany()
                         .HasForeignKey("CountryId")
                         .OnDelete(DeleteBehavior.NoAction);
+                });
 
-                    b.HasOne("Entities.Models.User", "User")
-                        .WithOne("University")
-                        .HasForeignKey("Entities.Models.University", "UniversityId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+            modelBuilder.Entity("Entities.Models.User", b =>
+                {
+                    b.HasOne("Entities.Models.Company", "Company")
+                        .WithOne("User")
+                        .HasForeignKey("Entities.Models.User", "CompanyId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
-                    b.Navigation("User");
+                    b.HasOne("Entities.Models.Student", "Student")
+                        .WithOne("User")
+                        .HasForeignKey("Entities.Models.User", "StudentId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Entities.Models.University", "University")
+                        .WithOne("User")
+                        .HasForeignKey("Entities.Models.User", "UniversityId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("Company");
+
+                    b.Navigation("Student");
+
+                    b.Navigation("University");
                 });
 
             modelBuilder.Entity("Entities.Models.UserInterest", b =>
@@ -1010,17 +1028,20 @@ namespace Recommendy.Migrations
             modelBuilder.Entity("Entities.Models.Company", b =>
                 {
                     b.Navigation("Internships");
+
+                    b.Navigation("User")
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("Entities.Models.User", b =>
+            modelBuilder.Entity("Entities.Models.Student", b =>
                 {
-                    b.Navigation("Company")
+                    b.Navigation("User")
                         .IsRequired();
+                });
 
-                    b.Navigation("Student")
-                        .IsRequired();
-
-                    b.Navigation("University")
+            modelBuilder.Entity("Entities.Models.University", b =>
+                {
+                    b.Navigation("User")
                         .IsRequired();
                 });
 

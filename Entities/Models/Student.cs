@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Entities.Models
 {
@@ -7,8 +8,9 @@ namespace Entities.Models
         [Key]
         public string StudentId { get; set; }
         public string ? UrlResume { get; set; }
+        [JsonIgnore]
+        public virtual User User { get; set; }
 
-        public User User { get; set; }
 
 
 
