@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,7 +18,6 @@ namespace Repository
         }
 
 
-
         public void CreateIntership(Internship internship)=> Create(internship);
         public void DeleteIntership(Internship internship) => Delete(internship);
 
@@ -33,6 +32,17 @@ namespace Repository
         }
 
 
+        public IEnumerable<Internship> GetAllInternships(bool trackChanges) =>
+      FindAll(trackChanges)
+          .Include(i => i.InternshipPositions)
+              .ThenInclude(ip => ip.Position)  
+          .Where(i => i.IsBanned != true)
+          .OrderByDescending(i => i.CreatedAt)
+          .ToList();
+
+
+        public Internship GetInternshipById(int id, bool trackChanges) => FindByCondition(i => i.Id == id, trackChanges).Where(i => i.IsBanned != true)
+             .Include(i => i.InternshipPositions).ThenInclude(ip => ip.Position).SingleOrDefault();
 
     }
 }
