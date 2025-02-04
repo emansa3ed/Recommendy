@@ -35,10 +35,8 @@ namespace Recommendy
 
 
             CreateMap<Scholarship, GetScholarshipDto>();
-            CreateMap<ScholarshipForCreationDto, Scholarship>()
-                     .ForMember(dest => dest.CreatedAt,
-                         opt => opt.MapFrom(src => src.CreatedAt == default ? DateTime.UtcNow : src.CreatedAt));
-          
+            CreateMap<ScholarshipForCreationDto, Scholarship>();
+        
             
             CreateMap<University, UniversityDto>()
                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
