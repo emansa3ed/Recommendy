@@ -15,6 +15,8 @@ namespace Shared.DTO
         public string PhoneNumber { get; set; }
         public string? Discriminator { get; set; }
 
+        public string CompanyUrl { get; set; }
+        public string UniversityUrl { get; set; }
         public string? UrlPicture { get; set; }
         public string? Bio { get; set; }
 

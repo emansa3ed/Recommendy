@@ -22,7 +22,6 @@ namespace Recommendy
 
             CreateMap<Position, PositionDto>();
 
-            CreateMap<User, UserDto>();
 
 
             CreateMap<Scholarship, ScholarshipDto>();
@@ -50,6 +49,8 @@ namespace Recommendy
 
 
 
+            CreateMap<User, UserDto>()
+             .ForMember(dest => dest.url, opt => opt.MapFrom(src => src.Company.CompanyUrl));
 
 
 
