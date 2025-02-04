@@ -25,7 +25,7 @@ public class Internship
 
     public bool Paid { get; set; }
 
-    public string Approach { get; set; }
+    public string? Approach { get; set; }
 
     [ForeignKey(nameof(CompanyId))]
     public virtual Company Company { get; set; }

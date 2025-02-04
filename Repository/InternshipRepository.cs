@@ -19,9 +19,22 @@ namespace Repository
 
 
         public void CreateIntership(Internship internship)=> Create(internship);
-        public void DeleteIntership(Internship internship) => Delete(internship);
+        public void DeleteIntership(int Id, bool trackChanges)
+        {
+            var result = FindByCondition(i=>i.Id==Id , trackChanges);
 
-        public void UpdateIntership(Internship internship) => Update(internship);
+            foreach (var item in result)
+            {
+
+                if (item != null)
+                {
+                    Delete(item);
+
+                }
+            }
+        }
+
+        public void UpdateIntership(  Internship internship) => Update(internship);
 
         public async Task<List<Internship>> GetInternshipsByCompanyId(string companyId, bool trackChanges)
         {

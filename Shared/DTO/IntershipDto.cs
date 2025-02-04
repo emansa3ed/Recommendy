@@ -16,6 +16,7 @@ namespace Shared.DTO
         public string Description { get; set; }
         public string UrlPicture { get; set; }
         public bool Paid { get; set; }
+        public string CompanyName { get; set; }
         public string Approach { get; set; }
 
         public List<InternshipPositionViewDto> Positions { get; set; }

@@ -14,10 +14,10 @@ namespace Recommendy
             CreateMap<InternshipCreationDto, Internship>();
             CreateMap<InternshipPositionDto, InternshipPosition>();
 
-            CreateMap<Internship, InternshipDto>()
-        .ForMember(dest => dest.Positions, opt => opt.MapFrom(src => src.InternshipPositions));
-
-            CreateMap<InternshipPosition, InternshipPositionViewDto>()
+         CreateMap<Internship, InternshipDto>()
+           .ForMember(dest => dest.Positions, opt => opt.MapFrom(src => src.InternshipPositions))
+           .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Company.User.UserName));
+         CreateMap<InternshipPosition, InternshipPositionViewDto>()
                 .ForMember(dest => dest.PositionName, opt => opt.MapFrom(src => src.Position.Name));
 
             CreateMap<Position, PositionDto>();
@@ -46,6 +46,8 @@ namespace Recommendy
                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
                .ForMember(dest => dest.Bio, opt => opt.MapFrom(src => src.User.Bio))
                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.User.PhoneNumber));
+
+
 
 
 

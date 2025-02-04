@@ -13,7 +13,7 @@ namespace Contracts
         void CreateIntership(Internship intership);
         void UpdateIntership(Internship intership);
 
-        void DeleteIntership(Internship intership);
+        void DeleteIntership(int Id, bool trackChanges);
 
        Task<List<Internship>> GetInternshipsByCompanyId(string  id, bool trackChanges);
 

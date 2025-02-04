@@ -11,8 +11,8 @@ namespace Contracts
     {
 
         void CreateInternshipPosition(InternshipPosition internshipPosition);
-        void UpdateInternshipPosition(InternshipPosition internshipPosition);
 
-        void DeleteInternshipPosition(InternshipPosition internshipPosition);
+        void DeleteInternshipPosition(int InternshipId ,int PositionId);
+        InternshipPosition GetInternshipPosition(int InternshipId, int PositionId);
     }
 }

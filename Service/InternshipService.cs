@@ -59,37 +59,92 @@ namespace Service
             }
 
         }
-        public Task DeleteInternship(Internship internship) {
+        public  async Task<ApiResponse<int>> DeleteInternship(int Id , bool trackChanges) {
 
             try
             {
 
-                _repositoryManager.Intership.DeleteIntership(internship);
-                _repositoryManager.SaveAsync().Wait();
+                _repositoryManager.Intership.DeleteIntership(Id , trackChanges);
+                await _repositoryManager.SaveAsync();
 
             }
-            catch (Exception ex) { throw; }
+            catch (Exception ex) {
 
-            return Task.CompletedTask;
-        
+
+                return new ApiResponse<int>
+                {
+
+                    Success = false,
+                    Message = $"Failed to delete internship. {ex.Message} | Inner Exception: {ex.InnerException?.Message}",
+                    Data = -1
+                };
+            
+            
+            }
+            return new ApiResponse<int>
+            {
+
+                Success = true,
+                Message = $" deleted internship.",
+                Data = 1
+            };
+
+
+
+
         }
 
-        public Task UpdateInternship(Internship internship) {
+        public async Task<bool> UpdateInternship(int id, InternshipUpdateDto internshipDto)
+        {
+          
+            var existingInternship =  _repositoryManager.Intership.GetInternshipById(id, true);
+            if (existingInternship == null)
+            {
+                return false; 
+            }
+
+
+
+            if (!string.IsNullOrEmpty(internshipDto.Name)) 
+                existingInternship.Name = internshipDto.Name; 
+
+            if (!string.IsNullOrEmpty(internshipDto.UrlApplicationForm))
+                existingInternship.UrlApplicationForm = internshipDto.UrlApplicationForm;
+
+            if (internshipDto.ApplicationDeadline.HasValue)
+                existingInternship.ApplicationDeadline = internshipDto.ApplicationDeadline.Value;
+
+            if (!string.IsNullOrEmpty(internshipDto.Description))
+                existingInternship.Description = internshipDto.Description;
+
+            if (internshipDto.Paid.HasValue)
+                existingInternship.Paid = internshipDto.Paid.Value;
+
+            if (!string.IsNullOrEmpty(internshipDto.Approach))
+                existingInternship.Approach = internshipDto.Approach;
+
+            if (internshipDto.Image != null)
+            {
+                var url = await _repositoryManager.File.UploadImage("Internships", internshipDto.Image);
+
+                existingInternship.UrlPicture = url;
+            }
+
             try
             {
-                _repositoryManager.Intership.UpdateIntership(internship);
-                _repositoryManager.SaveAsync().Wait();
+                 _repositoryManager.Save();
+                return true;
             }
-            catch (Exception ex) { throw; }
-
-
-            return Task.CompletedTask;
-        
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to update internship. {ex.Message} | Inner Exception: {ex.InnerException?.Message}");
+            }
         }
+    
 
 
 
-        public async Task<List<InternshipDto>> GetInternshipsByCompanyId(string companyId)
+    public async Task<List<InternshipDto>> GetInternshipsByCompanyId(string companyId)
         {
             var internships = await _repositoryManager.Intership.GetInternshipsByCompanyId(companyId, trackChanges: false);
             List<InternshipDto> result = _mapper.Map<List<InternshipDto>>(internships);
@@ -100,7 +155,7 @@ namespace Service
         {
             try
             {
-                var internship = _repositoryManager.Intership.GetInternshipById(id, trackChanges);
+                var internship =  _repositoryManager.Intership.GetInternshipById(id, trackChanges);
                 var internshipDto = _mapper.Map<InternshipDto>(internship);
                 return internshipDto;
 

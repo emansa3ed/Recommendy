@@ -121,7 +121,7 @@ namespace Repository
                 .HasMany(i => i.InternshipPositions)
                 .WithOne(ip => ip.Internship)
                 .HasForeignKey(ip => ip.InternshipId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<InternshipPosition>()
                 .HasOne(ip => ip.Position)

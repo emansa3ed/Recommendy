@@ -11,8 +11,8 @@ namespace Service.Contracts
     public interface IInternshipPositionService
     {
         public Task<ApiResponse<int>> CreateInternshipPosition(InternshipPositionDto internshipPosition);
-       // public Task<ApiResponse<int>> UpdateInternshipPosition(int id, InternshipPosition internshipPosition);
-        //public Task<ApiResponse<int>> DeleteInternshipPosition(int id); 
+        public Task<bool> UpdateInternshipPosition(int InternshipId,int PositionId, InternshipPositionUpdateDto internshipPosition);
+        public Task<ApiResponse<int>> DeleteInternshipPosition(int InternshipId  , int PositionId); 
             
 
 
