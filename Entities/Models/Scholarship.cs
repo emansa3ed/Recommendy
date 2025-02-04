@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 //using  Shared.Enums;
 namespace Entities.Models
 {
@@ -33,9 +33,7 @@ namespace Entities.Models
         public Degree Degree { get; set; }
         public Funded Funded { get; set; }
         public string UniversityId { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public Dictionary<string, string> Requirements { get; set; }
-
-
     }
 }
