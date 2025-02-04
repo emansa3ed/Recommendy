@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Contracts;
 using Entities.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -92,9 +92,42 @@ namespace Service
         public async Task<List<InternshipDto>> GetInternshipsByCompanyId(string companyId)
         {
             var internships = await _repositoryManager.Intership.GetInternshipsByCompanyId(companyId, trackChanges: false);
-           List<InternshipDto> result = _mapper.Map<List<InternshipDto>>(internships);
+            List<InternshipDto> result = _mapper.Map<List<InternshipDto>>(internships);
             return result;
         }
+
+        public async Task<InternshipDto> GetInternshipById(int id, bool trackChanges)
+        {
+            try
+            {
+                var internship = _repositoryManager.Intership.GetInternshipById(id, trackChanges);
+                var internshipDto = _mapper.Map<InternshipDto>(internship);
+                return internshipDto;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while retrieving scholarship", ex);
+            }
+        }
+
+
+        //
+        public async Task<IEnumerable<InternshipDto>> GetAllInternships(bool trackChanges)
+        {
+            try
+            {
+                var internships = _repositoryManager.Intership.GetAllInternships(trackChanges);
+                var internshipDto = _mapper.Map<IEnumerable<InternshipDto>>(internships);
+                return await Task.FromResult(internshipDto);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Something went wrong while fetching Internships.");
+            }
+        }
+
+       
 
 
 
