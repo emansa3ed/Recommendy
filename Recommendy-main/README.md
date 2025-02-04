@@ -1,2 +1,0 @@
-# Recommendy
- graduation project
