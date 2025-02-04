@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,9 +14,13 @@ namespace Contracts
         void UpdateIntership(Internship intership);
 
         void DeleteIntership(Internship intership);
-       
+
        Task<List<Internship>> GetInternshipsByCompanyId(string  id, bool trackChanges);
-        
+
+
+        IEnumerable<Internship> GetAllInternships(bool trackChanges);
+        Internship GetInternshipById(int id, bool trackChanges);
+
 
     }
 }
