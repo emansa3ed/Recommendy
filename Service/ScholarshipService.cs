@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -84,6 +84,37 @@ namespace Service
             }
         }
 
+
+        public async Task<IEnumerable<GetScholarshipDto>> GetAllScholarships(bool trackChanges)
+        {
+            try
+            {
+                var scholarships = _repository.Scholarship.GetAllScholarships(trackChanges);
+                var scholarshipDto = _mapper.Map<IEnumerable<GetScholarshipDto>>(scholarships);
+                return await Task.FromResult(scholarshipDto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while fetching scholarships.");
+                throw new Exception("Something went wrong while fetching scholarships.");
+            }
+        }
+
+
+        public async Task<GetScholarshipDto> GetScholarshipById(int id, bool trackChanges)
+        {
+            try
+            {
+                var scholarship = _repository.Scholarship.GetScholarshipById(id, trackChanges);
+                var scholarshipDto = _mapper.Map<GetScholarshipDto>(scholarship);
+                return scholarshipDto;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while retrieving scholarship", ex);
+            }
+        }
 
 
 
