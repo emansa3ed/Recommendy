@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Entities.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,12 +15,9 @@ namespace Shared.DTO
         public string ApplicationDeadline { get; set; }
         public string Description { get; set; }
         public string UrlPicture { get; set; }
-        public bool IsBanned { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
         public bool Paid { get; set; }
         public string Approach { get; set; }
 
-        public List<InternshipPositionDto> Positions { get; set; }
+        public List<InternshipPositionViewDto> Positions { get; set; }
     }
 }

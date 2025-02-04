@@ -92,7 +92,7 @@ namespace Service
         public async Task<List<InternshipDto>> GetInternshipsByCompanyId(string companyId)
         {
             var internships = await _repositoryManager.Intership.GetInternshipsByCompanyId(companyId, trackChanges: false);
-            List<InternshipDto> result = _mapper.Map<List<InternshipDto>>(internships);
+           List<InternshipDto> result = _mapper.Map<List<InternshipDto>>(internships);
             return result;
         }
 

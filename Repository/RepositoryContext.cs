@@ -108,11 +108,14 @@ namespace Repository
                 .HasForeignKey(s => s.UniversityId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.Entity<Company>()
-                .HasMany(c => c.Internships)
-                .WithOne()
-                .HasForeignKey(i => i.CompanyId)
-                .OnDelete(DeleteBehavior.Cascade);
+          
+
+             builder.Entity<Company>()
+             .HasMany(c => c.Internships)
+             .WithOne(i => i.Company) 
+             .HasForeignKey(i => i.CompanyId)
+             .OnDelete(DeleteBehavior.Cascade);
+
 
             builder.Entity<Internship>()
                 .HasMany(i => i.InternshipPositions)
