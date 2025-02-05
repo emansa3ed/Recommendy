@@ -42,21 +42,11 @@ namespace Presentation.Controllers
         {
             if (!await _service.AuthenticationService.ValidateUser(user))
                 return Unauthorized("Invalid username or password.");
-            User user1 =   _service.UserService.GetDetailsByUserName(user.UserName).Result;
+
+            var tokenDto = await _service.AuthenticationService .CreateToken(populateExp: true);
+            return Ok(tokenDto);
 
 
-            return Ok(new
-            {
-                Token = await _service.AuthenticationService.CreateToken(),
-                user1.Email,
-                user1.Discriminator,
-                user1.UrlPicture,
-                user1.UserName,
-                user1.Bio,
-                user1.Id,
-                user1.PhoneNumber
-             
-            });
         }
 
         [HttpGet("GetMe")]
