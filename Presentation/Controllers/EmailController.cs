@@ -43,11 +43,11 @@ namespace Presentation.Controllers
 
 
         [HttpGet("ConfirmEmail")]
-        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        public async Task<IActionResult> ConfirmEmail(string userId, string Usercode)
         {
             try
             {
-                var result = await _service.EmailsService.ConfirmEmailAsync(userId, token);
+                var result = await _service.EmailsService.ConfirmEmailAsync(userId, Usercode);
                 return Ok(result);
 
             }
