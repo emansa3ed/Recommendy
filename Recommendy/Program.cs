@@ -22,6 +22,7 @@ namespace Recommendy
             builder.Services.ConfigureCors();
             builder.Services.AddScoped<IEmailsService, EmailsService>();
             builder.Services.AddScoped< IUserCodeService , UserCodeService > ();
+            builder.Services.AddScoped<IFileRepository, FileRepository>();
 
 
             builder.Services.AddControllers()
