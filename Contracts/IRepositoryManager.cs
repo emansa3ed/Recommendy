@@ -27,6 +27,7 @@ namespace Contracts
 
         IUserCodeRepository UserCodeRepository { get; }
 
+        IOpportunityRepository OpportunityRepository { get; }
         void Save();
         Task SaveAsync();
     }

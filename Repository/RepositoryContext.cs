@@ -55,7 +55,7 @@ namespace Repository
 
             ///// Composite keys
             builder.Entity<SavedPost>()
-                .HasKey(sp => new { sp.StudentId, sp.PostId });
+                .HasKey(sp => new { sp.StudentId, sp.PostId,sp.Type });
 
             builder.Entity<UserInterest>()
                 .HasKey(ui => new { ui.StudentId, ui.InterestId });

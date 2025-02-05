@@ -24,6 +24,7 @@ namespace Repository
         private readonly Lazy<IInternshipPositionRepository> _internshipPositionRepository;
         private readonly Lazy<IPositionRepository> _positionRepository;
         private readonly Lazy<IUserCodeRepository> _userCodeRepository;
+        private readonly Lazy<IOpportunityRepository>  _opportunityRepository;
         public RepositoryManager(RepositoryContext repositoryContext , UserManager<User> userManager , IWebHostEnvironment webHostEnvironment)
         {
             _repositoryContext = repositoryContext;
@@ -40,6 +41,7 @@ namespace Repository
             _positionRepository= new Lazy<IPositionRepository>(() => new PositionRepository(repositoryContext));
          
              _userCodeRepository = new Lazy<IUserCodeRepository>(() => new UserCodeRepository(repositoryContext));
+            _opportunityRepository = new Lazy<IOpportunityRepository>(() => new OpportunityRepository(repositoryContext));
         }
 
         public ICountryRepository Country => _countryRepository.Value;
@@ -57,6 +59,8 @@ namespace Repository
 
         public IPositionRepository PositionRepository => _positionRepository.Value;
         public IUserCodeRepository UserCodeRepository => _userCodeRepository.Value;
+
+        public IOpportunityRepository OpportunityRepository => _opportunityRepository.Value;
         public async Task SaveAsync() => await _repositoryContext.SaveChangesAsync();
         public void Save() => _repositoryContext.SaveChanges();
 

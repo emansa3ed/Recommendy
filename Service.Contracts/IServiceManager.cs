@@ -20,5 +20,7 @@ namespace Service.Contracts
         IUniversityService UniversityService { get; }
         IEmailsService EmailsService { get; }
         IUserCodeService userCodeService { get; }
+
+        IOpportunityService OpportunityService { get; }
     }
 }

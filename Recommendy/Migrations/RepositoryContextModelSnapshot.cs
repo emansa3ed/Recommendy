@@ -411,10 +411,9 @@ namespace Recommendy.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Type")
-                        .IsRequired()
                         .HasColumnType("nvarchar(1)");
 
-                    b.HasKey("StudentId", "PostId");
+                    b.HasKey("StudentId", "PostId", "Type");
 
                     b.ToTable("SavedPosts");
                 });
@@ -728,25 +727,25 @@ namespace Recommendy.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "f9709014-a642-42eb-a8fc-c49ed9e705e4",
+                            Id = "d79ac938-6896-4cb3-967f-3fcbef8cf0ad",
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         },
                         new
                         {
-                            Id = "16886ca6-5747-47e7-b1eb-56fd80bb08db",
+                            Id = "0604c49e-1d9b-4190-9ae8-a72d7c397853",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "f5de4cdd-d3b7-4dcc-9003-e0b2eb70a4ea",
+                            Id = "3a6a98b8-dd94-48a3-b57a-6c7bcbf94be2",
                             Name = "Company",
                             NormalizedName = "COMPANY"
                         },
                         new
                         {
-                            Id = "7c8b7db3-2cc7-45db-8c22-7090b4a767b8",
+                            Id = "1054053f-8ecd-4d6b-b530-d167946d4424",
                             Name = "University",
                             NormalizedName = "UNIVERSITY"
                         });

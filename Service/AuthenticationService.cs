@@ -72,8 +72,19 @@ namespace Service
                         Description = "Invalid URL format for University or Company URL."
                     });
                 }
-
                 
+
+
+
+            }
+            else if (userForRegistration.Roles.Any(role => role.Equals("Admin", StringComparison.OrdinalIgnoreCase))){
+
+                return IdentityResult.Failed(new IdentityError 
+                {
+                     Code = "InvalidRole",
+                     Description = "The specified role is not allowed. Allowed roles are: Student, Company, University."
+                });
+
             }
 
             var user = _mapper.Map<User>(userForRegistration);
@@ -122,18 +133,10 @@ namespace Service
                     _repository.university.CreateUniversity(university);
                     _repository.SaveAsync().Wait();
                 }
-                else
-                {
-                    return IdentityResult.Failed(new IdentityError ////solve later
-                    {
-                      //  Code = "InvalidRole",
-                      //  Description = "The specified role is not allowed. Allowed roles are: Student, Company, University."
-                    });
-
-                }
+                
             }
 
-            var result1 =   await _userCodeService.GenerateUserCodeAsync(user.Id);
+           var result1 =   await _userCodeService.GenerateUserCodeAsync(user.Id);
              return result;
         }
         private string GenerateRandomNumericToken(int length = 8)

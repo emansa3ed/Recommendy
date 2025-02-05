@@ -32,7 +32,7 @@ namespace Presentation.Controllers
             catch (Exception ex)
             {
                 // Log the exception (you can use ILogger here)
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return StatusCode(500, $"Internal server error: {ex.Message} ");
             }
         }
 
@@ -86,6 +86,49 @@ namespace Presentation.Controllers
             {
                 return StatusCode(500, "Internal server error while retrieving scholarship");
             }
+        }
+
+        [HttpPost("SavedOpportunity")]
+        public async Task<IActionResult> SavedOpportunity(  [FromBody] SavedOpportunityDto savedOpportunityDto)
+        {
+
+            
+            
+            
+            try
+            {
+                var result = await _service.OpportunityService.SavedOpportunity(savedOpportunityDto);
+                return Ok(result);
+            }
+
+            catch {
+                return StatusCode(500, "failed save");
+
+            }
+
+
+       
+
+        }
+
+        [HttpDelete("UnSavedOpportunity")]
+        public async Task<IActionResult> UnSavedOpportunity([FromBody] SavedOpportunityDto savedOpportunityDto)
+        {
+            try
+            {
+                var result = await _service.OpportunityService.DeleteOpportunity(savedOpportunityDto);
+                return Ok(result);
+            }
+            catch (Exception ex) 
+            {
+                return StatusCode(500, "failed save");
+            }
+
+           
+               
+
+            
+
         }
     }
 }

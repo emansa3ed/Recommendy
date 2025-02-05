@@ -51,9 +51,10 @@ namespace Presentation.Controllers
                 throw new Exception($"Failed. {ex.Message} | Inner Exception: {ex.InnerException?.Message}");
 
             }
-            var user = _userManager.FindByEmailAsync(userForRegistration.Email);
+            var user =  await  _userManager.FindByEmailAsync(userForRegistration.Email);
+            //Console.WriteLine(user.Id + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 
-            return Ok($"Registration successful. Please check your email to confirm your account. userId{user.Id}");
+            return Ok($"Registration successful. Please check your email to confirm your account. userId ->  {user.Id.ToString()}  ");
 
         }
 
