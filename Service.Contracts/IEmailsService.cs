@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,5 +12,8 @@ namespace Service.Contracts
     {
         public Task<string> Sendemail(string email, string Message, string? reason);
 
+         Task<string> SendConfirmationEmailAsync(string email, string token);
+
+        Task<IActionResult> ConfirmEmailAsync(string userId, string token);
     }
 }

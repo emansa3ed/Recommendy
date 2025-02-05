@@ -2,7 +2,9 @@
 using Contracts;
 using Entities.Models;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Service.Contracts;
@@ -25,15 +27,19 @@ namespace Service
         private readonly Lazy<IScholarshipService> _scholarshipService;
         private readonly Lazy< IUniversityService> _universityService;
         private readonly Lazy<IEmailsService> _emailsService;
+        private readonly Lazy<IUserCodeService> _userCodeService;
         private readonly ILogger<ServiceManager> _logger;
 
 
-        public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<User> userManager,IConfiguration configuration,  IWebHostEnvironment _webHostEnvironment, ILogger<ServiceManager> logger, ILoggerFactory loggerFactory)
+        public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper,
+            UserManager<User> userManager,IConfiguration configuration, 
+            IWebHostEnvironment _webHostEnvironment, ILogger<ServiceManager> logger, 
+            ILoggerFactory loggerFactory, IHttpContextAccessor httpContextAccessor, IEmailsService emailsService, IUserCodeService userCodeService)
         {
             _logger = logger;
 
             _countryService = new Lazy<ICountryService>(() => new  CountryService(repositoryManager, mapper));
-            _authenticationService = new Lazy<IAuthenticationService>(() => new AuthenticationService(mapper, userManager, configuration, repositoryManager));
+            _authenticationService = new Lazy<IAuthenticationService>(() => new AuthenticationService(mapper, userManager, configuration, repositoryManager ,httpContextAccessor , userCodeService));
            _userService = new Lazy<IUserService>(()=>  new UserService(repositoryManager,userManager ,mapper));
             _internshipService =    new Lazy<IInternshipService>(() =>  new InternshipService(repositoryManager , mapper));
             _internshipPositionService = new Lazy<IInternshipPositionService>(() => new InternshipPositionService(repositoryManager ,mapper));  
@@ -42,7 +48,8 @@ namespace Service
             var scholarshipServiceLogger = loggerFactory.CreateLogger<ScholarshipService>();
             _scholarshipService = new Lazy<IScholarshipService>(() => new ScholarshipService(repositoryManager, mapper,  scholarshipServiceLogger));
            _universityService  = new Lazy<IUniversityService>(() => new UniversityService(repositoryManager, mapper , userManager));
-            _emailsService = new Lazy<IEmailsService>(() => new EmailsService(configuration));
+            _emailsService = new Lazy<IEmailsService>(() => new EmailsService(configuration , repositoryManager , userManager));
+            _userCodeService = new Lazy<IUserCodeService>(() => new UserCodeService(repositoryManager, emailsService,userManager));
         }
 
 
@@ -60,5 +67,7 @@ namespace Service
         public IUniversityService UniversityService => _universityService.Value;
 
         public IEmailsService EmailsService => _emailsService.Value;
+        public IUserCodeService userCodeService => _userCodeService.Value;
+
     }
 }

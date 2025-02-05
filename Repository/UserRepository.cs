@@ -33,7 +33,7 @@ namespace Repository
         public async Task<User> GetById(string id) {
 
             var user =
-              await FindByCondition(u => u.Id == id, false).Include(u => u.Company)  .Include(u => u.University) .Include(u => u.Student).FirstOrDefaultAsync();
+              await FindByCondition(u => u.Id == id, false).Include(u => u.Company).AsNoTracking() .Include(u => u.University) .Include(u => u.Student).FirstOrDefaultAsync();
 
             return user;
 

@@ -611,6 +611,30 @@ namespace Recommendy.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("Entities.Models.UserCode", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("ExpirationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("userCodes");
+                });
+
             modelBuilder.Entity("Entities.Models.UserInterest", b =>
                 {
                     b.Property<string>("StudentId")
@@ -704,25 +728,25 @@ namespace Recommendy.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "2770273b-615c-4f1c-8d22-d489e094c64a",
+                            Id = "f9709014-a642-42eb-a8fc-c49ed9e705e4",
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         },
                         new
                         {
-                            Id = "da024573-2d08-438c-a2dd-3e669c7fe68e",
+                            Id = "16886ca6-5747-47e7-b1eb-56fd80bb08db",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "1936befe-5ca4-4ad1-a544-3f94ff025dca",
+                            Id = "f5de4cdd-d3b7-4dcc-9003-e0b2eb70a4ea",
                             Name = "Company",
                             NormalizedName = "COMPANY"
                         },
                         new
                         {
-                            Id = "f583c322-c57e-440d-897b-c9388aeba8ab",
+                            Id = "7c8b7db3-2cc7-45db-8c22-7090b4a767b8",
                             Name = "University",
                             NormalizedName = "UNIVERSITY"
                         });

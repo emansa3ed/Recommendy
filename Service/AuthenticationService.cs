@@ -16,6 +16,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Entities.Exceptions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Service
 {
@@ -26,17 +27,24 @@ namespace Service
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
         private readonly IRepositoryManager _repository;
-      
+        private readonly IUrlHelper _urlHelper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IServiceManager _serviceManager;
+        private readonly IUserCodeService _userCodeService;
+
 
 
         private User? _user;
 
-        public AuthenticationService(IMapper mapper, UserManager<User> userManager, IConfiguration configuration ,IRepositoryManager repository)
+        public AuthenticationService(IMapper mapper, UserManager<User> userManager, 
+            IConfiguration configuration ,IRepositoryManager repository  , IHttpContextAccessor httpContextAccessor , IUserCodeService userCodeService)
         {
             _mapper = mapper;
             _userManager = userManager;
             _configuration = configuration;
             _repository = repository;
+            _httpContextAccessor = httpContextAccessor;
+            _userCodeService = userCodeService;
             
            
         }
@@ -124,7 +132,21 @@ namespace Service
 
                 }
             }
-            return result;
+
+            var result1 =   await _userCodeService.GenerateUserCodeAsync(user.Id);
+             return result;
+        }
+        private string GenerateRandomNumericToken(int length = 8)
+        {
+            var random = new Random();
+            var token = new StringBuilder();
+
+            for (int i = 0; i < length; i++)
+            {
+                token.Append(random.Next(0, 10)); 
+            }
+
+            return token.ToString();
         }
         ////////////////////////////////// TTTTOOOO Login
         public async Task<bool> ValidateUser(UserForLoginDto userForLogin)
@@ -132,8 +154,9 @@ namespace Service
             _user = await _userManager.FindByNameAsync(userForLogin.UserName);
 
             var result = (_user != null && await _userManager.CheckPasswordAsync(_user, userForLogin.Password));
-         
-           return result;
+            
+
+            return result;
         }
 
         public async Task<TokenDto> CreateToken(bool populateExp)

@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using MediatR;
 using Service.Contracts;
 using Shared.DTO;
+using Microsoft.AspNetCore.Identity;
 
 
 
@@ -23,18 +24,57 @@ namespace Presentation.Controllers
     [Route("api/[Controller]")]
     public class EmailsController : ControllerBase
     {
-        private readonly IServiceManager _serviceManager;
-
-        public EmailsController(IServiceManager serviceManage)
+        private readonly IServiceManager _service;
+        private readonly UserManager<User> _userManager;
+        public EmailsController(IServiceManager service, UserManager<User> userManage)
         {
-             _serviceManager = serviceManage;
+            _service = service;
+            _userManager = userManage;
+
         }
+
 
         [HttpPost("send")]
         public async Task<IActionResult> SendEmail([FromBody] EmailRequestDto request)
         {
-            var result = await _serviceManager.EmailsService.Sendemail(request.Email, request.Message,request.Reason);
+            var result = await _service.EmailsService.Sendemail(request.Email, request.Message, request.Reason);
             return Ok(result);
+        }
+
+
+        [HttpGet("ConfirmEmail")]
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            try
+            {
+                var result = await _service.EmailsService.ConfirmEmailAsync(userId, token);
+                return Ok(result);
+
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest($"Error confirming email. {ex.Message} | Inner Exception: {ex.InnerException?.Message}");
+
+
+            }
+
+        }
+        [HttpPost("GenerateUserCode")]
+        public async Task<IActionResult> GenerateUserCode(string userId)
+        {
+            try
+            {
+                var result = await _service.userCodeService.GenerateUserCodeAsync(userId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error Generate UserCode . {ex.Message} | Inner Exception: {ex.InnerException?.Message}");
+
+
+            }
+
         }
     }
 }

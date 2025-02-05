@@ -36,6 +36,7 @@ namespace Repository
         public DbSet<SavedPost> SavedPosts { get; set; }
         public DbSet<Interest> Interests { get; set; }
         public DbSet<UserInterest> UserInterests { get; set; }
+        public DbSet<UserCode> userCodes { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -61,7 +62,10 @@ namespace Repository
 
             builder.Entity<InternshipPosition>()
                 .HasKey(ip => new { ip.InternshipId, ip.PositionId });
-
+            builder.Entity<UserCode>()
+                .HasKey(ui => new { ui.Id });
+            
+                
 
             // Configure Dictionary as JSON
 
