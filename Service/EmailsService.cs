@@ -89,6 +89,7 @@ namespace Service
                 return new BadRequestObjectResult("Token not found or expired");
             }
 
+
             var user = await _userManager.FindByIdAsync(userId); 
             if (user == null)
             {
@@ -102,6 +103,7 @@ namespace Service
                 await _userManager.UpdateAsync(user);
 
                 await _repository.UserCodeRepository.DeleteAsync(userToken);  ///// welcome
+               await _repository.SaveAsync();
                 return new OkObjectResult("Email confirmed successfully");
             }
             catch (Exception ex) {

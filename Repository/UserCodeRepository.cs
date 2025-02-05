@@ -35,6 +35,14 @@ namespace Repository
         {
             Delete(userToken);
         }
+       public int GetNumByIdAsync(string UserId)
+        {
+            var num= FindByCondition(i => i.UserId == UserId && (i.ExpirationDate > DateTime.UtcNow), false).AsNoTracking().Count();
+
+
+            return num;
+
+        } 
 
     }
 }

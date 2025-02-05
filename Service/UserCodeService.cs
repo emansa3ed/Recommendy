@@ -25,6 +25,8 @@ namespace Service
 
        public async Task<string> GenerateUserCodeAsync(string UserId)
         {
+
+
             try
             {
                 User user =   _userManager.FindByIdAsync(UserId).Result;
@@ -33,7 +35,12 @@ namespace Service
                     return $"there is no user for this id  .";
 
                 }
+               int NumOFCodes  =  _repository.UserCodeRepository.GetNumByIdAsync(UserId);
+                if (NumOFCodes >= 1)
+                {
+                    return "A confirmation code was already sent. Please check your email.";
 
+                }
                 var token = GenerateRandomNumericToken();
                 UserCode userCode = new UserCode();
                 userCode.UserId = UserId;
