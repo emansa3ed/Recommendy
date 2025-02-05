@@ -24,6 +24,7 @@ namespace Service
         private readonly Lazy<IPositionService> _positionService;
         private readonly Lazy<IScholarshipService> _scholarshipService;
         private readonly Lazy< IUniversityService> _universityService;
+        private readonly Lazy<IEmailsService> _emailsService;
         private readonly ILogger<ServiceManager> _logger;
 
 
@@ -41,7 +42,7 @@ namespace Service
             var scholarshipServiceLogger = loggerFactory.CreateLogger<ScholarshipService>();
             _scholarshipService = new Lazy<IScholarshipService>(() => new ScholarshipService(repositoryManager, mapper,  scholarshipServiceLogger));
            _universityService  = new Lazy<IUniversityService>(() => new UniversityService(repositoryManager, mapper , userManager));
-        
+            _emailsService = new Lazy<IEmailsService>(() => new EmailsService(configuration));
         }
 
 
@@ -57,5 +58,7 @@ namespace Service
         public IScholarshipService ScholarshipService => _scholarshipService.Value;
 
         public IUniversityService UniversityService => _universityService.Value;
+
+        public IEmailsService EmailsService => _emailsService.Value;
     }
 }

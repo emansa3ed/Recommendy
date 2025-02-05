@@ -18,5 +18,6 @@ namespace Service.Contracts
 
         IScholarshipService ScholarshipService { get; }
         IUniversityService UniversityService { get; }
+        IEmailsService EmailsService { get; }
     }
 }
