@@ -84,7 +84,7 @@ namespace Service
         public async Task<IActionResult> ConfirmEmailAsync(string  userId, string token)
         {
             var userToken = await _repository.UserCodeRepository.GetAsync(userId, token);
-            if (userToken == null )
+            if (userToken == null || userToken.ExpirationDate < DateTime.UtcNow)
             {
                 return new BadRequestObjectResult("Token not found or expired");
             }
