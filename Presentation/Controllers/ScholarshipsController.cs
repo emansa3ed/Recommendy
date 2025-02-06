@@ -164,28 +164,42 @@ namespace Presentation.Controllers
 
 
 
-        [HttpDelete("{id:int}")]
-        public async Task<IActionResult> DeleteScholarshipForUniversity(string universityId, int id)
-        {
-            // var username = User.Identity.Name;
-            // if (username == null)
-            //{
-            //     return Unauthorized(); 
-            //   }   
-            // var user = await _service.UserService.GetDetailsByUserName(username);
-            // if (user == null)
-            // {
-            //   return NotFound();
-            //}
-            // only allowed for university and admin
-            // if (!user.Discriminator.Equals("University", StringComparison.OrdinalIgnoreCase) &&
-            // / //!user.Discriminator.Equals("Admin", StringComparison.OrdinalIgnoreCase))
-            // {
-            // return Forbid();
-            //}
+           [HttpDelete("{id:int}")]
+   public async Task<IActionResult> DeleteScholarshipForUniversity(string universityId, int id)
+   {
+       // var username = User.Identity.Name;
+       // if (username == null)
+       //{
+       //     return Unauthorized(); 
+       //   }   
+       // var user = await _service.UserService.GetDetailsByUserName(username);
+       // if (user == null)
+       // {
+       //   return NotFound();
+       //}
+       // only allowed for university and admin
+       // if (!user.Discriminator.Equals("University", StringComparison.OrdinalIgnoreCase) &&
+       // / //!user.Discriminator.Equals("Admin", StringComparison.OrdinalIgnoreCase))
+       // {
+       // return Forbid();
+       //}
+       try
+       {
+           _service.ScholarshipService.DeleteScholarshipForUniversity(universityId, id, trackChanges: false);
+           return NoContent();
+       }
+       catch (UniversityNotFoundException ex)
+       {
+           return NotFound(ex.Message);
 
-            _service.ScholarshipService.DeleteScholarshipForUniversity(universityId, id, trackChanges: false);
-            return NoContent();
-        }
+       }
+
+       catch (ScholarshipNotFoundException ex)
+       {
+           return NotFound(ex.Message);
+
+
+       }
+   }
     }
 }
