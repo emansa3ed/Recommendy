@@ -1,4 +1,4 @@
-﻿using Entities.Exceptions;
+using Entities.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +14,7 @@ namespace Presentation.Controllers
 {
     [Route("api/students")]
     [ApiController]
-   // [Authorize]
+    [Authorize]
     public class StudentController : ControllerBase
     {
 
@@ -26,12 +26,23 @@ namespace Presentation.Controllers
 
         }
 
+   
+
         [HttpGet("profile/{id}")]
         public IActionResult GetStudent(string id)
         {
-            var student = _service.StudentService.GetStudent(id, trackChanges: false);
-            return Ok(student);
+            try
+            {
+                var student = _service.StudentService.GetStudent(id, trackChanges: false);
+                return Ok(student);
+            }
+            catch (StudentNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
+
+
         [HttpPatch("edit-profile/{id}")]
         public async Task<IActionResult> UpdateStudentProfile(string id, [FromBody] StudentForUpdateDto studentForUpdate)
         {
@@ -104,7 +115,6 @@ namespace Presentation.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
 
 
 
