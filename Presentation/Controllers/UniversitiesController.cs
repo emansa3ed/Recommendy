@@ -1,4 +1,4 @@
-﻿using Entities.Exceptions;
+using Entities.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -92,6 +92,7 @@ namespace Presentation.Controllers
                 {
                     UniversityUrl = university.UniversityUrl,
                     UserName = university.UserName,
+                    CountryId = university.CountryId,
                     Bio = university.Bio,
                     PhoneNumber = university.PhoneNumber,
                     Countries = countries
