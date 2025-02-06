@@ -14,3 +14,19 @@ D:\Recommendy\Contracts\bin\Debug\net8.0\Entities.dll
 D:\Recommendy\Contracts\bin\Debug\net8.0\Entities.pdb
 D:\Recommendy\Contracts\obj\Debug\net8.0\Contracts.csproj.AssemblyReference.cache
 D:\Recommendy\Contracts\obj\Debug\net8.0\Contracts.csproj.Up2Date
+D:\A last Year\Graduation project\LastEdit\Recommendy\Contracts\bin\Debug\net8.0\Contracts.deps.json
+D:\A last Year\Graduation project\LastEdit\Recommendy\Contracts\bin\Debug\net8.0\Contracts.dll
+D:\A last Year\Graduation project\LastEdit\Recommendy\Contracts\bin\Debug\net8.0\Contracts.pdb
+D:\A last Year\Graduation project\LastEdit\Recommendy\Contracts\bin\Debug\net8.0\Entities.dll
+D:\A last Year\Graduation project\LastEdit\Recommendy\Contracts\bin\Debug\net8.0\Entities.pdb
+D:\A last Year\Graduation project\LastEdit\Recommendy\Contracts\obj\Debug\net8.0\Contracts.csproj.AssemblyReference.cache
+D:\A last Year\Graduation project\LastEdit\Recommendy\Contracts\obj\Debug\net8.0\Contracts.GeneratedMSBuildEditorConfig.editorconfig
+D:\A last Year\Graduation project\LastEdit\Recommendy\Contracts\obj\Debug\net8.0\Contracts.AssemblyInfoInputs.cache
+D:\A last Year\Graduation project\LastEdit\Recommendy\Contracts\obj\Debug\net8.0\Contracts.AssemblyInfo.cs
+D:\A last Year\Graduation project\LastEdit\Recommendy\Contracts\obj\Debug\net8.0\Contracts.csproj.CoreCompileInputs.cache
+D:\A last Year\Graduation project\LastEdit\Recommendy\Contracts\obj\Debug\net8.0\Contracts.sourcelink.json
+D:\A last Year\Graduation project\LastEdit\Recommendy\Contracts\obj\Debug\net8.0\Contracts.csproj.Up2Date
+D:\A last Year\Graduation project\LastEdit\Recommendy\Contracts\obj\Debug\net8.0\Contracts.dll
+D:\A last Year\Graduation project\LastEdit\Recommendy\Contracts\obj\Debug\net8.0\refint\Contracts.dll
+D:\A last Year\Graduation project\LastEdit\Recommendy\Contracts\obj\Debug\net8.0\Contracts.pdb
+D:\A last Year\Graduation project\LastEdit\Recommendy\Contracts\obj\Debug\net8.0\ref\Contracts.dll

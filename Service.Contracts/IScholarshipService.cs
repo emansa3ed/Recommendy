@@ -10,8 +10,9 @@ namespace Service.Contracts
     public interface IScholarshipService
     {
 
-        Task<IEnumerable<GetScholarshipDto>> GetAllScholarshipsForUniversity(string universityId, bool trackChanges);
-        Task<GetScholarshipDto> CreateScholarshipForUniversity(string universityId, ScholarshipForCreationDto scholarshipForCreation, bool trackChanges);
+        Task<IEnumerable<EditedScholarshipDto>> GetAllScholarshipsForUniversity(string universityId, bool trackChanges);
+        Task<EditedScholarshipDto> CreateScholarshipForUniversity(string universityId, ScholarshipForCreationDto scholarshipForCreation, bool trackChanges);
+
 
 
         Task<GetScholarshipDto> GetScholarshipById(int id, bool trackChanges);

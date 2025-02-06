@@ -35,7 +35,7 @@ namespace Presentation.Controllers
 
         // [HttpGet("{universityId}")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<GetScholarshipDto>>> GetScholarshipsForUniversity([FromRoute] string universityId)
+        public async Task<ActionResult<IEnumerable<EditedScholarshipDto>>> GetScholarshipsForUniversity([FromRoute] string universityId)
         {
             try
             {
@@ -54,7 +54,7 @@ namespace Presentation.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult<GetScholarshipDto>> CreateScholarshipForUniversity(
+        public async Task<ActionResult<EditedScholarshipDto>> CreateScholarshipForUniversity(
         [FromRoute] string universityId,
         [FromForm] ScholarshipForCreationDto scholarshipForCreation)
         {

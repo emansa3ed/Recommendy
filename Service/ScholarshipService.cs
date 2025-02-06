@@ -27,7 +27,7 @@ namespace Service
         }
 
 
-        public async Task<IEnumerable<GetScholarshipDto>> GetAllScholarshipsForUniversity(string universityId, bool trackChanges)
+        public async Task<IEnumerable<EditedScholarshipDto>> GetAllScholarshipsForUniversity(string universityId, bool trackChanges)
         {
             try
             {
@@ -37,7 +37,7 @@ namespace Service
                 }
                 // Retrieve scholarships for the logged-in university
                 var scholarships = await _repository.Scholarship.GetAllScholarshipsAsync(universityId, trackChanges);
-                return _mapper.Map<IEnumerable<GetScholarshipDto>>(scholarships);
+                return _mapper.Map<IEnumerable<EditedScholarshipDto>>(scholarships);
             }
             catch (Exception ex)
             {
@@ -47,7 +47,7 @@ namespace Service
         }
 
 
-        public async Task<GetScholarshipDto> CreateScholarshipForUniversity(string universityId,
+        public async Task<EditedScholarshipDto> CreateScholarshipForUniversity(string universityId,
             ScholarshipForCreationDto scholarshipForCreation, bool trackChanges)
         {
             string url = _repository.File.UploadImage("Scholarships", scholarshipForCreation.ImageFile).Result;
@@ -68,7 +68,7 @@ namespace Service
 
 
                 //   _logger.LogInformation("Mapping Scholarship entity to ScholarshipDto");
-                var scholarshipToReturn = _mapper.Map<GetScholarshipDto>(scholarshipEntity);
+                var scholarshipToReturn = _mapper.Map<EditedScholarshipDto>(scholarshipEntity);
 
                 return scholarshipToReturn;
             }
@@ -84,14 +84,17 @@ namespace Service
             }
         }
 
-
         public async Task<IEnumerable<GetScholarshipDto>> GetAllScholarships(bool trackChanges)
         {
             try
             {
-                var scholarships = _repository.Scholarship.GetAllScholarships(trackChanges);
+                // Retrieve scholarships from the repository
+                var scholarships =  _repository.Scholarship.GetAllScholarships(trackChanges);
+
+                // Map scholarships to DTOs using AutoMapper
                 var scholarshipDto = _mapper.Map<IEnumerable<GetScholarshipDto>>(scholarships);
-                return await Task.FromResult(scholarshipDto);
+
+                return scholarshipDto;
             }
             catch (Exception ex)
             {
@@ -99,6 +102,7 @@ namespace Service
                 throw new Exception("Something went wrong while fetching scholarships.");
             }
         }
+  
 
 
         public async Task<GetScholarshipDto> GetScholarshipById(int id, bool trackChanges)

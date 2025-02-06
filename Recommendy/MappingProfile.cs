@@ -14,11 +14,12 @@ namespace Recommendy
             CreateMap<InternshipCreationDto, Internship>();
             CreateMap<InternshipPositionDto, InternshipPosition>();
 
-         CreateMap<Internship, InternshipDto>()
-           .ForMember(dest => dest.Positions, opt => opt.MapFrom(src => src.InternshipPositions))
-           .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Company.User.UserName));
-         CreateMap<InternshipPosition, InternshipPositionViewDto>()
-                .ForMember(dest => dest.PositionName, opt => opt.MapFrom(src => src.Position.Name));
+            CreateMap<Internship, InternshipDto>()
+              .ForMember(dest => dest.Positions, opt => opt.MapFrom(src => src.InternshipPositions))
+              .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Company.User.UserName));
+
+            CreateMap<InternshipPosition, InternshipPositionViewDto>()
+                   .ForMember(dest => dest.PositionName, opt => opt.MapFrom(src => src.Position.Name));
 
             CreateMap<Position, PositionDto>();
 
@@ -35,12 +36,21 @@ namespace Recommendy
             CreateMap<UserForRegistrationDto, User>();
 
 
+            CreateMap<Scholarship, EditedScholarshipDto>()
+             .ForMember(dest => dest.Degree, opt => opt.MapFrom(src => src.Degree.ToString())) 
+             .ForMember(dest => dest.Funded, opt => opt.MapFrom(src => src.Funded.ToString())); 
+
+            CreateMap<Scholarship, GetScholarshipDto>()
+             .ForMember(dest => dest.Degree, opt => opt.MapFrom(src => src.Degree.ToString())) 
+             .ForMember(dest => dest.Funded, opt => opt.MapFrom(src => src.Funded.ToString()))  
+             .ForMember(dest => dest.UniversityUrl, opt => opt.MapFrom(src => src.University.UniversityUrl))
+             .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.University.User.UserName));
 
 
-            CreateMap<Scholarship, GetScholarshipDto>();
             CreateMap<ScholarshipForCreationDto, Scholarship>();
         
-            
+
+
             CreateMap<University, UniversityDto>()
                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
                .ForMember(dest => dest.Bio, opt => opt.MapFrom(src => src.User.Bio))
@@ -53,7 +63,6 @@ namespace Recommendy
              .ForMember(dest => dest.CompanyUrl, opt => opt.MapFrom(src => src.Company.CompanyUrl))
              .ForMember(dest => dest.UniversityUrl, opt => opt.MapFrom(src => src.University.UniversityUrl));
 
-            CreateMap<SavedOpportunityDto, SavedPost>();
 
 
 

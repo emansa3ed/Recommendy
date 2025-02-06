@@ -55,7 +55,7 @@ namespace Repository
 
             ///// Composite keys
             builder.Entity<SavedPost>()
-                .HasKey(sp => new { sp.StudentId, sp.PostId,sp.Type });
+                .HasKey(sp => new { sp.StudentId, sp.PostId });
 
             builder.Entity<UserInterest>()
                 .HasKey(ui => new { ui.StudentId, ui.InterestId });
@@ -104,15 +104,20 @@ namespace Repository
                 .HasForeignKey(u => u.CountryId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.Entity<Scholarship>()
-                .HasOne<University>()
-                .WithMany()
-                .HasForeignKey(s => s.UniversityId)
-                .OnDelete(DeleteBehavior.NoAction);
+            //builder.Entity<Scholarship>()
+            //    .HasOne<University>()
+            //    .WithMany()
+            //    .HasForeignKey(s => s.UniversityId)
+            //    .OnDelete(DeleteBehavior.NoAction);
 
-          
+            builder.Entity<University>()
+          .HasMany(u => u.Scholarships) // University has many Scholarships
+          .WithOne(s => s.University) // Scholarship belongs to one University
+          .HasForeignKey(s => s.UniversityId) // Foreign key in Scholarship
+          .OnDelete(DeleteBehavior.Cascade); // Cascade delete behavior/
+            ////////////////////////////////////////////////////////
 
-             builder.Entity<Company>()
+            builder.Entity<Company>()
              .HasMany(c => c.Internships)
              .WithOne(i => i.Company) 
              .HasForeignKey(i => i.CompanyId)
