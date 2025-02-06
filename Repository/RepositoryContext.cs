@@ -97,12 +97,11 @@ namespace Repository
                 .OnDelete(DeleteBehavior.NoAction);
 
 
-
             builder.Entity<University>()
-                .HasOne<Country>()
-                .WithMany()
-                .HasForeignKey(u => u.CountryId)
-                .OnDelete(DeleteBehavior.NoAction);
+            .HasOne(u => u.Country)
+            .WithMany()
+            .HasForeignKey(u => u.CountryId)
+            .OnDelete(DeleteBehavior.NoAction);
 
             //builder.Entity<Scholarship>()
             //    .HasOne<University>()
