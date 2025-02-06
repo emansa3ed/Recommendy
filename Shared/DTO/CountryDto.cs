@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Shared.DTO
 {
-    public  record CountryDto(string name );
-    
+    public record CountryDto(int id, string name);
 
-    
+
+
 }

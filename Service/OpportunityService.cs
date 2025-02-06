@@ -83,5 +83,58 @@ namespace Service
             }
 
         }
+        public async Task<IEnumerable<GetScholarshipDto>> GetSavedScholarshipsAsync(string studentId)
+        {
+            try
+            {
+                var savedPosts = await _repositoryManager.OpportunityRepository.GetSavedScholarshipsAsync(studentId, trackChanges: false);
+
+                var scholarships = new List<GetScholarshipDto>();
+
+                foreach (var savedPost in savedPosts)
+                {
+                    var scholarship = _repositoryManager.Scholarship.GetScholarshipById(savedPost.PostId, trackChanges: false);
+                    if (scholarship != null)
+                    {
+                        var scholarshipDto = _mapper.Map<GetScholarshipDto>(scholarship);
+                        scholarships.Add(scholarshipDto);
+                    }
+                }
+
+                return scholarships;
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine($"Error retrieving saved scholarships: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
+                }
+
+
+                throw;
+            }
+        }
+        public async Task<IEnumerable<InternshipDto>> GetSavedInternshipsAsync(string studentId)
+        {
+            // Retrieve saved internships for the student
+            var savedPosts = await _repositoryManager.OpportunityRepository.GetSavedInternshipsAsync(studentId, trackChanges: false);
+
+            var internships = new List<InternshipDto>();
+
+            foreach (var savedPost in savedPosts)
+            {
+                var internship = _repositoryManager.Intership.GetInternshipById(savedPost.PostId, trackChanges: false);
+                if (internship != null)
+                {
+                    var internshipDto = _mapper.Map<InternshipDto>(internship);
+                    internships.Add(internshipDto);
+                }
+            }
+
+            return internships;
+        }
     }
 }

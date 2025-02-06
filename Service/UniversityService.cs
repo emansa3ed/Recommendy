@@ -60,15 +60,7 @@ namespace Service
                 university.User.PhoneNumber = universityDto.PhoneNumber;
             }
             
-            if (!string.IsNullOrEmpty(universityDto.CurrentPassword) && !string.IsNullOrEmpty(universityDto.NewPassword))
-            {
-                var user = university.User;
-                var passwordChangeResult = await _userManager.ChangePasswordAsync(user, universityDto.CurrentPassword, universityDto.NewPassword);
-                if (!passwordChangeResult.Succeeded)
-                {
-                    throw new InvalidOperationException("Password change failed: " + string.Join(", ", passwordChangeResult.Errors.Select(e => e.Description)));
-                }
-            }
+           
         
         _repository.university.UpdateUniversity(university);
         _repository.Save();

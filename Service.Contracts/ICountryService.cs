@@ -11,6 +11,7 @@ namespace Service.Contracts
     {
 
         IEnumerable<CountryDto> GetAllCountries(bool trackChanges);
+        CountryDto GetCountryById(int countryId, bool trackChanges);
 
     }
 }

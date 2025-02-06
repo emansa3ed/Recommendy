@@ -30,7 +30,9 @@ namespace Recommendy
             CreateMap<University, UniversityViewDto>()
                  .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
                  .ForMember(dest => dest.Bio, opt => opt.MapFrom(src => src.User.Bio))
-                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.User.PhoneNumber));
+                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.User.PhoneNumber))
+                .ForMember(dest => dest.UrlPicture, opt => opt.MapFrom(src => src.User.UrlPicture));
+
 
 
             CreateMap<UserForRegistrationDto, User>();
@@ -48,7 +50,7 @@ namespace Recommendy
 
 
             CreateMap<ScholarshipForCreationDto, Scholarship>();
-        
+
 
 
             CreateMap<University, UniversityDto>()
@@ -62,6 +64,37 @@ namespace Recommendy
             CreateMap<User, UserDto>()
              .ForMember(dest => dest.CompanyUrl, opt => opt.MapFrom(src => src.Company.CompanyUrl))
              .ForMember(dest => dest.UniversityUrl, opt => opt.MapFrom(src => src.University.UniversityUrl));
+
+
+
+            /////////////////////////////
+            CreateMap<Student, StudentDto>()
+      .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
+      .ForMember(dest => dest.Bio, opt => opt.MapFrom(src => src.User.Bio))
+      .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.User.PhoneNumber))
+      .ForMember(dest => dest.UrlPicture, opt => opt.MapFrom(src => src.User.UrlPicture));
+
+
+            CreateMap<Student, StudentForUpdateDto>()
+                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
+                 .ForMember(dest => dest.Bio, opt => opt.MapFrom(src => src.User.Bio))
+                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.User.PhoneNumber));
+            CreateMap<University, UniversityViewDto>()
+                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
+                 .ForMember(dest => dest.Bio, opt => opt.MapFrom(src => src.User.Bio))
+                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.User.PhoneNumber))
+                 .ForMember(dest => dest.UrlPicture, opt => opt.MapFrom(src => src.User.UrlPicture));
+            CreateMap<Company, CompanyViewDto>()
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
+                .ForMember(dest => dest.Bio, opt => opt.MapFrom(src => src.User.Bio))
+                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.User.PhoneNumber))
+                .ForMember(dest => dest.UrlPicture, opt => opt.MapFrom(src => src.User.UrlPicture));
+
+
+            CreateMap<Company, CompanyDto>()
+              .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
+              .ForMember(dest => dest.Bio, opt => opt.MapFrom(src => src.User.Bio))
+              .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.User.PhoneNumber));
 
 
 

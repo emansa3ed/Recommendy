@@ -1,5 +1,6 @@
 ﻿using Contracts;
 using Entities.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,9 +17,17 @@ namespace Repository
         }
 
        public void CreateStudent (Student student) => Create(student);
-        
 
-         
+        public Student GetStudent(string studentId, bool trackChanges) =>
+         FindByCondition(s => s.StudentId.Equals(studentId), trackChanges)
+        .Include(s => s.User)
+        .SingleOrDefault();
+
+        public void UpdateStudent(Student student) => Update(student);
+
+
+
+
 
     }
 }

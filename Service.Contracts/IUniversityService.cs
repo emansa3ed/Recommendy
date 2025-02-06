@@ -14,5 +14,6 @@ namespace Service.Contracts
         Task UpdateUniversity(string universityId, UniversityDto universityDto, bool trackChanges);
         Task<string> UploadProfilePictureAsync(IFormFile file, string universityId);
 
+
     }
 }

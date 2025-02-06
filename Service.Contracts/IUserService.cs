@@ -12,6 +12,8 @@ namespace Service.Contracts
     {
         Task<User> GetDetailsByUserName(string username);
         Task<UserDto> GetDetailsbyId(string Id);
+        Task ChangePasswordAsync(string studentId, ChangePasswordDto changePasswordDto);
+
 
     }
 }

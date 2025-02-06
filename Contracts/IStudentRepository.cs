@@ -10,7 +10,9 @@ namespace Contracts
     public interface IStudentRepository
     {
         void CreateStudent(Student student);
-
+        Student GetStudent(string studentId, bool trackChanges);
+        public void UpdateStudent(Student student);
+      
 
     }
 }

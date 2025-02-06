@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Contracts;
 using Entities.Models;
+using Entities.Exceptions;
 using Shared.DTO;
 using AutoMapper;
 
@@ -17,14 +18,14 @@ namespace Service
         private readonly IRepositoryManager _repository;
         private readonly IMapper _mapper;
 
-        public CountryService(IRepositoryManager repository , IMapper mapper)
+        public CountryService(IRepositoryManager repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
         }
 
         public IEnumerable<CountryDto> GetAllCountries(bool trackChanges)
- {
+        {
             try
             {
                 var countries =
@@ -34,9 +35,19 @@ namespace Service
 
                 return countriesDto;
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 throw new Exception("something error");
             }
+        }
+
+        public CountryDto GetCountryById(int countryId, bool trackChanges)
+        {
+            var country = _repository.Country.GetCountryById(countryId, trackChanges);
+            if (country is null)
+                throw new CountryNotFoundException(countryId);
+
+            return _mapper.Map<CountryDto>(country);
         }
     }
 }

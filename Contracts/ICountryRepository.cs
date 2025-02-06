@@ -10,6 +10,6 @@ namespace Contracts
     public interface ICountryRepository 
     {
         IEnumerable<Country> GetAllCountries(bool trackChanges);
-
+        Country GetCountryById(int countryId, bool trackChanges);
     }
 }

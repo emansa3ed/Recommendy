@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Entities.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
@@ -16,62 +17,156 @@ namespace Presentation.Controllers
     [Route("api/universities")]
     [ApiController]
     //[Authorize]
-    public class UniversitiesController: ControllerBase
+    public class UniversitiesController : ControllerBase
     {
         private readonly IServiceManager _service;
         public UniversitiesController(IServiceManager service) => _service = service;
         [HttpGet("profile/{id}")]
         public IActionResult GetUniversity(string id)
         {
-            var university = _service.UniversityService.GetUniversity(id, trackChanges: false);
-            return Ok(university);
+            try
+            {
+                var university = _service.UniversityService.GetUniversity(id, trackChanges: false);
+                return Ok(university);
+            }
+            catch (UniversityNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error");
+            }
         }
 
 
         [HttpPatch("edit-profile/{id}")]
-       
+
         public async Task<IActionResult> EditProfile(string id, [FromBody] UniversityDto universityDto)
         {
             var username = User.Identity.Name;
-           // if (username == null)
-           // {
-           //     return Unauthorized();
-           // }
-          //  var user = await _service.UserService.GetDetailsByUserName(username);
-          //  if (user == null)
-          //  {
-          //      return NotFound();
-          //  }
+            if (username == null)
+            {
+                return Unauthorized();
+            }
+            var user = await _service.UserService.GetDetailsByUserName(username);
+            if (user == null)
+            {
+                return NotFound();
+            }
             // only allowed for university 
-           // if (!user.Discriminator.Equals("University", StringComparison.OrdinalIgnoreCase))
-        //    {
-                //return Forbid();
-          //  }
-            await _service.UniversityService.UpdateUniversity(id, universityDto, trackChanges: true);
-            return NoContent();
+            if (!user.Discriminator.Equals("University", StringComparison.OrdinalIgnoreCase))
+            {
+                return Forbid();
+            }
+            try
+            {
+                await _service.UniversityService.UpdateUniversity(id, universityDto, trackChanges: true);
+                return NoContent();
+            }
+            catch (UniversityNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (CountryNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error");
+            }
+        }
+        [HttpGet("edit-profile/{id}")]
+        public IActionResult GetEditProfile(string id)
+        {
+            try
+            {
+                var university = _service.UniversityService.GetUniversity(id, trackChanges: false);
+
+
+                var countries = _service.CountryService.GetAllCountries(trackChanges: false);
+
+
+                var response = new EditUniversityProfileDto
+                {
+                    UniversityUrl = university.UniversityUrl,
+                    UserName = university.UserName,
+                    Bio = university.Bio,
+                    PhoneNumber = university.PhoneNumber,
+                    Countries = countries
+                };
+
+                return Ok(response);
+            }
+            catch (UniversityNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error");
+            }
         }
 
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto changePasswordDto)
+        {
+            if (changePasswordDto == null)
+            {
+                return BadRequest("ChangePasswordDto object is null");
+            }
+            var username = User.Identity.Name;
+            if (username == null)
+            {
+                return Unauthorized();
+            }
 
+            var user = await _service.UserService.GetDetailsByUserName(username);
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+            // only allowed for student 
+            if (!user.Discriminator.Equals("University", StringComparison.OrdinalIgnoreCase))
+            {
+                return Forbid();
+            }
+
+            try
+            {
+                await _service.UserService.ChangePasswordAsync(user.Id, changePasswordDto);
+                return NoContent();
+            }
+            catch (UniversityNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (ApplicationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         [HttpPost("upload-profile-picture")]
-      
+
         public async Task<IActionResult> UploadProfilePicture(IFormFile file)
         {
             var username = User.Identity.Name;
-           // if (username == null)
-          //  {
-              //  return Unauthorized();
-          //  }
+            // if (username == null)
+            //  {
+            //  return Unauthorized();
+            //  }
 
             var user = await _service.UserService.GetDetailsByUserName(username);
-           // if (user == null)
-         //   {
-              //  return NotFound("User not found.");
-         //   }
+            // if (user == null)
+            //   {
+            //  return NotFound("User not found.");
+            //   }
             // only allowed for university 
-           // if (!user.Discriminator.Equals("University", StringComparison.OrdinalIgnoreCase))
-           // {
-              //  return Forbid();
-           // }
+            // if (!user.Discriminator.Equals("University", StringComparison.OrdinalIgnoreCase))
+            // {
+            //  return Forbid();
+            // }
             try
             {
                 var imageUrl = await _service.UniversityService.UploadProfilePictureAsync(file, user.Id);

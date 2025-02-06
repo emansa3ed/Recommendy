@@ -29,6 +29,8 @@ namespace Service
         private readonly Lazy<IEmailsService> _emailsService;
         private readonly Lazy<IUserCodeService> _userCodeService;
         private readonly Lazy<IOpportunityService> _opportunityService;
+        private readonly Lazy<IStudentService> _studentService;
+        private readonly Lazy<ICompanyService> _companyService;
         private readonly ILogger<ServiceManager> _logger;
 
 
@@ -52,6 +54,11 @@ namespace Service
             _emailsService = new Lazy<IEmailsService>(() => new EmailsService(configuration , repositoryManager , userManager));
             _userCodeService = new Lazy<IUserCodeService>(() => new UserCodeService(repositoryManager, emailsService,userManager));
             _opportunityService = new Lazy<IOpportunityService>(() =>  new OpportunityService(repositoryManager , mapper));
+            _companyService = new Lazy<ICompanyService>(() => new CompanyService( repositoryManager ,mapper ,userManager));
+            _studentService = new Lazy<IStudentService>(() => new StudentService(repositoryManager ,mapper , userManager));
+
+
+
         }
 
 
@@ -72,6 +79,10 @@ namespace Service
         public IUserCodeService userCodeService => _userCodeService.Value;
 
         public IOpportunityService OpportunityService => _opportunityService.Value;
+
+        public IStudentService StudentService => _studentService.Value;
+
+        public ICompanyService CompanyService => _companyService.Value;
 
     }
 }

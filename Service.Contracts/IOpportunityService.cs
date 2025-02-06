@@ -13,5 +13,8 @@ namespace Service.Contracts
         Task<string> SavedOpportunity(SavedOpportunityDto savedPost);
         Task<string> DeleteOpportunity(SavedOpportunityDto savedPost);
 
+        Task<IEnumerable<GetScholarshipDto>> GetSavedScholarshipsAsync(string studentId);
+        Task<IEnumerable<InternshipDto>> GetSavedInternshipsAsync(string studentId);
+
     }
 }

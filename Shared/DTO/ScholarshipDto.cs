@@ -10,19 +10,27 @@ using Microsoft.AspNetCore.Http;
 namespace Shared.DTO
 {
     public record ScholarshipDto(
-       string? Name,
-       string? Description,
-       decimal? Cost,
-       string? Grants,
-       DateTime? ApplicationDeadline,
-       string? UrlApplicationForm,
-       string? UrlPicture,
-       IFormFile? ImageFile,
-       string? EligibleGrade,
-       DateTime? StartDate,
-       int? Duration,
-       Degree? Degree,
-       Funded? Funded,
-       Dictionary<string, string>? Requirements
-   );
+               string? Name,
+        string? Description,
+        decimal? Cost,
+        string? Grants,
+        DateTime? ApplicationDeadline,
+        string? UrlApplicationForm,
+        string? UrlPicture,
+        IFormFile? ImageFile,
+        string? EligibleGrade,
+        DateTime? StartDate,
+        int? Duration,
+        Degree? Degree,
+        Funded? Funded,
+        Dictionary<string, string>? Requirements
+    );
+
+    public record EnumDto(int Id, string Name);
+    public record EditScholarshipProfileDto
+    {
+        public GetScholarshipDto Scholarship { get; init; }
+        public IEnumerable<EnumDto> FundedOptions { get; init; }
+        public IEnumerable<EnumDto> DegreeOptions { get; init; }
+    };
 }

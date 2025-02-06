@@ -17,8 +17,8 @@ namespace Presentation.Controllers
     //[Route("api/[controller]")]
     [Route("api/universities/{universityId}/scholarships")]
     [ApiController]
-   // [Authorize]
-    public class ScholarshipsController: ControllerBase
+    // [Authorize]
+    public class ScholarshipsController : ControllerBase
     {
         private readonly IServiceManager _service;
         private readonly ILogger<ScholarshipsController> _logger;
@@ -33,9 +33,9 @@ namespace Presentation.Controllers
         }
 
 
-        // [HttpGet("{universityId}")]
+
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<EditedScholarshipDto>>> GetScholarshipsForUniversity([FromRoute] string universityId)
+        public async Task<ActionResult<IEnumerable<GetScholarshipDto>>> GetScholarshipsForUniversity([FromRoute] string universityId)
         {
             try
             {
@@ -54,7 +54,7 @@ namespace Presentation.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult<EditedScholarshipDto>> CreateScholarshipForUniversity(
+        public async Task<ActionResult<GetScholarshipDto>> CreateScholarshipForUniversity(
         [FromRoute] string universityId,
         [FromForm] ScholarshipForCreationDto scholarshipForCreation)
         {
@@ -80,8 +80,8 @@ namespace Presentation.Controllers
                 }
 
                 _logger.LogInformation($"Requirements: {JsonSerializer.Serialize(scholarshipForCreation.Requirements)}");
-               
-                
+
+
 
                 var createdScholarship = await _service.ScholarshipService
                     .CreateScholarshipForUniversity(universityId, scholarshipForCreation, trackChanges: false);
@@ -96,58 +96,93 @@ namespace Presentation.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+        [HttpGet("edit/{id:int}")]
+        public async Task<ActionResult<EditScholarshipProfileDto>> GetScholarshipForEdit(string universityId, int id)
+        {
+            try
+            {
 
+                var scholarship = await _service.ScholarshipService.GetScholarshipById(id, trackChanges: false);
+                if (scholarship == null)
+                    return NotFound($"Scholarship with ID {id} not found.");
+
+
+                var fundedOptions = Enum.GetValues(typeof(Funded))
+                    .Cast<Funded>()
+                    .Select(e => new EnumDto((int)e, e.ToString()))
+                    .ToList();
+
+                var degreeOptions = Enum.GetValues(typeof(Degree))
+                    .Cast<Degree>()
+                    .Select(e => new EnumDto((int)e, e.ToString()))
+                    .ToList();
+
+
+                var response = new EditScholarshipProfileDto
+                {
+                    Scholarship = scholarship,
+                    FundedOptions = fundedOptions,
+                    DegreeOptions = degreeOptions
+                };
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error while retrieving scholarship for edit.");
+            }
+        }
 
         [HttpPatch("{id:int}")]
         public async Task<IActionResult> UpdateScholarshipForUniversity(string universityId, int id, [FromForm] ScholarshipDto scholarshipDto)
         {
             var username = User.Identity.Name;
-            //  if (username == null)
-            //{
-                //    return Unauthorized();
-               //  }
+            if (username == null)
+            {
+                return Unauthorized();
+            }
 
-               // var user = await _service.UserService.GetDetailsByUserName(username);
-               // if (user == null)
-                //{
-                //    return NotFound();
-                //}
+            var user = await _service.UserService.GetDetailsByUserName(username);
+            if (user == null)
+            {
+                return NotFound();
+            }
 
-                // Only allowed for university 
-              //  if (!user.Discriminator.Equals("University", StringComparison.OrdinalIgnoreCase))
-              //  {
-                  //  return Forbid();
-              //  }
+            // Only allowed for university 
+            if (!user.Discriminator.Equals("University", StringComparison.OrdinalIgnoreCase))
+            {
+                return Forbid();
+            }
 
-                await _service.ScholarshipService.UpdateScholarshipForUniversity(universityId, id, scholarshipDto, trackChanges: true);
-                return NoContent();
-         }
-
-
-        
+            await _service.ScholarshipService.UpdateScholarshipForUniversity(universityId, id, scholarshipDto, trackChanges: true);
+            return NoContent();
+        }
 
 
-        [HttpDelete("{id:int}")] 
-       public async Task<IActionResult> DeleteScholarshipForUniversity(string universityId, int id)
+
+
+
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeleteScholarshipForUniversity(string universityId, int id)
         {
-           // var username = User.Identity.Name;
-           // if (username == null)
+            // var username = User.Identity.Name;
+            // if (username == null)
             //{
-             //     return Unauthorized(); 
-         //   }   
-           // var user = await _service.UserService.GetDetailsByUserName(username);
-           // if (user == null)
-           // {
-             //   return NotFound();
+            //     return Unauthorized(); 
+            //   }   
+            // var user = await _service.UserService.GetDetailsByUserName(username);
+            // if (user == null)
+            // {
+            //   return NotFound();
             //}
             // only allowed for university and admin
-           // if (!user.Discriminator.Equals("University", StringComparison.OrdinalIgnoreCase) &&
-          // / //!user.Discriminator.Equals("Admin", StringComparison.OrdinalIgnoreCase))
-           // {
-               // return Forbid();
-           // }
+            // if (!user.Discriminator.Equals("University", StringComparison.OrdinalIgnoreCase) &&
+            // / //!user.Discriminator.Equals("Admin", StringComparison.OrdinalIgnoreCase))
+            // {
+            // return Forbid();
+            //}
 
-            _service.ScholarshipService.DeleteScholarshipForUniversity(universityId, id, trackChanges:false);
+            _service.ScholarshipService.DeleteScholarshipForUniversity(universityId, id, trackChanges: false);
             return NoContent();
         }
     }

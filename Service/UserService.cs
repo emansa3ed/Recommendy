@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Shared.DTO;
 using AutoMapper;
+using Entities.Exceptions;
 
 namespace Service
 {
@@ -39,6 +40,18 @@ namespace Service
 
 
             return result;
+        }
+        public async Task ChangePasswordAsync(string userId, ChangePasswordDto changePasswordDto)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                throw new UserNotFoundException(userId);
+
+            var result = await _userManager.ChangePasswordAsync(user, changePasswordDto.CurrentPassword, changePasswordDto.NewPassword);
+            if (!result.Succeeded)
+            {
+                throw new ApplicationException("Password change failed.");
+            }
         }
     }
 }

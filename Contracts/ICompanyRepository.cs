@@ -10,5 +10,8 @@ namespace Contracts
     public interface ICompanyRepository
     {
         void CreateCompany(Company company);
+        Company GetCompany(string companyId, bool trackChanges);
+        public void UpdateCompany(Company company);
     }
+
 }

@@ -8,13 +8,23 @@ namespace Shared.DTO
 {
     public record UniversityDto
     {
-        
+
         public string? UniversityUrl { get; init; }
         public string? UserName { get; init; }
         public int? CountryId { get; init; }
         public string? Bio { get; init; }
         public string? PhoneNumber { get; init; }
-        public string? CurrentPassword { get; init; } 
-        public string? NewPassword { get; init; }
+
+
+    }
+    public record EditUniversityProfileDto
+    {
+        public string? UniversityUrl { get; init; }
+        public string? UserName { get; init; }
+        public int? CountryId { get; init; }
+        public string? Bio { get; init; }
+        public string? PhoneNumber { get; init; }
+        public IEnumerable<CountryDto>? Countries { get; init; }
+
     }
 }

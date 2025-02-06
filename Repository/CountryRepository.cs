@@ -19,7 +19,10 @@ namespace Repository
         }
 
         public IEnumerable<Country> GetAllCountries(bool trackChanges) =>
-        FindAll(trackChanges).OrderBy(c => c.Name).ToList();
+           FindAll(trackChanges).OrderBy(c => c.Name).ToList();
+        public Country GetCountryById(int countryId, bool trackChanges) =>
+        FindByCondition(c => c.Id == countryId, trackChanges)
+        .SingleOrDefault();
 
     }
 }

@@ -12,15 +12,15 @@ namespace Presentation.Controllers
 {
     [Route("api/[Controller]")]
     [ApiController]
-    [Authorize]
+   // [Authorize]
     public class CountriesController : ControllerBase
     {
 
         private readonly IServiceManager _service;
         public CountriesController(IServiceManager service) => _service = service;
-       
+
         [HttpGet]
-  
+
         public IActionResult GetCompanies()
         {
             try
@@ -28,7 +28,7 @@ namespace Presentation.Controllers
                 var companies =
                 _service.CountryService.GetAllCountries(trackChanges: false);
                 return Ok(companies);
-                
+
             }
             catch
             {

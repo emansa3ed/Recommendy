@@ -1,5 +1,6 @@
 ﻿using Contracts;
 using Entities.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,6 +52,20 @@ namespace Repository
             return savedpost;
 
 
+        }
+
+        public async Task<IEnumerable<SavedPost>> GetSavedScholarshipsAsync(string studentId, bool trackChanges)
+        {
+            return await RepositoryContext.SavedPosts
+                .Where(sp => sp.StudentId == studentId && sp.Type == 'S')
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<SavedPost>> GetSavedInternshipsAsync(string studentId, bool trackChanges)
+        {
+            return await RepositoryContext.SavedPosts
+                .Where(sp => sp.StudentId == studentId && sp.Type == 'I')
+                .ToListAsync();
         }
 
 
