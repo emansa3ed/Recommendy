@@ -29,9 +29,17 @@ namespace Service
 
             if (result == null)
             {
-                var post = _repositoryManager.Intership.GetInternshipById(savedOpportunityDto.PostId, false);
-                if (post == null)
-                    return ("there is no post for this id");
+                if (savedOpportunityDto.Type == 'I')
+                {
+                    var post = _repositoryManager.Intership.GetInternshipById(savedOpportunityDto.PostId, false);
+                    if (post == null)
+                        return ("there is no Intership for this id");
+                }else
+                {
+                    var post = _repositoryManager.Scholarship.GetScholarshipById(savedOpportunityDto.PostId, false);
+                    if (post == null)
+                        return ("there is no Scholarship for this id");
+                }
                 try
                 {
                     var savedPost = _mapper.Map<SavedPost>(savedOpportunityDto);
@@ -59,9 +67,18 @@ namespace Service
             var result = _repositoryManager.OpportunityRepository.GetSavedOpportunity(savedOpportunityDto.StudentId, savedOpportunityDto.PostId, savedOpportunityDto.Type).Result;
             if (result != null)
             {
-               var post =  _repositoryManager.Intership.GetInternshipById(savedOpportunityDto.PostId ,false);
-                if (post == null)
-                    return ("there is no post for this id");
+                if (savedOpportunityDto.Type == 'I')
+                {
+                    var post = _repositoryManager.Intership.GetInternshipById(savedOpportunityDto.PostId, false);
+                    if (post == null)
+                        return ("there is no Intership for this id");
+                }
+                else
+                {
+                    var post = _repositoryManager.Scholarship.GetScholarshipById(savedOpportunityDto.PostId, false);
+                    if (post == null)
+                        return ("there is no Scholarship for this id");
+                }
                 try
                 {
                     var savedPost = _mapper.Map<SavedPost>(savedOpportunityDto);

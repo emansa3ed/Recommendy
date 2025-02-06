@@ -134,7 +134,7 @@ namespace Presentation.Controllers
                 return NotFound("User not found.");
             }
             // only allowed for student 
-            if (!user.Discriminator.Equals("Students", StringComparison.OrdinalIgnoreCase))
+            if (!user.Discriminator.Equals("Student", StringComparison.OrdinalIgnoreCase))
             {
                 return Forbid();
             }
