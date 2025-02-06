@@ -1,4 +1,4 @@
-﻿using Contracts;
+using Contracts;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -20,6 +20,7 @@ namespace Repository
         public University GetUniversity(string universityId, bool trackChanges) =>
           FindByCondition(u => u.UniversityId.Equals(universityId), trackChanges)
          .Include(u => u.User)
+         .Include(u => u.Country)
          .SingleOrDefault();
 
         public void UpdateUniversity(University university) => Update(university);
