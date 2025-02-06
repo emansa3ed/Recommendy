@@ -1,4 +1,4 @@
-﻿using Entities.Exceptions;
+using Entities.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,16 +16,26 @@ namespace Presentation.Controllers
 {
     [Route("api/companies")]
     [ApiController]
-    [Authorize]
+   // [Authorize]
     public class CompaniesController : ControllerBase
     {
         private readonly IServiceManager _service;
         public CompaniesController(IServiceManager service) => _service = service;
+
+
         [HttpGet("profile/{id}")]
         public IActionResult GetCompany(string id)
         {
-            var company = _service.CompanyService.GetCompany(id, trackChanges: false);
-            return Ok(company);
+            try
+            {
+                var company = _service.CompanyService.GetCompany(id, trackChanges: false);
+                return Ok(company);
+            }
+            catch (CompanyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+
         }
 
 
