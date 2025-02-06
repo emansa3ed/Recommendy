@@ -111,11 +111,11 @@ namespace Repository
             //    .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<University>()
-          .HasMany(u => u.Scholarships) // University has many Scholarships
-          .WithOne(s => s.University) // Scholarship belongs to one University
-          .HasForeignKey(s => s.UniversityId) // Foreign key in Scholarship
-          .OnDelete(DeleteBehavior.Cascade); // Cascade delete behavior/
-            ////////////////////////////////////////////////////////
+          .HasMany(u => u.Scholarships) 
+          .WithOne(s => s.University) 
+          .HasForeignKey(s => s.UniversityId) 
+          .OnDelete(DeleteBehavior.Cascade);
+           
 
             builder.Entity<Company>()
              .HasMany(c => c.Internships)
