@@ -65,6 +65,8 @@ namespace Recommendy
              .ForMember(dest => dest.CompanyUrl, opt => opt.MapFrom(src => src.Company.CompanyUrl))
              .ForMember(dest => dest.UniversityUrl, opt => opt.MapFrom(src => src.University.UniversityUrl));
 
+            CreateMap<SavedOpportunityDto, SavedPost>();
+
 
 
             /////////////////////////////

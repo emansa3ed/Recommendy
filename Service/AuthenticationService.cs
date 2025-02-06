@@ -27,7 +27,6 @@ namespace Service
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
         private readonly IRepositoryManager _repository;
-        private readonly IUrlHelper _urlHelper;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IServiceManager _serviceManager;
         private readonly IUserCodeService _userCodeService;
