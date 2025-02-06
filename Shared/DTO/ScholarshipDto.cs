@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Http;
 namespace Shared.DTO
 {
     public record ScholarshipDto(
-              string? Name,
+       string? Name,
        string? Description,
        decimal? Cost,
        string? Grants,

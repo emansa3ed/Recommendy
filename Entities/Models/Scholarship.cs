@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 //using  Shared.Enums;
 namespace Entities.Models
 {
@@ -33,6 +34,11 @@ namespace Entities.Models
         public Degree Degree { get; set; }
         public Funded Funded { get; set; }
         public string UniversityId { get; set; }
+
+        [ForeignKey(nameof(UniversityId))]
+        public virtual University University { get; set; }
+
+
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public Dictionary<string, string> Requirements { get; set; }
     }

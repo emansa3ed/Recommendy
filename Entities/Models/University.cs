@@ -14,5 +14,8 @@ namespace Entities.Models
         [JsonIgnore]
         public virtual User User { get; set; }
 
+        public virtual ICollection<Scholarship> Scholarships { get; set; }
+
+
     }
 }

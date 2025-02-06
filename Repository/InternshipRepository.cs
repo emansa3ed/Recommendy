@@ -40,22 +40,35 @@ namespace Repository
         {
             return await FindByCondition(i => i.CompanyId == companyId, trackChanges)
                 .Include(i => i.InternshipPositions)
-                    .ThenInclude(ip => ip.Position)
-                .ToListAsync();
+                 .ThenInclude(ip => ip.Position)
+                 .Include(i => i.Company) 
+                 .ThenInclude(c => c.User) 
+                 .ToListAsync();
         }
 
 
+
         public IEnumerable<Internship> GetAllInternships(bool trackChanges) =>
-      FindAll(trackChanges)
-          .Include(i => i.InternshipPositions)
-              .ThenInclude(ip => ip.Position)  
-          .Where(i => i.IsBanned != true)
-          .OrderByDescending(i => i.CreatedAt)
-          .ToList();
+        FindAll(trackChanges)
+        .Include(i => i.InternshipPositions)
+        .ThenInclude(ip => ip.Position)
+        .Include(i => i.Company) 
+        .ThenInclude(c => c.User)
+        .Where(i => i.IsBanned != true)
+        .OrderByDescending(i => i.CreatedAt)
+        .ToList();
 
 
-        public Internship GetInternshipById(int id, bool trackChanges) => FindByCondition(i => i.Id == id, trackChanges).Where(i => i.IsBanned != true)
-             .Include(i => i.InternshipPositions).ThenInclude(ip => ip.Position).SingleOrDefault();
 
+        public Internship GetInternshipById(int id, bool trackChanges)
+        {
+            return FindByCondition(i => i.Id == id, trackChanges)
+                .Where(i => i.IsBanned != true)
+                .Include(i => i.InternshipPositions)
+                    .ThenInclude(ip => ip.Position)
+                .Include(i => i.Company)
+                    .ThenInclude(c => c.User)
+                .FirstOrDefault();
+        }
     }
 }
