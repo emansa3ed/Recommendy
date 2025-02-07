@@ -52,10 +52,13 @@ namespace Presentation.Controllers
 
             }
             var user =  await  _userManager.FindByEmailAsync(userForRegistration.Email);
-            //Console.WriteLine(user.Id + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 
-            return Ok($"Registration successful. Please check your email to confirm your account. userId ->  {user.Id.ToString()}  ");
-
+            return StatusCode(201, new ApiResponse<string>
+            {
+                Message = "Registration successful. Please check your email to confirm your account",
+                Success = true,
+                Data = user.Id
+            });
         }
 
         [HttpPost("login")]
@@ -65,10 +68,16 @@ namespace Presentation.Controllers
                 return Unauthorized("Invalid username or password.");
 
           var user1  =  await _service.UserService.GetDetailsByUserName(user.UserName);
-       
+
             if (!user1.EmailConfirmed)
-                   return BadRequest($"User is not Confirm his email and his Id {user1.Id}");
-       
+                return StatusCode(401, new ApiResponse<string>
+                {
+                    Message = "User is not Confirm his email",
+                    Success = false,
+                    Data = user1.Id
+                });
+            
+
 
             var tokenDto = await _service.AuthenticationService .CreateToken(populateExp: true);
             return Ok(tokenDto);
