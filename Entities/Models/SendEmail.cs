@@ -9,6 +9,8 @@ namespace Entities.Models
     public  class SendEmail
     {
         public string Email { get; set; }
-        public string content{ get; set; }
+        public string content{ get; set; }  
+        ///
+
     }
 }
