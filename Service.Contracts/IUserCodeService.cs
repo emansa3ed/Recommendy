@@ -9,7 +9,8 @@ namespace Service.Contracts
      public interface IUserCodeService
     {
 
-        Task<string> GenerateUserCodeAsync(string Userid);
+        Task<string> GenerateUserCodeForConfirmtationAsync(string Userid);
+        Task<string> GenerateUserCodeForResetPasswordAsync(string UserId);
 
     }
 }

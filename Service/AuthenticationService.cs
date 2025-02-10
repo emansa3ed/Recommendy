@@ -135,7 +135,8 @@ namespace Service
                 
             }
 
-           var result1 =   await _userCodeService.GenerateUserCodeAsync(user.Id);
+           var result1 =   await _userCodeService.GenerateUserCodeForConfirmtationAsync(user.Id);
+            
              return result;
         }
         private string GenerateRandomNumericToken(int length = 8)

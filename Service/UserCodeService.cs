@@ -23,8 +23,10 @@ namespace Service
         
         }
 
-       public async Task<string> GenerateUserCodeAsync(string UserId)
+       public async Task<string> GenerateUserCodeForConfirmtationAsync(string UserId)
         {
+            
+
 
 
             try
@@ -35,6 +37,8 @@ namespace Service
                     return $"there is no user for this id  .";
 
                 }
+                if (user.EmailConfirmed == true) return "User already confirmed ";
+
                int NumOFCodes  =  _repository.UserCodeRepository.GetNumByIdAsync(UserId);
                 if (NumOFCodes >= 1)
                 {
@@ -49,7 +53,16 @@ namespace Service
                 await _repository.UserCodeRepository.AddAsync(userCode);
                 await _repository.SaveAsync();
 
-                var result = await _EmailsService.SendConfirmationEmailAsync(user.Email, token);
+                var subject = "Email Confirmation Required";
+                var body = $@"
+    <p>Dear {user?.UserName},</p>
+    <p>Thank you for registering. To complete your email verification, please use the confirmation code below:</p>
+    <h2 style='color: #2c3e50; text-align: center;'>{token}</h2>
+    <p>If you did not request this, please ignore this email.</p>
+    <p>Best regards,<br>Your Support Team</p>";
+
+
+                var result = await _EmailsService.Sendemail(user.Email, body, subject);
                 if (result == "Email sended")
                     return "Email sended";
                 else return result;
@@ -63,7 +76,94 @@ namespace Service
 
         }
 
-        private string GenerateRandomNumericToken(int length = 8)
+        public async Task<string> GenerateUserCodeForResetPasswordAsync(string UserId)
+        {
+
+            try
+            {
+                User user = _userManager.FindByIdAsync(UserId).Result;
+                if (user == null)
+                {
+
+                    return $"there is no user for this id  .";
+
+                }
+                int NumOFCodes = _repository.UserCodeRepository.GetNumByIdAsync(UserId);
+                if (NumOFCodes >= 1)
+                {
+                    return "A confirmation code was already sent. Please check your email.";
+
+                }
+                var code = GenerateRandomNumericToken();
+                UserCode userCode = new UserCode();
+                userCode.UserId = UserId;
+                userCode.Token = code;
+                userCode.ExpirationDate = DateTime.UtcNow.AddMinutes(3);
+                await _repository.UserCodeRepository.AddAsync(userCode);
+                await _repository.SaveAsync();
+
+                string subject = "Password Reset Request";
+
+
+                string message = $@"
+        <html>
+        <head>
+            <style>
+                body {{
+                    font-family: Arial, sans-serif;
+                    background-color: #f4f4f4;
+                    text-align: center;
+                    padding: 20px;
+                }}
+                .container {{
+                    background-color: #ffffff;
+                    padding: 20px;
+                    border-radius: 10px;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                    display: inline-block;
+                }}
+                .code {{
+                    font-size: 24px;
+                    font-weight: bold;
+                    color: #2c3e50;
+                    margin: 20px 0;
+                }}
+                .footer {{
+                    margin-top: 20px;
+                    font-size: 12px;
+                    color: #888;
+                }}
+            </style>
+        </head>
+        <body>
+            <div class='container'>
+                <h2>Password Reset Request</h2>
+                <p>You are receiving this email because you requested a password reset.</p>
+                <p>Please use the following verification code to complete the process:</p>
+                <p class='code'>{code}</p>
+                <p>This code is valid for <b>3 minutes</b>. Do not share it with anyone.</p>
+                <p>If you did not request a password reset, you can safely ignore this email.</p>
+            </div>
+            <p class='footer'>© {DateTime.UtcNow.Year} Support Team</p>
+        </body>
+        </html>";
+
+                var result = await _EmailsService.Sendemail(user.Email, message, subject);
+                if (result == "Email Sended")
+                    return "Email Sended";
+                else return result;
+            }
+            catch (Exception ex)
+            {
+                return $"Error Generate UserCode . {ex.Message} | Inner Exception: {ex.InnerException?.Message}";
+
+
+
+
+            }
+        }
+
+            private string GenerateRandomNumericToken(int length = 8)
         {
             var random = new Random();
             var token = new StringBuilder();

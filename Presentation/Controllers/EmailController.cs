@@ -65,7 +65,7 @@ namespace Presentation.Controllers
         {
             try
             {
-                var result = await _service.userCodeService.GenerateUserCodeAsync(userId);
+                var result = await _service.userCodeService.GenerateUserCodeForConfirmtationAsync(userId);
                 return Ok(result);
             }
             catch (Exception ex)

@@ -106,6 +106,45 @@ namespace Presentation.Controllers
 
             }
         }
-        
+
+        [HttpPost("ForgotPassword")]
+
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordDto forgotPasswordDto)
+        {
+
+            var  user =   _userManager.FindByEmailAsync(forgotPasswordDto.Email).Result;
+            if (user == null)
+                return BadRequest("Email not found");
+
+           var result=   await  _service.userCodeService.GenerateUserCodeForResetPasswordAsync(user.Id);
+
+            if (result != "Email Sended") return BadRequest("some thing error please try again");
+
+                return Ok(result);
+
+
+
+        }
+
+        [HttpPost("ResetPassword")]
+
+        public async Task<IActionResult> ResetPassword(ResetPasswordDto resetPasswordDto)
+        {
+            var user = _userManager.FindByEmailAsync(resetPasswordDto.Email).Result;
+            if (user == null)
+                return BadRequest("Email not found");
+
+             var result = await _service.EmailsService.ConfirmationForResetPasswordAsync(user.Id, resetPasswordDto.Code,resetPasswordDto.NewPassword);
+
+            if(result != "Password reset successfully")
+                return BadRequest(result);
+  
+
+                return Ok("Password reset successfully");
+           
+
+        }
+
+
     }
 }

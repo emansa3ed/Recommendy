@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Contracts;
 using Entities.Models;
+using Shared.DTO;
 
 namespace Service
 {
@@ -55,38 +56,20 @@ namespace Service
                     await client.DisconnectAsync(true);
                 }
              
-                return "Success";
+                return "Email Sended";
             }
             catch (Exception ex)
             {
                 return $"Failed. {ex.Message} | Inner Exception: {ex.InnerException?.Message}";
             }
         }
-        public async Task<string > SendConfirmationEmailAsync(string email, string token)
-        {
-            var user = _userManager.FindByEmailAsync(email).Result;
-            var subject = "Email Confirmation Required";
-            var body = $@"
-    <p>Dear {user?.UserName},</p>
-    <p>Thank you for registering. To complete your email verification, please use the confirmation code below:</p>
-    <h2 style='color: #2c3e50; text-align: center;'>{token}</h2>
-    <p>If you did not request this, please ignore this email.</p>
-    <p>Best regards,<br>Your Support Team</p>";
-
-
-
-            var result =  await Sendemail(email, body, subject);
-
-            if (result == "Success")
-                return "Email sended";
-            else return result;
-        }
+      
         public async Task<IActionResult> ConfirmEmailAsync(string  userId, string token)
         {
             var userToken = await _repository.UserCodeRepository.GetAsync(userId, token);
             if (userToken == null || userToken.ExpirationDate < DateTime.UtcNow)
             {
-                return new BadRequestObjectResult("Token not found or expired");
+                return new BadRequestObjectResult("Code not found or expired");
             }
 
 
@@ -110,6 +93,48 @@ namespace Service
 
                 return new BadRequestObjectResult($"Error confirming email. {ex.Message} | Inner Exception: {ex.InnerException?.Message}");
                 }
+        }
+
+        public async Task<string> ConfirmationForResetPasswordAsync(string userId, string token,string NewPassword)
+        {
+            var userToken = await _repository.UserCodeRepository.GetAsync(userId, token);
+            if (userToken == null || userToken.ExpirationDate < DateTime.UtcNow)
+            {
+                return new ("Code not found or expired");
+            }
+
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return new ("User not found");
+            }
+
+            try
+            {
+                var ResetResult = await _userManager.RemovePasswordAsync(user);
+                if (!ResetResult.Succeeded)
+                {
+                    return $"Failed to reset password: {string.Join(", ", ResetResult.Errors.Select(e => e.Description))}";
+                }
+
+                var AddPasswordResult = await _userManager.AddPasswordAsync(user, NewPassword);
+                if (!AddPasswordResult.Succeeded)
+                {
+                    return $"Failed to set new password: {string.Join(", ", AddPasswordResult.Errors.Select(e => e.Description))}";
+                }
+                await _userManager.UpdateAsync(user);
+
+
+                await _repository.UserCodeRepository.DeleteAsync(userToken);  
+                await _repository.SaveAsync();
+                return new ("Password reset successfully");
+            }
+            catch (Exception ex)
+            {
+
+                return new($"Error confirming email. {ex.Message} | Inner Exception: {ex.InnerException?.Message}");
+            }
         }
 
     }

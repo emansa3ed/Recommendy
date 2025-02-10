@@ -12,8 +12,9 @@ namespace Service.Contracts
     {
         public Task<string> Sendemail(string email, string Message, string? reason);
 
-         Task<string> SendConfirmationEmailAsync(string email, string token);
 
         Task<IActionResult> ConfirmEmailAsync(string userId, string token);
+        Task<string> ConfirmationForResetPasswordAsync(string userId, string token, string NewPassword);
+
     }
 }
