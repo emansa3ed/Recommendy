@@ -37,13 +37,6 @@ Presentation/obj
 
 
 
-
-
-Recommendy/appsettings.json
-Recommendy/appsettings.Development.json
-Recommendy/Migrations/*
-!Recommendy/Migrations/.gitkeep
-
 Recommendy/wwwroot/*
 !Recommendy/wwwroot/.gitkeep
 
