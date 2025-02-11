@@ -17,6 +17,7 @@ namespace Entities.Models
         {
             get; set;
         }
+       public virtual User user {  get; set; }  
     }
 
 }

@@ -109,8 +109,10 @@ namespace Presentation.Controllers
 
         [HttpPost("ForgotPassword")]
 
-        public async Task<IActionResult> ForgotPassword(ForgotPasswordDto forgotPasswordDto)
+        public async Task<IActionResult> ForgotPassword( [FromBody]ForgotPasswordDto forgotPasswordDto)
         {
+            /// هيكلمها اول لما يدوس علي  فورجت وكمان لما يكون عايز يعمل اعادة ارسال 
+            
 
             var  user =   _userManager.FindByEmailAsync(forgotPasswordDto.Email).Result;
             if (user == null)
@@ -128,8 +130,11 @@ namespace Presentation.Controllers
 
         [HttpPost("ResetPassword")]
 
-        public async Task<IActionResult> ResetPassword(ResetPasswordDto resetPasswordDto)
+        public async Task<IActionResult> ResetPassword([FromBody]ResetPasswordDto resetPasswordDto)
         {
+            /// دي عشان يأكد بس في زر انتر
+
+
             var user = _userManager.FindByEmailAsync(resetPasswordDto.Email).Result;
             if (user == null)
                 return BadRequest("Email not found");
@@ -145,6 +150,8 @@ namespace Presentation.Controllers
 
         }
 
+
+       
 
     }
 }

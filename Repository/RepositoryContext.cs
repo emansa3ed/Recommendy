@@ -96,6 +96,20 @@ namespace Repository
                 .HasForeignKey<Student>(u => u.StudentId)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            builder.Entity<User>()
+            .HasOne(u => u.Admin)
+            .WithOne(s => s.User)
+            .HasForeignKey<Admin>(u => u.AdminId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+
+                builder.Entity<User>()
+               .HasMany(u=>u.userCodes)
+               .WithOne(s=>s.user)
+               .HasForeignKey(u=>u.UserId)
+               .OnDelete(DeleteBehavior.Cascade);
+
+
 
             builder.Entity<University>()
             .HasOne(u => u.Country)
@@ -139,25 +153,25 @@ namespace Repository
                 .HasOne<Student>()
                 .WithMany()
                 .HasForeignKey(f => f.StudentId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Notification>()
                 .HasOne<User>()
                 .WithMany()
                 .HasForeignKey(n => n.UserId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Report>()
                 .HasOne<User>()
                 .WithMany()
                 .HasForeignKey(r => r.UserId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<SavedPost>()
                 .HasOne<Student>()
                 .WithMany()
                 .HasForeignKey(sp => sp.StudentId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<UserInterest>()
                 .HasOne<Student>()

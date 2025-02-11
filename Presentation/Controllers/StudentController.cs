@@ -14,7 +14,7 @@ namespace Presentation.Controllers
 {
     [Route("api/students")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles ="Student")]
     public class StudentController : ControllerBase
     {
 

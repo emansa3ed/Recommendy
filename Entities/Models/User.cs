@@ -16,6 +16,9 @@ namespace Entities.Models
         public University University { get; set; }
         public Company Company { get; set; }
         public Student Student { get; set; }
+        public Admin Admin { get; set; }
+        public virtual ICollection<UserCode> userCodes { get; set; }
+
 
 
 

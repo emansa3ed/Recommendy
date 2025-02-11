@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DTO;
@@ -89,6 +90,7 @@ namespace Presentation.Controllers
         }
 
         [HttpPost("SavedOpportunity")]
+        [Authorize(Roles = "Student")]
         public async Task<IActionResult> SavedOpportunity(  [FromBody] SavedOpportunityDto savedOpportunityDto)
         {
 
@@ -112,6 +114,7 @@ namespace Presentation.Controllers
         }
 
         [HttpDelete("UnSavedOpportunity")]
+        [Authorize(Roles = "Student")]
         public async Task<IActionResult> UnSavedOpportunity([FromBody] SavedOpportunityDto savedOpportunityDto)
         {
             try

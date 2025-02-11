@@ -6,6 +6,9 @@ namespace Entities.Models
     {
         [Key]
         public string AdminId { get; set; }
+
+        public User User { get; set; }
+
        
     }
 }
