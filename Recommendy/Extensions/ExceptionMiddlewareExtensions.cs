@@ -24,7 +24,8 @@ public static class ExceptionMiddlewareExtensions
                         BadRequestException => StatusCodes.Status400BadRequest,
                         UnauthorizedAccessException => StatusCodes.Status401Unauthorized,  
                         ValidationException => StatusCodes.Status422UnprocessableEntity,  
-                        DbUpdateException => StatusCodes.Status500InternalServerError, 
+                        DbUpdateException => StatusCodes.Status500InternalServerError,
+                        ForbiddenException => StatusCodes.Status403Forbidden,
                         _ => StatusCodes.Status500InternalServerError   
                     };
 

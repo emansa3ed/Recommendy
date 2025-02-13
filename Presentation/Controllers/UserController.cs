@@ -74,7 +74,7 @@ namespace Presentation.Controllers
             {
                 return NotFound("User not found.");
             }
-        
+           
             try
             {
                 var imageUrl = await _service.UserService.UploadProfilePictureAsync(file, user.Id);
