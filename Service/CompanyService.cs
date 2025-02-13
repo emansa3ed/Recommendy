@@ -64,14 +64,7 @@ namespace Service
             _repository.Save();
         }
 
-        public async Task<string> UploadProfilePictureAsync(IFormFile file, string companyId)
-        {
-            var company = _repository.Company.GetCompany(companyId, trackChanges: true);
-            var imageUrl = await _repository.File.UploadImage("Company", file);
-            company.User.UrlPicture = imageUrl;
-            _repository.Save();
-            return imageUrl;
-        }
+       
 
     }
 }

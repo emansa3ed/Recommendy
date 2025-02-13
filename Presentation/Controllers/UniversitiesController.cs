@@ -44,6 +44,8 @@ namespace Presentation.Controllers
 
         public async Task<IActionResult> EditProfile(string id, [FromBody] UniversityDto universityDto)
         {
+
+
             var username = User.Identity.Name;
             if (username == null)
             {
@@ -110,74 +112,10 @@ namespace Presentation.Controllers
             }
         }
 
-        [HttpPost("change-password")]
-        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto changePasswordDto)
-        {
-            if (changePasswordDto == null)
-            {
-                return BadRequest("ChangePasswordDto object is null");
-            }
-            var username = User.Identity.Name;
-            if (username == null)
-            {
-                return Unauthorized();
-            }
+        
+        
 
-            var user = await _service.UserService.GetDetailsByUserName(username);
-            if (user == null)
-            {
-                return NotFound("User not found.");
-            }
-            // only allowed for student 
-            if (!user.Discriminator.Equals("University", StringComparison.OrdinalIgnoreCase))
-            {
-                return Forbid();
-            }
-
-            try
-            {
-                await _service.UserService.ChangePasswordAsync(user.Id, changePasswordDto);
-                return NoContent();
-            }
-            catch (UniversityNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (ApplicationException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-        [HttpPost("upload-profile-picture")]
-
-        public async Task<IActionResult> UploadProfilePicture(IFormFile file)
-        {
-            var username = User.Identity.Name;
-            // if (username == null)
-            //  {
-            //  return Unauthorized();
-            //  }
-
-            var user = await _service.UserService.GetDetailsByUserName(username);
-            // if (user == null)
-            //   {
-            //  return NotFound("User not found.");
-            //   }
-            // only allowed for university 
-            // if (!user.Discriminator.Equals("University", StringComparison.OrdinalIgnoreCase))
-            // {
-            //  return Forbid();
-            // }
-            try
-            {
-                var imageUrl = await _service.UniversityService.UploadProfilePictureAsync(file, user.Id);
-                return Ok(new { ImageUrl = imageUrl });
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+       
 
     }
 }

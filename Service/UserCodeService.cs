@@ -39,7 +39,7 @@ namespace Service
                 }
                 if (user.EmailConfirmed == true) return "User already confirmed ";
 
-               int NumOFCodes  =  _repository.UserCodeRepository.GetNumByIdAsync(UserId);
+               int NumOFCodes  =    await _repository.UserCodeRepository.GetNumByIdAsync(UserId);
                 if (NumOFCodes >= 1)
                 {
                     return "A confirmation code was already sent. Please check your email.";
@@ -88,7 +88,7 @@ namespace Service
                     return $"there is no user for this id  .";
 
                 }
-                int NumOFCodes = _repository.UserCodeRepository.GetNumByIdAsync(UserId);
+                int NumOFCodes = await _repository.UserCodeRepository.GetNumByIdAsync(UserId);
                 if (NumOFCodes >= 1)
                 {
                     return "A confirmation code was already sent. Please check your email.";

@@ -4,6 +4,7 @@ using Recommendy.Extensions;
 using Repository;
 using Service.Contracts;
 using Service;
+using Microsoft.Extensions.Logging;
 
 
 namespace Recommendy
@@ -26,7 +27,12 @@ namespace Recommendy
 
 
             builder.Services.AddControllers()
-           .AddApplicationPart(typeof(Presentation.AssemblyReference).Assembly);
+           .AddApplicationPart(typeof(Presentation.AssemblyReference).Assembly)
+           .ConfigureApiBehaviorOptions(
+                options =>
+                    options.SuppressModelStateInvalidFilter = true);
+
+
             builder.Services.AddAutoMapper(typeof(Program));
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -38,6 +44,7 @@ namespace Recommendy
 
 
             var app = builder.Build();
+            app.ConfigureExceptionHandler();
 
             ///////// Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

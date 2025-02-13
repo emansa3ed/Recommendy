@@ -1,4 +1,5 @@
 ﻿using Entities.Models;
+using Microsoft.AspNetCore.Http;
 using Shared.DTO;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace Service.Contracts
         Task<User> GetDetailsByUserName(string username);
         Task<UserDto> GetDetailsbyId(string Id);
         Task ChangePasswordAsync(string studentId, ChangePasswordDto changePasswordDto);
+        Task<string> UploadProfilePictureAsync(IFormFile file, string Id);
 
 
     }

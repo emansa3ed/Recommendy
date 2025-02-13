@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Shared.DTO;
 using AutoMapper;
 using Entities.Exceptions;
+using Microsoft.AspNetCore.Http;
 
 namespace Service
 {
@@ -64,6 +65,18 @@ namespace Service
 
             var email = await _emailsService.Sendemail(user.Email, body, subject);
 
+        }
+        public async Task<string> UploadProfilePictureAsync(IFormFile file, string Id)
+        {
+            var user = _userManager.FindByIdAsync(Id).Result;
+            if (user == null)
+                throw new UserNotFoundException(Id);
+            var imageUrl = await _repository.File.UploadImage("Uploads", file);
+          
+            user.UrlPicture = imageUrl;
+            await _userManager.UpdateAsync(user);
+             await _repository.SaveAsync();
+            return imageUrl;
         }
     }
 }

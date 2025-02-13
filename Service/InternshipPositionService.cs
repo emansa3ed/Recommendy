@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Contracts;
+using Entities.GeneralResponse;
 using Entities.Models;
 using Service.Contracts;
 using Shared.DTO;

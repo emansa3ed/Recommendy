@@ -14,6 +14,6 @@ namespace Contracts
         Task AddAsync(UserCode userToken);
         Task<UserCode> GetAsync(string  userId, string token);
         Task DeleteAsync(UserCode userToken);
-         int GetNumByIdAsync( string UserId);
+        Task<int> GetNumByIdAsync( string UserId);
     }
 }

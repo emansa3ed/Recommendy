@@ -21,13 +21,13 @@ namespace Presentation.Controllers
 
         [HttpGet]
 
-        public IActionResult GetCompanies()
+        public IActionResult GetCountries()
         {
             try
             {
-                var companies =
+                var Countries =
                 _service.CountryService.GetAllCountries(trackChanges: false);
-                return Ok(companies);
+                return Ok(Countries);
 
             }
             catch

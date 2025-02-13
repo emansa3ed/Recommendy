@@ -1,5 +1,6 @@
 using AutoMapper;
 using Contracts;
+using Entities.GeneralResponse;
 using Entities.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;

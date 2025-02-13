@@ -13,6 +13,6 @@ namespace Service.Contracts
     {
         CompanyViewDto GetCompany(string companyId, bool trackChanges);
         Task UpdateCompany(string companyId, CompanyDto companyDto, bool trackChanges);
-        Task<string> UploadProfilePictureAsync(IFormFile file, string universityId);
+       
     }
 }

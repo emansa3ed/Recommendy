@@ -51,14 +51,7 @@ namespace Service
             _repository.Save();
         }
 
-        public async Task<string> UploadProfilePictureAsync(IFormFile file, string studentId)
-        {
-            var student = _repository.Student.GetStudent(studentId, trackChanges: true);
-            var imageUrl = await _repository.File.UploadImage("Students", file);
-            student.User.UrlPicture = imageUrl;
-            _repository.Save();
-            return imageUrl;
-        }
+        
         
        
     }

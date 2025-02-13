@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Shared.DTO;
+using Entities.GeneralResponse;
 
 namespace Service.Contracts
 {

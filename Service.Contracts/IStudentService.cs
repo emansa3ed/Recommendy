@@ -13,7 +13,6 @@ namespace Service.Contracts
         StudentDto GetStudent(string studentId, bool trackChanges);
       
 
-        Task<string> UploadProfilePictureAsync(IFormFile file, string studentId);
         Task UpdateStudentProfileAsync(string studentId, StudentForUpdateDto studentForUpdate);
 
     }
