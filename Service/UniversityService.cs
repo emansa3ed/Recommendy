@@ -26,9 +26,9 @@ namespace Service
             _mapper = mapper;
             _userManager = userManager;
         }
-        public UniversityViewDto GetUniversity(string id, bool trackChanges)
+        public async Task<UniversityViewDto> GetUniversityAsync(string id, bool trackChanges)
         {
-            var university = _repository.university.GetUniversity(id, trackChanges);
+            var university = await _repository.university.GetUniversityAsync(id, trackChanges);
             if (university is null)
                 throw new UniversityNotFoundException(id);
             var universityviewDto = _mapper.Map<UniversityViewDto>(university);
@@ -37,7 +37,7 @@ namespace Service
 
         public async Task UpdateUniversity(string universityId, UniversityDto universityDto, bool trackChanges)
         {
-            var university = _repository.university.GetUniversity(universityId, trackChanges);
+            var university = await _repository.university.GetUniversityAsync(universityId, trackChanges);
             if (university == null)
             {
                 throw new UniversityNotFoundException(universityId);
@@ -59,11 +59,8 @@ namespace Service
             {
                 university.User.PhoneNumber = universityDto.PhoneNumber;
             }
-            
-           
         
-        _repository.university.UpdateUniversity(university);
-        _repository.Save();
+            await _repository.SaveAsync();
         }
 
         

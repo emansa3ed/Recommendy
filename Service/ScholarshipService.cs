@@ -127,9 +127,9 @@ namespace Service
 
 
 
-        public ScholarshipDto GetScholarship(string universityId, int id, bool trackChanges)
+        public async Task<ScholarshipDto> GetScholarshipAsync(string universityId, int id, bool trackChanges)
         {
-            var university = _repository.university.GetUniversity(universityId, trackChanges);
+            var university = await _repository.university.GetUniversityAsync(universityId, trackChanges);
             if (university is null)
                 throw new UniversityNotFoundException(universityId);
 
@@ -141,9 +141,9 @@ namespace Service
             return scholarship;
         }
 
-        public async Task UpdateScholarshipForUniversity(string universityId, int id, ScholarshipDto scholarshipDto, bool trackChanges)
+        public async Task UpdateScholarshipForUniversityAsync(string universityId, int id, ScholarshipDto scholarshipDto, bool trackChanges)
         {
-            var university = _repository.university.GetUniversity(universityId, trackChanges);
+            var university = await _repository.university.GetUniversityAsync(universityId, trackChanges);
             if (university is null)
                 throw new UniversityNotFoundException(universityId);
 
@@ -207,10 +207,10 @@ namespace Service
         }
 
 
-        public void DeleteScholarshipForUniversity(string universityId, int id, bool trackChanges)
+        public async Task DeleteScholarshipForUniversityAsync(string universityId, int id, bool trackChanges)
         {
 
-            var university = _repository.university.GetUniversity(universityId, trackChanges);
+            var university = await _repository.university.GetUniversityAsync(universityId, trackChanges);
             if (university is null)
                 throw new UniversityNotFoundException(universityId);
 

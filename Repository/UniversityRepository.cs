@@ -17,11 +17,11 @@ namespace Repository
         }
 
         public void CreateUniversity(University university) => Create(university);
-        public University GetUniversity(string universityId, bool trackChanges) =>
-          FindByCondition(u => u.UniversityId.Equals(universityId), trackChanges)
+        public async Task<University> GetUniversityAsync(string universityId, bool trackChanges) =>
+          await FindByCondition(u => u.UniversityId.Equals(universityId), trackChanges)
          .Include(u => u.User)
          .Include(u => u.Country)
-         .SingleOrDefault();
+         .SingleOrDefaultAsync();
 
         public void UpdateUniversity(University university) => Update(university);
     }

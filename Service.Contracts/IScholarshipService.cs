@@ -8,7 +8,7 @@ using Shared.DTO;
 namespace Service.Contracts
 {
     public interface IScholarshipService
-    {
+    { 
 
         Task<IEnumerable<EditedScholarshipDto>> GetAllScholarshipsForUniversity(string universityId, bool trackChanges);
         Task<EditedScholarshipDto> CreateScholarshipForUniversity(string universityId, ScholarshipForCreationDto scholarshipForCreation, bool trackChanges);
@@ -21,10 +21,10 @@ namespace Service.Contracts
 
 
 
-        ScholarshipDto GetScholarship(string universityId, int id, bool trackChanges);
-        Task UpdateScholarshipForUniversity(string universityId, int id, ScholarshipDto scholarshipForUpdateDto, 
+		Task<ScholarshipDto> GetScholarshipAsync(string universityId, int id, bool trackChanges);
+        Task UpdateScholarshipForUniversityAsync(string universityId, int id, ScholarshipDto scholarshipForUpdateDto, 
         bool trackChanges);
-        void DeleteScholarshipForUniversity(string universityId, int id, bool trackChanges);
+		Task DeleteScholarshipForUniversityAsync(string universityId, int id, bool trackChanges);
 
 
     }

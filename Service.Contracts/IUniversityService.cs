@@ -10,7 +10,7 @@ namespace Service.Contracts
 {
     public interface IUniversityService
     {
-        UniversityViewDto GetUniversity(string universityId, bool trackChanges);
+        Task<UniversityViewDto> GetUniversityAsync(string universityId, bool trackChanges);
         Task UpdateUniversity(string universityId, UniversityDto universityDto, bool trackChanges);
 
 
