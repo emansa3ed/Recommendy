@@ -24,9 +24,10 @@ namespace Recommendy
             builder.Services.AddScoped<IEmailsService, EmailsService>();
             builder.Services.AddScoped< IUserCodeService , UserCodeService > ();
             builder.Services.AddScoped<IFileRepository, FileRepository>();
+			builder.Services.AddHttpClient();
 
 
-            builder.Services.AddControllers()
+			builder.Services.AddControllers()
            .AddApplicationPart(typeof(Presentation.AssemblyReference).Assembly)
            .ConfigureApiBehaviorOptions(
                 options =>

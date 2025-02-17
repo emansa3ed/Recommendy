@@ -32,17 +32,18 @@ namespace Service
         private readonly Lazy<IStudentService> _studentService;
         private readonly Lazy<ICompanyService> _companyService;
         private readonly ILogger<ServiceManager> _logger;
+		private readonly HttpClient _httpClient;
 
 
-        public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper,
+		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper,
             UserManager<User> userManager,IConfiguration configuration, 
             IWebHostEnvironment _webHostEnvironment, ILogger<ServiceManager> logger, 
-            ILoggerFactory loggerFactory, IHttpContextAccessor httpContextAccessor, IEmailsService emailsService, IUserCodeService userCodeService)
+            ILoggerFactory loggerFactory, IHttpContextAccessor httpContextAccessor, IEmailsService emailsService, IUserCodeService userCodeService,HttpClient httpClient)
         {
             _logger = logger;
 
             _countryService = new Lazy<ICountryService>(() => new  CountryService(repositoryManager, mapper));
-            _authenticationService = new Lazy<IAuthenticationService>(() => new AuthenticationService(mapper, userManager, configuration, repositoryManager ,httpContextAccessor , userCodeService));
+            _authenticationService = new Lazy<IAuthenticationService>(() => new AuthenticationService(mapper, userManager, configuration, repositoryManager ,httpContextAccessor , userCodeService,httpClient));
            _userService = new Lazy<IUserService>(()=>  new UserService(repositoryManager,userManager ,mapper , emailsService));
             _internshipService =    new Lazy<IInternshipService>(() =>  new InternshipService(repositoryManager , mapper));
             _internshipPositionService = new Lazy<IInternshipPositionService>(() => new InternshipPositionService(repositoryManager ,mapper));  

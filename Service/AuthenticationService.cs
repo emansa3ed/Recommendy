@@ -17,6 +17,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Entities.Exceptions;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
+using System.Text.Json;
 
 namespace Service
 {
@@ -30,13 +32,13 @@ namespace Service
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IServiceManager _serviceManager;
         private readonly IUserCodeService _userCodeService;
+		private readonly HttpClient _httpClient;
 
 
-
-        private User? _user;
+		private User? _user;
 
         public AuthenticationService(IMapper mapper, UserManager<User> userManager, 
-            IConfiguration configuration ,IRepositoryManager repository  , IHttpContextAccessor httpContextAccessor , IUserCodeService userCodeService)
+            IConfiguration configuration ,IRepositoryManager repository  , IHttpContextAccessor httpContextAccessor , IUserCodeService userCodeService, HttpClient httpClient)
         {
             _mapper = mapper;
             _userManager = userManager;
@@ -44,11 +46,10 @@ namespace Service
             _repository = repository;
             _httpContextAccessor = httpContextAccessor;
             _userCodeService = userCodeService;
-            
-           
-        }
+			_httpClient = httpClient;
+		}
 
-        public async Task<IdentityResult> RegisterUser(UserForRegistrationDto userForRegistration)
+		public async Task<IdentityResult> RegisterUser(UserForRegistrationDto userForRegistration, HttpContext HttpContext)
         {
 
           if (userForRegistration.Roles.Any(role => role.Equals("University", StringComparison.OrdinalIgnoreCase) ||  role.Equals("Company", StringComparison.OrdinalIgnoreCase)))
@@ -129,8 +130,19 @@ namespace Service
                     University university = new University();
                     university.UniversityId = user.Id;
                     university.UniversityUrl = userForRegistration.Url;
-                    _repository.university.CreateUniversity(university);
-                    _repository.SaveAsync().Wait();
+                    var CounryName = await GetCounryName(HttpContext);
+                    var res = _repository.Country.GetAllCountries(false).Where(c=>c.Name==CounryName).SingleOrDefault();
+                    if (res != null)
+                        university.CountryId = res.Id;
+                    else
+					{
+						Country country = new Country();
+						country.Name = CounryName;
+						_repository.Country.CreateCountry(country);
+						university.Country = country;
+					}
+					_repository.university.CreateUniversity(university);
+					await _repository.SaveAsync();
                 }
                 
             }
@@ -139,6 +151,22 @@ namespace Service
             
              return result;
         }
+
+        private async Task<string> GetCounryName(HttpContext HttpContext)
+        {
+			var ip = HttpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault() ?? HttpContext.Connection.RemoteIpAddress?.ToString();
+			//ip = "101.46.224.0"; //test with Germany ip
+			if (ip == "::1" || ip == "127.0.0.1") // Handle localhost
+				return "Egypt";
+			var url = $"http://ip-api.com/json/{ip}";
+			var response = await _httpClient.GetStringAsync(url);
+			var json = JsonDocument.Parse(response);
+
+			var country = json.RootElement.GetProperty("country").GetString();
+			var city = json.RootElement.GetProperty("city").GetString();
+            return country;
+		}
+
         private string GenerateRandomNumericToken(int length = 8)
         {
             var random = new Random();
