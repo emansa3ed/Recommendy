@@ -1,4 +1,5 @@
 using Entities.Exceptions;
+using Entities.GeneralResponse;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,100 +23,46 @@ namespace Presentation.Controllers
         private readonly IServiceManager _service;
         public UniversitiesController(IServiceManager service) => _service = service;
         [HttpGet("profile/{id}")]
-        public IActionResult GetUniversity(string id)
+        public async Task<IActionResult> GetUniversity(string id)
         {
-            try
-            {
-                var university = _service.UniversityService.GetUniversity(id, trackChanges: false);
-                return Ok(university);
-            }
-            catch (UniversityNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Internal server error");
-            }
+            var university = await _service.UniversityService.GetUniversityAsync(id, trackChanges: false);
+            return Ok(new ApiResponse<UniversityViewDto> { Success=true,Data=university});
         }
 
 
-        [HttpPatch("edit-profile/{id}")]
+        [HttpPut("edit-profile/{id}")]
 
         public async Task<IActionResult> EditProfile(string id, [FromBody] UniversityDto universityDto)
         {
-
-
             var username = User.Identity.Name;
-            if (username == null)
-            {
-                return Unauthorized();
-            }
             var user = await _service.UserService.GetDetailsByUserName(username);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            // only allowed for university 
-            if (!user.Discriminator.Equals("University", StringComparison.OrdinalIgnoreCase))
-            {
-                return Forbid();
-            }
-            try
-            {
-                await _service.UniversityService.UpdateUniversity(id, universityDto, trackChanges: true);
-                return NoContent();
-            }
-            catch (UniversityNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (CountryNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Internal server error");
-            }
+            await _service.UniversityService.UpdateUniversity(id, universityDto, trackChanges: true);
+            return NoContent();
         }
+
+
         [HttpGet("edit-profile/{id}")]
-        public IActionResult GetEditProfile(string id)
+        public async Task<IActionResult> GetEditProfile(string id)
         {
-            try
+            var university =await _service.UniversityService.GetUniversityAsync(id, trackChanges: false);
+
+
+            var countries = _service.CountryService.GetAllCountries(trackChanges: false);
+
+
+            var response = new EditUniversityProfileDto
             {
-                var university = _service.UniversityService.GetUniversity(id, trackChanges: false);
+                UniversityUrl = university.UniversityUrl,
+                UserName = university.UserName,
+                CountryId = university.CountryId,
+                Bio = university.Bio,
+                PhoneNumber = university.PhoneNumber,
+                Countries = countries
+            };
 
-
-                var countries = _service.CountryService.GetAllCountries(trackChanges: false);
-
-
-                var response = new EditUniversityProfileDto
-                {
-                    UniversityUrl = university.UniversityUrl,
-                    UserName = university.UserName,
-                    CountryId = university.CountryId,
-                    Bio = university.Bio,
-                    PhoneNumber = university.PhoneNumber,
-                    Countries = countries
-                };
-
-                return Ok(response);
-            }
-            catch (UniversityNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Internal server error");
-            }
+            return Ok(new ApiResponse<EditUniversityProfileDto> { Success=true,Data=response});
         }
 
-        
-        
-
-       
 
     }
 }

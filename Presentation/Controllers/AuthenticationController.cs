@@ -35,7 +35,7 @@ namespace Presentation.Controllers
             try
             {
                 var result = await
-               _service.AuthenticationService.RegisterUser(userForRegistration);
+               _service.AuthenticationService.RegisterUser(userForRegistration,Request.HttpContext);
                 if (!result.Succeeded)
                 {
                     foreach (var error in result.Errors)

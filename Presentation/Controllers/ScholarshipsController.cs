@@ -157,7 +157,7 @@ namespace Presentation.Controllers
                 return Forbid();
             }
 
-            await _service.ScholarshipService.UpdateScholarshipForUniversity(universityId, id, scholarshipDto, trackChanges: true);
+            await _service.ScholarshipService.UpdateScholarshipForUniversityAsync(universityId, id, scholarshipDto, trackChanges: true);
             return NoContent();
         }
 
@@ -186,7 +186,7 @@ namespace Presentation.Controllers
        //}
        try
        {
-           _service.ScholarshipService.DeleteScholarshipForUniversity(universityId, id, trackChanges: false);
+           await _service.ScholarshipService.DeleteScholarshipForUniversityAsync(universityId, id, trackChanges: false);
            return NoContent();
        }
        catch (UniversityNotFoundException ex)

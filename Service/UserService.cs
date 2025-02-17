@@ -31,9 +31,10 @@ namespace Service
 
         public  async Task<User> GetDetailsByUserName(string username)
         {
-             var user =  await _userManager.FindByNameAsync(username);
-
-            return user;
+            var user =  await _userManager.FindByNameAsync(username);
+            if (user == null)
+				throw new UserNotFoundException(username);
+			return user;
         }
 
         public async Task<UserDto> GetDetailsbyId(string Id)

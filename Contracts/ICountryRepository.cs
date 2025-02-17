@@ -11,5 +11,7 @@ namespace Contracts
     {
         IEnumerable<Country> GetAllCountries(bool trackChanges);
         Country GetCountryById(int countryId, bool trackChanges);
-    }
+		int CreateCountry(Country Country);
+
+	}
 }

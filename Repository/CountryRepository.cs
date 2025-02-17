@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Contracts;
 using Entities.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Repository
 {
@@ -24,5 +25,10 @@ namespace Repository
         FindByCondition(c => c.Id == countryId, trackChanges)
         .SingleOrDefault();
 
-    }
+		public int CreateCountry(Country Country)
+        {
+            Create(Country);
+            return Country.Id;
+		}
+	}
 }
