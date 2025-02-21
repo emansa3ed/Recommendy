@@ -21,7 +21,7 @@ namespace Presentation.Controllers
     //[Route("api/[controller]")]
     [Route("api/universities/{universityId}/scholarships")]
     [ApiController]
-   // [Authorize(Roles ="University")]
+    [Authorize(Roles ="University")]
     public class ScholarshipsController : ControllerBase
     {
         private readonly IServiceManager _service;
