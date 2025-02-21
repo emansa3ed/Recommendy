@@ -27,7 +27,23 @@ namespace Recommendy
 
             CreateMap<Scholarship, ScholarshipDto>();
 
-            CreateMap<University, UniversityViewDto>()
+			CreateMap<ScholarshipDto, Scholarship>()
+	        .ForMember(dest => dest.Name, opt => opt.MapFrom((src, dest) => src.Name ?? dest.Name))
+	        .ForMember(dest => dest.Cost, opt => opt.MapFrom((src, dest) => src.Cost ?? dest.Cost))
+	        .ForMember(dest => dest.ApplicationDeadline, opt => opt.MapFrom((src, dest) => src.ApplicationDeadline ?? dest.ApplicationDeadline))
+	        .ForMember(dest => dest.StartDate, opt => opt.MapFrom((src, dest) => src.StartDate ?? dest.StartDate))
+	        .ForMember(dest => dest.Duration, opt => opt.MapFrom((src, dest) => src.Duration ?? dest.Duration))
+	        .ForMember(dest => dest.Degree, opt => opt.MapFrom((src, dest) => src.Degree ?? dest.Degree))
+	        .ForMember(dest => dest.Funded, opt => opt.MapFrom((src, dest) => src.Funded ?? dest.Funded))
+	        .ForMember(dest => dest.Description, opt => opt.MapFrom((src, dest) => src.Description ?? dest.Description))
+	        .ForMember(dest => dest.Grants, opt => opt.MapFrom((src, dest) => src.Grants ?? dest.Grants))
+	        .ForMember(dest => dest.UrlApplicationForm, opt => opt.MapFrom((src, dest) => src.UrlApplicationForm ?? dest.UrlApplicationForm))
+	        .ForMember(dest => dest.EligibleGrade, opt => opt.MapFrom((src, dest) => src.EligibleGrade ?? dest.EligibleGrade))
+	        .ForMember(dest => dest.Requirements, opt => opt.MapFrom((src, dest) => src.Requirements ?? dest.Requirements))
+	        .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
+
+			CreateMap<University, UniversityViewDto>()
                  .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
                  .ForMember(dest => dest.Bio, opt => opt.MapFrom(src => src.User.Bio))
                  .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.User.PhoneNumber))
