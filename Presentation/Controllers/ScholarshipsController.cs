@@ -14,13 +14,14 @@ using System.Threading.Tasks;
 using Entities.Exceptions;
 using Entities.GeneralResponse;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Shared.RequestFeatures;
 
 namespace Presentation.Controllers
 {
     //[Route("api/[controller]")]
     [Route("api/universities/{universityId}/scholarships")]
     [ApiController]
-    [Authorize(Roles ="University")]
+   // [Authorize(Roles ="University")]
     public class ScholarshipsController : ControllerBase
     {
         private readonly IServiceManager _service;
@@ -35,13 +36,14 @@ namespace Presentation.Controllers
 
 
         [HttpGet]
-        public async Task<ActionResult<ApiResponse<IEnumerable<EditedScholarshipDto>>>> GetScholarshipsForUniversity([FromRoute] string universityId)
+        public async Task<ActionResult<ApiResponse<PagedList<EditedScholarshipDto>>>> GetScholarshipsForUniversity([FromRoute] string universityId, [FromQuery] ScholarshipsParameters scholarshipsParameters)
         {
             var scholarships = await _service.ScholarshipService
-                .GetAllScholarshipsForUniversity(universityId, trackChanges: false);
+                .GetAllScholarshipsForUniversity(universityId, scholarshipsParameters, trackChanges: false);
             if (!scholarships.Any())
-                return Ok(new ApiResponse<IEnumerable<EditedScholarshipDto>> { Success=true,Data=null,Message= $"No scholarships found for university with ID: {universityId}" });
-			return Ok(new ApiResponse<IEnumerable<EditedScholarshipDto>> { Success = true, Data = scholarships});
+                return Ok(new ApiResponse<PagedList<EditedScholarshipDto>> { Success=true,Data=null,Message= $"No scholarships found for university with ID: {universityId}" });
+			Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(scholarships.MetaData));
+			return Ok(new ApiResponse<PagedList<EditedScholarshipDto>> { Success = true, Data = scholarships});
 		}
 
 

@@ -11,6 +11,8 @@ using Entities.Exceptions;
 using Entities.Models;
 using Microsoft.Extensions.Logging;
 using System.Net.NetworkInformation;
+using Shared.RequestFeatures;
+using System.Collections.Concurrent;
 
 namespace Service
 {
@@ -28,7 +30,7 @@ namespace Service
         }
 
 
-        public async Task<IEnumerable<EditedScholarshipDto>> GetAllScholarshipsForUniversity(string universityId, bool trackChanges)
+        public async Task<PagedList<EditedScholarshipDto>> GetAllScholarshipsForUniversity(string universityId, ScholarshipsParameters scholarshipsParameters, bool trackChanges)
         {
 
             var university = await _repository.university.GetUniversityAsync(universityId, trackChanges);
@@ -36,13 +38,15 @@ namespace Service
             if (university == null)
                 throw new UniversityNotFoundException(universityId);
 
-            var scholarships = await _repository.Scholarship.GetAllScholarshipsAsync(universityId, trackChanges);
-            return _mapper.Map<IEnumerable<EditedScholarshipDto>>(scholarships);
+            var scholarships = await _repository.Scholarship.GetAllScholarshipsAsync(universityId, scholarshipsParameters, trackChanges);
 
-        }
+			var res = _mapper.Map<List<EditedScholarshipDto>>(scholarships);
+
+			return new PagedList<EditedScholarshipDto>(res, scholarships.MetaData.TotalCount, scholarshipsParameters.PageNumber, scholarshipsParameters.PageSize);
+		}
 
 
-        public async Task<EditedScholarshipDto> CreateScholarshipForUniversity(string universityId,
+		public async Task<EditedScholarshipDto> CreateScholarshipForUniversity(string universityId,
             ScholarshipForCreationDto scholarshipForCreation, bool trackChanges)
         {
             string url = _repository.File.UploadImage("Scholarships", scholarshipForCreation.ImageFile).Result;

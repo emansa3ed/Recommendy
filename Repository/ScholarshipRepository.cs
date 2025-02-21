@@ -1,7 +1,10 @@
 using Contracts;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
+using Repository.Extensions;
+using Shared.RequestFeatures;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,12 +19,20 @@ namespace Repository
         {
         }
 
-        public async Task<IEnumerable<Scholarship>> GetAllScholarshipsAsync(string universityId, bool trackChanges) =>
-          await FindByCondition(s => s.UniversityId.Equals(universityId), trackChanges)
-                .OrderBy(s => s.Name).ToListAsync();
+        public async Task<PagedList<Scholarship>> GetAllScholarshipsAsync(string universityId, ScholarshipsParameters scholarshipsParameters, bool trackChanges)
+        {
+			var res = await FindByCondition(s => s.UniversityId.Equals(universityId), trackChanges)
+			    .Paging(scholarshipsParameters.PageNumber, scholarshipsParameters.PageSize)
+			    .Filter(scholarshipsParameters.fund, scholarshipsParameters.degree)
+                .Search(scholarshipsParameters.searchTerm)
+				.ToListAsync();
+			var count = await FindByCondition(s => s.UniversityId.Equals(universityId), trackChanges).CountAsync();
+
+			return new PagedList<Scholarship>(res, count, scholarshipsParameters.PageNumber, scholarshipsParameters.PageSize);
+		}
 
 
-        public void CreateScholarship(Scholarship scholarship) => Create(scholarship);
+		public void CreateScholarship(Scholarship scholarship) => Create(scholarship);
 
 
         public Scholarship GetScholarship(string universityId, int id, bool trackChanges) =>
