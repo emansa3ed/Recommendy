@@ -33,8 +33,9 @@ public static class ExceptionMiddlewareExtensions
                     {
                         StatusCode = context.Response.StatusCode,
                         Message = contextFeature.Error.Message,
-                       
-                    }.ToString()); ;
+						Details = (app.Environment.IsProduction()) ? null :contextFeature.Error.ToString()
+
+					}.ToString());
                 }
             });
         });

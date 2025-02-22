@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Shared.DTO;
+using Shared.RequestFeatures;
 
 namespace Service.Contracts
 {
     public interface IScholarshipService
     { 
 
-        Task<IEnumerable<EditedScholarshipDto>> GetAllScholarshipsForUniversity(string universityId, bool trackChanges);
+        Task<PagedList<EditedScholarshipDto>> GetAllScholarshipsForUniversity(string universityId, ScholarshipsParameters scholarshipsParameters, bool trackChanges);
         Task<EditedScholarshipDto> CreateScholarshipForUniversity(string universityId, ScholarshipForCreationDto scholarshipForCreation, bool trackChanges);
 
 

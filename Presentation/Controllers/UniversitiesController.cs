@@ -23,7 +23,7 @@ namespace Presentation.Controllers
         private readonly IServiceManager _service;
         public UniversitiesController(IServiceManager service) => _service = service;
         [HttpGet("profile/{id}")]
-        public async Task<IActionResult> GetUniversity(string id)
+        public async Task<ActionResult<ApiResponse<UniversityViewDto>>> GetUniversity(string id)
         {
             var university = await _service.UniversityService.GetUniversityAsync(id, trackChanges: false);
             return Ok(new ApiResponse<UniversityViewDto> { Success=true,Data=university});
@@ -42,7 +42,7 @@ namespace Presentation.Controllers
 
 
         [HttpGet("edit-profile/{id}")]
-        public async Task<IActionResult> GetEditProfile(string id)
+        public async Task<ActionResult<ApiResponse<EditUniversityProfileDto>>> GetEditProfile(string id)
         {
             var university =await _service.UniversityService.GetUniversityAsync(id, trackChanges: false);
 

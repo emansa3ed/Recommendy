@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Entities.Models;
+using Shared.RequestFeatures;
 
 namespace Contracts
 {
   
         public interface IScholarshipRepository
         {
-            Task<IEnumerable<Scholarship>> GetAllScholarshipsAsync(string universityId, bool trackChanges);
+            Task<PagedList<Scholarship>> GetAllScholarshipsAsync(string universityId, ScholarshipsParameters scholarshipsParameters, bool trackChanges);
             Scholarship GetScholarship(string universityId, int id, bool trackChanges);
             void CreateScholarship(Scholarship scholarship);
             void UpdateScholarship(Scholarship scholarship);

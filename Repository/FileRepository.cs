@@ -21,7 +21,7 @@ namespace Repository
         {
             if (file == null || file.Length == 0)
             {
-                return "NoImage";
+                return null;
             }
 
             var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
