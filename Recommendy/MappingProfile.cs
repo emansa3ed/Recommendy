@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Entities.Models;
 using Shared.DTO;
+using Shared.DTO.Feedback;
 
 namespace Recommendy
 {
@@ -26,6 +27,8 @@ namespace Recommendy
 
 
             CreateMap<Scholarship, ScholarshipDto>();
+
+            CreateMap<FeedbackCreationDto, Feedback>();
 
 			CreateMap<ScholarshipDto, Scholarship>()
 	        .ForMember(dest => dest.Name, opt => opt.MapFrom((src, dest) => src.Name ?? dest.Name))
