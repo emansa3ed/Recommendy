@@ -23,7 +23,6 @@ namespace Shared.RequestFeatures
 			}
 		}
 
-		public string? searchTerm { get; set; }
 		//public string? ordereby { get; set; }
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using Entities.Models;
+using Shared.RequestFeatures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,7 @@ namespace Contracts
 		void CreateFeedback(Feedback feedback);
 		void DeleteFeedback(Feedback feedback);
 
-		Task<Feedback> GetFeedbackById(int FeedbackId, bool TrackChanges = false);
+		Task<Feedback> GetFeedbackById(int? FeedbackId, bool TrackChanges = false);
+		Task<PagedList<Feedback>> GetAllFeedbackAsync(int PostId, FeedBackParameters feedBack, bool TrackChanges = false);
 	}
 }

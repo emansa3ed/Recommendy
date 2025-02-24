@@ -30,6 +30,8 @@ namespace Recommendy
 
             CreateMap<FeedbackCreationDto, Feedback>();
 
+            CreateMap<Feedback, FeedBackDto>();
+
 			CreateMap<ScholarshipDto, Scholarship>()
 	        .ForMember(dest => dest.Name, opt => opt.MapFrom((src, dest) => src.Name ?? dest.Name))
 	        .ForMember(dest => dest.Cost, opt => opt.MapFrom((src, dest) => src.Cost ?? dest.Cost))

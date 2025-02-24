@@ -3,7 +3,9 @@ Recommendy/bin
 Recommendy/obj
 Recommendy/appsettings.json
 
-
+RecommendyUnitTests/.vs
+RecommendyUnitTests/bin
+RecommendyUnitTests/obj
 
 Entities/.vs
 Entities/bin

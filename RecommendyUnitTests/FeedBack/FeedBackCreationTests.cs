@@ -22,7 +22,7 @@ namespace RecommendyUnitTests.FeedBack
             var mockServiceManager = new Mock<IServiceManager>();
             mockServiceManager.Setup(x => x.FeedbackService.CreateFeedbackAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<FeedbackCreationDto>())).Returns(Task.CompletedTask);
             var controller = new FeedBackController(mockServiceManager.Object);
-            var dto = new FeedbackCreationDto() { Type = FeedbackType.Scholarship, Content = "Good", Rating = 5 };
+            var dto = new FeedbackCreationDto() { Type = FeedbackType.Scholarship, Content = "Good", Rating = 5, StudentId = "a" };
 
             //Act
             controller.ModelState.Clear(); // Clear any previous state
@@ -33,7 +33,7 @@ namespace RecommendyUnitTests.FeedBack
             {
                 controller.ModelState.AddModelError(string.Empty, validationResult.ErrorMessage);
             }
-            var res = await controller.CreateFeedBack(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<string>(), dto);
+            var res = await controller.CreateFeedBack(It.IsAny<string>(), It.IsAny<int>(), dto);
 
             //Assert
             var okResult = Assert.IsType<OkResult>(res);
@@ -66,7 +66,7 @@ namespace RecommendyUnitTests.FeedBack
             }
 
 
-            var res = await controller.CreateFeedBack("1", 1, "1", dto);
+            var res = await controller.CreateFeedBack("1", 1, dto);
 
             //Assert
             var BadRequestResult = Assert.IsType<BadRequestObjectResult>(res);
@@ -80,7 +80,7 @@ namespace RecommendyUnitTests.FeedBack
             var mockServiceManager = new Mock<IServiceManager>();
             mockServiceManager.Setup(x => x.FeedbackService.CreateFeedbackAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<FeedbackCreationDto>())).Throws(new ScholarshipNotFoundException(1));
             var controller = new FeedBackController(mockServiceManager.Object);
-            var dto = new FeedbackCreationDto() { Type = FeedbackType.Scholarship, Content = "Good", Rating = 5 };
+            var dto = new FeedbackCreationDto() { Type = FeedbackType.Scholarship, Content = "Good", Rating = 5, StudentId = "a" };
 
             //Act
             controller.ModelState.Clear(); // Clear any previous state
@@ -97,7 +97,7 @@ namespace RecommendyUnitTests.FeedBack
             // Assert
             try
             {
-                var res = await controller.CreateFeedBack("1", 1,"1", dto);
+                var res = await controller.CreateFeedBack("1", 1, dto);
                 var notFoundResult = Assert.IsType<NotFoundObjectResult>(res);
             }
             catch (Exception e)
@@ -114,7 +114,7 @@ namespace RecommendyUnitTests.FeedBack
             var mockServiceManager = new Mock<IServiceManager>();
             mockServiceManager.Setup(x => x.FeedbackService.CreateFeedbackAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<FeedbackCreationDto>())).Throws(new StudentNotFoundException("ID"));
             var controller = new FeedBackController(mockServiceManager.Object);
-            var dto = new FeedbackCreationDto() { Type = FeedbackType.Scholarship, Content = "Good", Rating = 5 };
+            var dto = new FeedbackCreationDto() { Type = FeedbackType.Scholarship, Content = "Good", Rating = 5,StudentId="a" };
 
             //Act
             controller.ModelState.Clear(); // Clear any previous state
@@ -131,7 +131,7 @@ namespace RecommendyUnitTests.FeedBack
             // Assert
             try
             {
-                var res = await controller.CreateFeedBack("1", 1,"1", dto);
+                var res = await controller.CreateFeedBack("1", 1,dto);
                 var notFoundResult = Assert.IsType<NotFoundObjectResult>(res);
             }
             catch (Exception e)
