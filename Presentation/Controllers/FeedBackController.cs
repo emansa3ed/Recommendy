@@ -16,12 +16,13 @@ namespace Presentation.Controllers
 {
 	[Route("api/Companies/{CompanyID}/Posts/{PostId}/[controller]")]
 	[ApiController]
+	[Authorize(Roles = "University")]
 	public class FeedBackController : ControllerBase
 	{
 		private readonly IServiceManager _service;
 
 		public FeedBackController(IServiceManager service)
-		{
+		{ 
 			_service = service ?? throw new ArgumentNullException(nameof(service));
 		}
 
@@ -36,7 +37,7 @@ namespace Presentation.Controllers
 		}
 
 		[HttpGet]
-		public async Task<ActionResult<ApiResponse<List<PagedList<FeedBackDto>>>>> GetAllFeedBacks([FromRoute] string CompanyID, [FromRoute] int PostId, [FromQuery]FeedBackParameters feedBack)
+		public async Task<ActionResult<ApiResponse<PagedList<FeedBackDto>>>> GetAllFeedBacks([FromRoute] string CompanyID, [FromRoute] int PostId, [FromQuery]FeedBackParameters feedBack)
 		{
 			if (!ModelState.IsValid)
 				return BadRequest(ModelState);
