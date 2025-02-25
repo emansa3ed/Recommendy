@@ -16,7 +16,7 @@ namespace Presentation.Controllers
 {
 	[Route("api/Companies/{CompanyID}/Posts/{PostId}/[controller]")]
 	[ApiController]
-	[Authorize(Roles = "University")]
+	[Authorize(Roles = "Student")]
 	public class FeedBackController : ControllerBase
 	{
 		private readonly IServiceManager _service;
