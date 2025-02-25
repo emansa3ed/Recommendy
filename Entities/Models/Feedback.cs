@@ -16,7 +16,6 @@ namespace Entities.Models
 		public int PostId { get; set; }
 		public FeedbackType Type { get; set; }
         public string Content { get; set; }
-        public int Rating { get; set; }
         public DateTime CreatedAt { get; set; }
         public Student Student { get; set; }
     }

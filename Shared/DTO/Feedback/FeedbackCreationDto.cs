@@ -22,8 +22,5 @@ namespace Shared.DTO.Feedback
 		[StringLength(1000, ErrorMessage = "Content cannot be longer than 1000 characters")]
 		public string Content { get; set; }
 
-		[Required(ErrorMessage = "Rating is required")]
-		[Range(1, 5, ErrorMessage = "Rating must be between 1 and 5")]
-		public int Rating { get; set; }
 	}
 }

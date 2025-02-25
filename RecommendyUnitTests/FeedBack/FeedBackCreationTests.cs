@@ -22,7 +22,7 @@ namespace RecommendyUnitTests.FeedBack
             var mockServiceManager = new Mock<IServiceManager>();
             mockServiceManager.Setup(x => x.FeedbackService.CreateFeedbackAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<FeedbackCreationDto>())).Returns(Task.CompletedTask);
             var controller = new FeedBackController(mockServiceManager.Object);
-            var dto = new FeedbackCreationDto() { Type = FeedbackType.Scholarship, Content = "Good", Rating = 5, StudentId = "a" };
+            var dto = new FeedbackCreationDto() { Type = FeedbackType.Scholarship, Content = "Good",  StudentId = "a" };
 
             //Act
             controller.ModelState.Clear(); // Clear any previous state
@@ -51,7 +51,6 @@ namespace RecommendyUnitTests.FeedBack
             {
                 Type = FeedbackType.Scholarship,
                 Content = null,
-                Rating = 6
             };
 
             //Act
@@ -80,7 +79,7 @@ namespace RecommendyUnitTests.FeedBack
             var mockServiceManager = new Mock<IServiceManager>();
             mockServiceManager.Setup(x => x.FeedbackService.CreateFeedbackAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<FeedbackCreationDto>())).Throws(new ScholarshipNotFoundException(1));
             var controller = new FeedBackController(mockServiceManager.Object);
-            var dto = new FeedbackCreationDto() { Type = FeedbackType.Scholarship, Content = "Good", Rating = 5, StudentId = "a" };
+            var dto = new FeedbackCreationDto() { Type = FeedbackType.Scholarship, Content = "Good", StudentId = "a" };
 
             //Act
             controller.ModelState.Clear(); // Clear any previous state
@@ -114,7 +113,7 @@ namespace RecommendyUnitTests.FeedBack
             var mockServiceManager = new Mock<IServiceManager>();
             mockServiceManager.Setup(x => x.FeedbackService.CreateFeedbackAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<FeedbackCreationDto>())).Throws(new StudentNotFoundException("ID"));
             var controller = new FeedBackController(mockServiceManager.Object);
-            var dto = new FeedbackCreationDto() { Type = FeedbackType.Scholarship, Content = "Good", Rating = 5,StudentId="a" };
+            var dto = new FeedbackCreationDto() { Type = FeedbackType.Scholarship, Content = "Good",StudentId="a" };
 
             //Act
             controller.ModelState.Clear(); // Clear any previous state
