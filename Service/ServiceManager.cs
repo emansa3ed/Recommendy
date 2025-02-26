@@ -33,6 +33,7 @@ namespace Service
         private readonly Lazy<ICompanyService> _companyService;
         private readonly ILogger<ServiceManager> _logger;
 		private readonly HttpClient _httpClient;
+		private readonly Lazy<IFeedbackService> _feedbackService;
 
 
 		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper,
@@ -57,14 +58,15 @@ namespace Service
             _opportunityService = new Lazy<IOpportunityService>(() =>  new OpportunityService(repositoryManager , mapper));
             _companyService = new Lazy<ICompanyService>(() => new CompanyService( repositoryManager ,mapper ,userManager));
             _studentService = new Lazy<IStudentService>(() => new StudentService(repositoryManager ,mapper , userManager));
+			_feedbackService = new Lazy<IFeedbackService>(() => new FeedbackService(repositoryManager, mapper));
 
 
 
-        }
+		}
 
 
 
-        public ICountryService CountryService => _countryService.Value;
+		public ICountryService CountryService => _countryService.Value;
         public IAuthenticationService AuthenticationService => _authenticationService.Value;
         public IUserService UserService => _userService.Value;
         public IInternshipService InternshipService => _internshipService.Value;
@@ -85,5 +87,8 @@ namespace Service
 
         public ICompanyService CompanyService => _companyService.Value;
 
-    }
+		public IFeedbackService FeedbackService => _feedbackService.Value;
+
+
+	}
 }

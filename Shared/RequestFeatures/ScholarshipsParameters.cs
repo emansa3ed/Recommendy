@@ -9,7 +9,8 @@ namespace Shared.RequestFeatures
 {
 	public class ScholarshipsParameters : RequestParameters
 	{
-        public Funded? fund { get; set; }
+		public string? searchTerm { get; set; }
+		public Funded? fund { get; set; }
         public Degree? degree { get; set; }
     }
 }

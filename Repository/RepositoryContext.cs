@@ -149,11 +149,11 @@ namespace Repository
                 .HasForeignKey(ip => ip.PositionId)
                 .OnDelete(DeleteBehavior.NoAction); ;
 
-            builder.Entity<Feedback>()
+/*            builder.Entity<Feedback>()
                 .HasOne<Student>()
                 .WithMany()
                 .HasForeignKey(f => f.StudentId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Cascade);*/
 
             builder.Entity<Notification>()
                 .HasOne<User>()
