@@ -11,6 +11,9 @@ namespace Shared.DTO.Report
     public record ReportDto
     {
 
+        public int Id { get; set; }
+        public int TypeId { get; set; }
+
 
         public ReportType Type { get; set; }
 

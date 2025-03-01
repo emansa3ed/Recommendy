@@ -12,6 +12,7 @@ namespace Contracts
 
         void CreateReport(Report report);
         void DeleteReport(Report report);
+        Task<Report> GetReportAsync(int ReportId, bool trackChanges);
         Task<PagedList<Report>> GetReportsAsync( ReportParameters reportParameters, bool trackChanges);
 
     }

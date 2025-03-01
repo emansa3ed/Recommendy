@@ -13,6 +13,8 @@ namespace Service.Contracts
     {
          Task CreateReport(string StudentID, int PostID, ReportDtoCreation reportDtoCreation);
 
+        Task DeleteReport(int ReportId);
+        Task<ReportDto> GetReport(int ReportId);
         Task<PagedList<ReportDto>> GetReportsAsync(ReportParameters reportParameters, bool trackChanges);
 
 

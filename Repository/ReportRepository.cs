@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Shared.RequestFeatures;
 using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 using Microsoft.EntityFrameworkCore;
+using Shared.DTO.Report;
 
 namespace Repository
 {
@@ -19,6 +20,14 @@ namespace Repository
 
       public  void CreateReport( Report report ) =>Create(report);
       public void DeleteReport( Report report ) => Delete(report);
+
+        public async Task<Report> GetReportAsync(int ReportId, bool trackChanges)
+        {
+           var report= await FindByCondition(a => a.Id == ReportId, trackChanges).SingleOrDefaultAsync();
+
+            return  report;  
+
+        }
 
         public async Task<PagedList<Report>> GetReportsAsync(ReportParameters reportParameters, bool trackChanges)
         {

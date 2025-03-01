@@ -11,6 +11,8 @@ using Entities.Exceptions;
 using Entities.Models;
 using Shared.RequestFeatures;
 using Shared.DTO.Feedback;
+using Org.BouncyCastle.Utilities;
+
 
 namespace Service
 {
@@ -31,7 +33,7 @@ namespace Service
           
 
             var student = _repository.Student.GetStudent(StudentId, false);
-            Console.WriteLine(student);
+            //Console.WriteLine(student);
             if(student == null )
                 throw new StudentNotFoundException(StudentId);
 
@@ -62,6 +64,35 @@ namespace Service
 
             
         }
+
+        public  async Task DeleteReport(int  ReportId) 
+        {
+            var report = await _repository.ReportRepository.GetReportAsync(ReportId, false);
+
+            if(report == null ) 
+              throw new  ReportNotFoundException(ReportId);
+
+            _repository.ReportRepository.DeleteReport(report);
+
+           await   _repository.SaveAsync();
+
+
+
+        }
+        public async Task<ReportDto> GetReport(int ReportId)
+        {
+            var report = await _repository.ReportRepository.GetReportAsync(ReportId, false);
+
+            if (report == null)
+                throw new ReportNotFoundException(ReportId);
+
+            var result=  _mapper.Map<ReportDto>(report);
+
+
+            return result;
+
+        }
+
 
         public async Task<PagedList<ReportDto>> GetReportsAsync(ReportParameters reportParameters, bool trackChanges=false)
         {

@@ -11,26 +11,28 @@ using Shared.RequestFeatures;
 using Entities.GeneralResponse;
 using Shared.DTO.Feedback;
 using System.Text.Json;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 namespace Presentation.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
- //   [Authorize(Roles = "Student")]
+  //  [Authorize(Roles = "Student")]
     public class ReportController : ControllerBase
     {
         private readonly IServiceManager _service;
 
 
-     public   ReportController(IServiceManager service )   
+        public ReportController(IServiceManager service)
         {
-             _service = service ?? throw new ArgumentNullException(nameof(service));
-            
+            _service = service ?? throw new ArgumentNullException(nameof(service));
+
 
         }
 
+
         [HttpPost("Students/{StudentId}/Posts/{PostId}")]
 
-        public async  Task<ActionResult>  CreateReport( [FromRoute]string StudentId , [FromRoute]int PostId , ReportDtoCreation reportDtoCreation)
+        public async Task<ActionResult> CreateReport([FromRoute] string StudentId, [FromRoute] int PostId, ReportDtoCreation reportDtoCreation)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -40,16 +42,35 @@ namespace Presentation.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ApiResponse<PagedList<ReportDto>>>> GetEmployeesForCompany([FromQuery] ReportParameters reportParameters)
+        public async Task<ActionResult<ApiResponse<PagedList<ReportDto>>>> GetReports([FromQuery] ReportParameters reportParameters)
         {
             var pagedResult = await _service.ReportService.GetReportsAsync(reportParameters, trackChanges: false);
 
             Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagedResult.MetaData));
 
 
-            return Ok(new ApiResponse<PagedList<ReportDto>> { Success = true, Message ="Fetch success",Data = pagedResult }); ;
+            return Ok(new ApiResponse<PagedList<ReportDto>> { Success = true, Message = "Fetch success", Data = pagedResult }); ;
 
-          
+
+        }
+
+        [HttpGet("{ReportId}")]
+        public async Task<ActionResult<ApiResponse<ReportDto>>> GetReport( [FromRoute]int ReportId)
+        {
+            var report  =  await _service.ReportService.GetReport(ReportId);
+
+            return Ok(new ApiResponse<ReportDto> { Success = true, Message = "Fetch success", Data = report }); 
+
+
+        }
+
+        [HttpDelete("{ReportId}")]
+        public async Task<ActionResult> DeleteReport( [FromRoute]  int ReportId)
+        {
+           await _service.ReportService.DeleteReport(ReportId);  
+
+            return NoContent();
+
         }
 
     }
