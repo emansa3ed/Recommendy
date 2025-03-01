@@ -44,8 +44,8 @@ namespace Repository
 
             // add data to test 
            // builder.ApplyConfiguration(new CountryConfiguration());
-           // builder.ApplyConfiguration(new RoleConfiguration());
-            //builder.ApplyConfiguration(new PositionConfiguration());
+        //    builder.ApplyConfiguration(new RoleConfiguration());
+          // builder.ApplyConfiguration(new PositionConfiguration());
 
 
 
@@ -117,11 +117,6 @@ namespace Repository
             .HasForeignKey(u => u.CountryId)
             .OnDelete(DeleteBehavior.NoAction);
 
-            //builder.Entity<Scholarship>()
-            //    .HasOne<University>()
-            //    .WithMany()
-            //    .HasForeignKey(s => s.UniversityId)
-            //    .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<University>()
           .HasMany(u => u.Scholarships) 

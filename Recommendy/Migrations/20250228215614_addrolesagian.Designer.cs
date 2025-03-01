@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Repository;
 
@@ -11,9 +12,11 @@ using Repository;
 namespace Recommendy.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20250228215614_addrolesagian")]
+    partial class addrolesagian
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -373,12 +376,6 @@ namespace Recommendy.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("InternshipId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ScholarshipId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -394,10 +391,6 @@ namespace Recommendy.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("InternshipId");
-
-                    b.HasIndex("ScholarshipId");
 
                     b.HasIndex("UserId");
 
@@ -731,25 +724,25 @@ namespace Recommendy.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "86389602-a4ba-4295-95e4-abe30d445802",
+                            Id = "e4f4eab9-cb61-4d7e-b9f2-c66fd1947918",
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         },
                         new
                         {
-                            Id = "e432f745-e92b-447b-8f82-5f149063f9bd",
+                            Id = "2d784168-0f41-404e-b724-3337537d1ccd",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "004101d2-d017-422a-9cb3-3a105b08ba1b",
+                            Id = "2dc96a1d-30e7-45b0-9764-1292922e2ef8",
                             Name = "Company",
                             NormalizedName = "COMPANY"
                         },
                         new
                         {
-                            Id = "f1b8d7dc-68ce-4064-8711-5a813c025fb7",
+                            Id = "d703d2b9-4dbf-4ec4-8f85-77b4507adebe",
                             Name = "University",
                             NormalizedName = "UNIVERSITY"
                         });
@@ -924,27 +917,11 @@ namespace Recommendy.Migrations
 
             modelBuilder.Entity("Entities.Models.Report", b =>
                 {
-                    b.HasOne("Internship", "Internship")
-                        .WithMany("Reports")
-                        .HasForeignKey("InternshipId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Entities.Models.Scholarship", "Scholarship")
-                        .WithMany("Reports")
-                        .HasForeignKey("ScholarshipId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Entities.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Internship");
-
-                    b.Navigation("Scholarship");
                 });
 
             modelBuilder.Entity("Entities.Models.SavedPost", b =>
@@ -1089,11 +1066,6 @@ namespace Recommendy.Migrations
                     b.Navigation("Internships");
                 });
 
-            modelBuilder.Entity("Entities.Models.Scholarship", b =>
-                {
-                    b.Navigation("Reports");
-                });
-
             modelBuilder.Entity("Entities.Models.Student", b =>
                 {
                     b.Navigation("Feedbacks");
@@ -1124,8 +1096,6 @@ namespace Recommendy.Migrations
             modelBuilder.Entity("Internship", b =>
                 {
                     b.Navigation("InternshipPositions");
-
-                    b.Navigation("Reports");
                 });
 #pragma warning restore 612, 618
         }

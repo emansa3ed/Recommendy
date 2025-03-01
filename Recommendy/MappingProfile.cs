@@ -2,6 +2,7 @@
 using Entities.Models;
 using Shared.DTO;
 using Shared.DTO.Feedback;
+using Shared.DTO.Report;
 
 namespace Recommendy
 {
@@ -29,6 +30,9 @@ namespace Recommendy
             CreateMap<Scholarship, ScholarshipDto>();
 
             CreateMap<FeedbackCreationDto, Feedback>();
+
+            CreateMap<ReportDtoCreation, Report>();
+            CreateMap<Report, ReportDto>();
 
             CreateMap<Feedback, FeedBackDto>();
 

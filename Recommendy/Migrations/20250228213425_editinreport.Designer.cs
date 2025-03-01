@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Repository;
 
@@ -11,9 +12,11 @@ using Repository;
 namespace Recommendy.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20250228213425_editinreport")]
+    partial class editinreport
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -60,18 +63,6 @@ namespace Recommendy.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Countries");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 5,
-                            Name = "Eyg"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Name = "moroc"
-                        });
                 });
 
             modelBuilder.Entity("Entities.Models.Course", b =>
@@ -229,133 +220,6 @@ namespace Recommendy.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Position");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Software Engineer"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Data Scientist"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Product Manager"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "DevOps Engineer"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "UI/UX Designer"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Name = "Quality Assurance Engineer"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Name = "Systems Administrator"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Name = "Network Engineer"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            Name = "Database Administrator"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            Name = "Business Analyst"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            Name = "Technical Support Specialist"
-                        },
-                        new
-                        {
-                            Id = 12,
-                            Name = "Cybersecurity Analyst"
-                        },
-                        new
-                        {
-                            Id = 13,
-                            Name = "Cloud Architect"
-                        },
-                        new
-                        {
-                            Id = 14,
-                            Name = "Machine Learning Engineer"
-                        },
-                        new
-                        {
-                            Id = 15,
-                            Name = "Mobile Application Developer"
-                        },
-                        new
-                        {
-                            Id = 16,
-                            Name = "Web Developer"
-                        },
-                        new
-                        {
-                            Id = 17,
-                            Name = "Scrum Master"
-                        },
-                        new
-                        {
-                            Id = 18,
-                            Name = "IT Project Manager"
-                        },
-                        new
-                        {
-                            Id = 19,
-                            Name = "Technical Writer"
-                        },
-                        new
-                        {
-                            Id = 20,
-                            Name = "Chief Technology Officer (CTO)"
-                        },
-                        new
-                        {
-                            Id = 21,
-                            Name = "Frontend Developer"
-                        },
-                        new
-                        {
-                            Id = 22,
-                            Name = "Backend Developer"
-                        },
-                        new
-                        {
-                            Id = 23,
-                            Name = "Full Stack Developer"
-                        },
-                        new
-                        {
-                            Id = 24,
-                            Name = "Data Engineer"
-                        },
-                        new
-                        {
-                            Id = 25,
-                            Name = "AI Researcher"
-                        });
                 });
 
             modelBuilder.Entity("Entities.Models.Report", b =>
@@ -373,12 +237,6 @@ namespace Recommendy.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("InternshipId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ScholarshipId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -394,10 +252,6 @@ namespace Recommendy.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("InternshipId");
-
-                    b.HasIndex("ScholarshipId");
 
                     b.HasIndex("UserId");
 
@@ -727,32 +581,6 @@ namespace Recommendy.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "86389602-a4ba-4295-95e4-abe30d445802",
-                            Name = "Student",
-                            NormalizedName = "STUDENT"
-                        },
-                        new
-                        {
-                            Id = "e432f745-e92b-447b-8f82-5f149063f9bd",
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
-                        },
-                        new
-                        {
-                            Id = "004101d2-d017-422a-9cb3-3a105b08ba1b",
-                            Name = "Company",
-                            NormalizedName = "COMPANY"
-                        },
-                        new
-                        {
-                            Id = "f1b8d7dc-68ce-4064-8711-5a813c025fb7",
-                            Name = "University",
-                            NormalizedName = "UNIVERSITY"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -924,27 +752,11 @@ namespace Recommendy.Migrations
 
             modelBuilder.Entity("Entities.Models.Report", b =>
                 {
-                    b.HasOne("Internship", "Internship")
-                        .WithMany("Reports")
-                        .HasForeignKey("InternshipId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Entities.Models.Scholarship", "Scholarship")
-                        .WithMany("Reports")
-                        .HasForeignKey("ScholarshipId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Entities.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Internship");
-
-                    b.Navigation("Scholarship");
                 });
 
             modelBuilder.Entity("Entities.Models.SavedPost", b =>
@@ -1089,11 +901,6 @@ namespace Recommendy.Migrations
                     b.Navigation("Internships");
                 });
 
-            modelBuilder.Entity("Entities.Models.Scholarship", b =>
-                {
-                    b.Navigation("Reports");
-                });
-
             modelBuilder.Entity("Entities.Models.Student", b =>
                 {
                     b.Navigation("Feedbacks");
@@ -1124,8 +931,6 @@ namespace Recommendy.Migrations
             modelBuilder.Entity("Internship", b =>
                 {
                     b.Navigation("InternshipPositions");
-
-                    b.Navigation("Reports");
                 });
 #pragma warning restore 612, 618
         }

@@ -34,6 +34,7 @@ namespace Service
         private readonly ILogger<ServiceManager> _logger;
 		private readonly HttpClient _httpClient;
 		private readonly Lazy<IFeedbackService> _feedbackService;
+        private readonly Lazy<IReportService> _reportService;
 
 
 		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper,
@@ -59,6 +60,7 @@ namespace Service
             _companyService = new Lazy<ICompanyService>(() => new CompanyService( repositoryManager ,mapper ,userManager));
             _studentService = new Lazy<IStudentService>(() => new StudentService(repositoryManager ,mapper , userManager));
 			_feedbackService = new Lazy<IFeedbackService>(() => new FeedbackService(repositoryManager, mapper));
+            _reportService = new Lazy<IReportService>(() => new ReportService( repositoryManager , mapper));
 
 
 
@@ -88,6 +90,7 @@ namespace Service
         public ICompanyService CompanyService => _companyService.Value;
 
 		public IFeedbackService FeedbackService => _feedbackService.Value;
+        public IReportService ReportService => _reportService.Value;    
 
 
 	}
