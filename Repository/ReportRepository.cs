@@ -9,6 +9,7 @@ using Shared.RequestFeatures;
 using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 using Microsoft.EntityFrameworkCore;
 using Shared.DTO.Report;
+using Repository.Extensions;
 
 namespace Repository
 {

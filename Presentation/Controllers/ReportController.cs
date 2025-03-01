@@ -41,7 +41,7 @@ namespace Presentation.Controllers
             return Ok();
         }
 
-        [HttpGet]
+        [HttpGet("all")]
         public async Task<ActionResult<ApiResponse<PagedList<ReportDto>>>> GetReports([FromQuery] ReportParameters reportParameters)
         {
             var pagedResult = await _service.ReportService.GetReportsAsync(reportParameters, trackChanges: false);
