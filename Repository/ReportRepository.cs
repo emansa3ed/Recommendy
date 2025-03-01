@@ -32,8 +32,8 @@ namespace Repository
 
         public async Task<PagedList<Report>> GetReportsAsync(ReportParameters reportParameters, bool trackChanges)
         {
-            var reports = await FindAll(trackChanges).OrderBy(e => e.CreatedAt).ToListAsync();
-            var count = reports.Count();
+            var reports = await FindAll(trackChanges).Paging(reportParameters.PageNumber,reportParameters.PageSize).OrderBy(e => e.CreatedAt).ToListAsync();
+            var count = await FindAll(trackChanges).CountAsync();
 
             return new  PagedList<Report>(reports, count, reportParameters.PageNumber, reportParameters.PageSize);
 
