@@ -29,6 +29,7 @@ namespace Contracts
 
         IOpportunityRepository OpportunityRepository { get; }
 		public IFeedbackRepository FeedbackRepository { get; }
+		public INotificationRepository NotificationRepository { get; }
         IReportRepository ReportRepository { get; }
 
         void Save();

@@ -43,9 +43,9 @@ namespace Repository
         {
 
             // add data to test 
-           // builder.ApplyConfiguration(new CountryConfiguration());
-        //    builder.ApplyConfiguration(new RoleConfiguration());
-          // builder.ApplyConfiguration(new PositionConfiguration());
+            builder.ApplyConfiguration(new CountryConfiguration());
+           builder.ApplyConfiguration(new RoleConfiguration());
+           builder.ApplyConfiguration(new PositionConfiguration());
 
 
 
@@ -150,11 +150,6 @@ namespace Repository
                 .HasForeignKey(f => f.StudentId)
                 .OnDelete(DeleteBehavior.Cascade);*/
 
-            builder.Entity<Notification>()
-                .HasOne<User>()
-                .WithMany()
-                .HasForeignKey(n => n.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Report>()
                 .HasOne<User>()

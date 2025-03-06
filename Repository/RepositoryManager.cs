@@ -27,6 +27,7 @@ namespace Repository
         private readonly Lazy<IOpportunityRepository>  _opportunityRepository;
         private readonly Lazy<IFeedbackRepository>  _feedbackRepository;
         private readonly Lazy<IReportRepository> _reportRepository;
+        private readonly Lazy<INotificationRepository> _notificationRepository;
 		public RepositoryManager(RepositoryContext repositoryContext , UserManager<User> userManager , IWebHostEnvironment webHostEnvironment)
         {
             _repositoryContext = repositoryContext;
@@ -46,6 +47,7 @@ namespace Repository
             _opportunityRepository = new Lazy<IOpportunityRepository>(() => new OpportunityRepository(repositoryContext));
 			_feedbackRepository = new Lazy<IFeedbackRepository>(() => new FeedbackRepository(repositoryContext));
             _reportRepository = new Lazy<IReportRepository>(()=> new ReportRepository(repositoryContext));
+			_notificationRepository = new Lazy<INotificationRepository>(() => new NotificationRepository(repositoryContext));
 		}
 
         public ICountryRepository Country => _countryRepository.Value;
@@ -69,6 +71,9 @@ namespace Repository
 		public IFeedbackRepository FeedbackRepository => _feedbackRepository.Value;
 
         public IReportRepository ReportRepository => _reportRepository.Value;
+
+		public INotificationRepository NotificationRepository => _notificationRepository.Value;
+
 		public async Task SaveAsync() => await _repositoryContext.SaveChangesAsync();
         public void Save() => _repositoryContext.SaveChanges();
 
