@@ -8,6 +8,7 @@ using Moq;
 using Presentation.Controllers;
 using Service.Contracts;
 using Shared.DTO.Feedback;
+using Shared.DTO.Notification;
 using Shared.RequestFeatures;
 using System.ComponentModel.DataAnnotations;
 

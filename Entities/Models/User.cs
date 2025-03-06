@@ -18,11 +18,7 @@ namespace Entities.Models
         public Student Student { get; set; }
         public Admin Admin { get; set; }
         public virtual ICollection<UserCode> userCodes { get; set; }
+        public virtual ICollection<Notification> Notification { get; set; }
 
-
-
-
-
-
-    }
+	}
 }

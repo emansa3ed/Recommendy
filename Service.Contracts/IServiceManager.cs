@@ -26,6 +26,7 @@ namespace Service.Contracts
         IStudentService StudentService { get; }
 		IFeedbackService FeedbackService { get; }
         IReportService ReportService { get; }   
+        INotificationService NotificationService { get; }
 
-    }
+	}
 }

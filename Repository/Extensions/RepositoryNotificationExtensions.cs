@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Repository.Extensions
 {
-	public static  class RepositoryFeedBackExtensions
+	public static  class RepositoryNotificationExtensions
 	{
-		public static IQueryable<Feedback> Paging(this IQueryable<Feedback> Feedback, int PageNumber, int PageSize)
+		public static IQueryable<Notification> Paging(this IQueryable<Notification> Notification, int PageNumber, int PageSize)
 		{
-			return Feedback
+			return Notification
 			.Skip((PageNumber - 1) * PageSize)
 			.Take(PageSize);
 		}
