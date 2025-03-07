@@ -2,15 +2,13 @@
 using Contracts;
 using Entities.Exceptions;
 using Entities.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Service.Contracts;
 using Shared.DTO.Feedback;
 using Shared.DTO.Notification;
 using Shared.RequestFeatures;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json;
 
 namespace Service
 {
@@ -18,11 +16,15 @@ namespace Service
 	{
 		private readonly IRepositoryManager _repository;
 		private readonly IMapper _mapper;
+		private readonly UserManager<User> _userManager;
+		private readonly IHubContext<NotificationHub> _hubContext;
 
-		public NotificationService(IRepositoryManager repository, IMapper mapper)
+		public NotificationService(IRepositoryManager repository, IMapper mapper, IHubContext<NotificationHub> hubContext,UserManager<User>userManager)
 		{
 			_repository = repository;
 			_mapper = mapper;
+			_hubContext = hubContext;
+			_userManager = userManager;
 		}
 		public async Task CreateNotificationAsync(NotificationCreationDto notification)
 		{
@@ -37,6 +39,17 @@ namespace Service
 			notificationEntity.IsRead = false;
 			_repository.NotificationRepository.CreateNotification(notificationEntity);
 			await _repository.SaveAsync();
+			string jsonData = JsonSerializer.Serialize(notification);
+			var _userConnections = NotificationHub.GetUsersConnections();
+			if (!string.IsNullOrEmpty(notification.ReceiverID) && _userConnections.TryGetValue(notification.ReceiverID, out var connectionIds))
+			{
+				foreach (var connectionId in connectionIds)
+				{
+					await _hubContext.Clients.Client(connectionId).SendAsync("ReceiveNotification", jsonData);
+				}
+			}
+
+			//await _hubContext.Clients.Client(notificationEntity.ReceiverID).SendAsync("ReceiveNotification", jsonData);
 		}
 
 		public async Task<PagedList<NotificationDto>> GetAllNotificationskAsync(string ReceiverID, NotificationParameters notification, bool TrackChanges = false)
