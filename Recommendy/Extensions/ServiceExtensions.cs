@@ -21,11 +21,12 @@ namespace Recommendy.Extensions
         public static void ConfigureCors(this IServiceCollection services) =>
          services.AddCors(options =>
        {
+
          options.AddPolicy("CorsPolicy", builder =>
-         builder.AllowAnyOrigin()
-        .AllowAnyMethod()
+         builder.WithOrigins("http://localhost:3000")
+		.AllowAnyMethod()
         .AllowAnyHeader()
-		.WithExposedHeaders("X-Pagination")); 
+		.WithExposedHeaders("X-Pagination").AllowCredentials()); 
         });
 
 

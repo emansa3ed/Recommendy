@@ -25,6 +25,7 @@ namespace Recommendy
             builder.Services.AddScoped< IUserCodeService , UserCodeService > ();
             builder.Services.AddScoped<IFileRepository, FileRepository>();
 			builder.Services.AddHttpClient();
+			builder.Services.AddSignalR();
 
 
 			builder.Services.AddControllers()
@@ -45,6 +46,7 @@ namespace Recommendy
 
 
             var app = builder.Build();
+			app.UseCors("CorsPolicy");
             app.ConfigureExceptionHandler();
 
             ///////// Configure the HTTP request pipeline.
@@ -57,12 +59,13 @@ namespace Recommendy
             app.UseStaticFiles();
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseCors("CorsPolicy");
 
 
             app.MapControllers();
+			app.MapHub<NotificationHub>("/notificationHub"); 
 
-            app.Run();
+
+			app.Run();
         }
     }
 }

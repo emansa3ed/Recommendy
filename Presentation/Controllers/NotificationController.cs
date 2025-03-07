@@ -1,6 +1,7 @@
 ﻿using Azure;
 using Entities.GeneralResponse;
 using Entities.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DTO.Feedback;
@@ -15,6 +16,7 @@ using System.Threading.Tasks;
 namespace Presentation.Controllers
 {
 	[Route("api/Receiver/{ReceiverID}/[controller]")]
+	[Authorize]
 	[ApiController]
 	public class NotificationController : ControllerBase
 	{
