@@ -33,7 +33,7 @@ namespace Service
         private readonly Lazy<IStudentService> _studentService;
         private readonly Lazy<ICompanyService> _companyService;
         private readonly ILogger<ServiceManager> _logger;
-		private readonly HttpClient _httpClient;
+		private readonly HttpClient _httpClient; 
 		private readonly Lazy<IFeedbackService> _feedbackService;
         private readonly Lazy<IReportService> _reportService;
         private readonly Lazy<INotificationService> _notificationservice;
@@ -64,7 +64,7 @@ namespace Service
 			_feedbackService = new Lazy<IFeedbackService>(() => new FeedbackService(repositoryManager, mapper));
             _reportService = new Lazy<IReportService>(() => new ReportService( repositoryManager , mapper));
 			_notificationservice = new Lazy<INotificationService>(() => new NotificationService( repositoryManager , mapper, _hubContext, userManager));
-            _opportunityService = new Lazy<IOpportunityService>(() =>  new OpportunityService(repositoryManager , mapper));
+            _opportunityService = new Lazy<IOpportunityService>(() =>  new OpportunityService(repositoryManager , mapper,_notificationservice.Value));
 
 
 

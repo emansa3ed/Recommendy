@@ -3,6 +3,7 @@ using Contracts;
 using Entities.Models;
 using Service.Contracts;
 using Shared.DTO;
+using Shared.DTO.Notification;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,18 +16,20 @@ namespace Service
     {
         private readonly IRepositoryManager _repositoryManager;
         private readonly IMapper _mapper;
-        public OpportunityService( IRepositoryManager repositoryManager , IMapper mapper) 
+        private readonly INotificationService _notificationService;
+		public OpportunityService( IRepositoryManager repositoryManager , IMapper mapper,INotificationService notificationService) 
         { 
             _repositoryManager  = repositoryManager;
             _mapper = mapper;
-        }
-
+			_notificationService = notificationService;
+		}
+         
        public async Task<string> SavedOpportunity(SavedOpportunityDto savedOpportunityDto)
         {
 
               var result= _repositoryManager.OpportunityRepository.GetSavedOpportunity(savedOpportunityDto.StudentId, savedOpportunityDto.PostId, savedOpportunityDto.Type).Result;
 
-
+            object p;
             if (result == null)
             {
                 if (savedOpportunityDto.Type == 'I')
@@ -34,18 +37,24 @@ namespace Service
                     var post = _repositoryManager.Intership.GetInternshipById(savedOpportunityDto.PostId, false);
                     if (post == null)
                         return ("there is no Intership for this id");
-                }else
+                    p = post;
+				}
+				else
                 {
                     var post = _repositoryManager.Scholarship.GetScholarshipById(savedOpportunityDto.PostId, false);
                     if (post == null)
                         return ("there is no Scholarship for this id");
-                }
-                try
+					p = post;
+
+				}
+				try
                 {
                     var savedPost = _mapper.Map<SavedPost>(savedOpportunityDto);
                     await _repositoryManager.OpportunityRepository.SavedOpportunity(savedPost);
                     await _repositoryManager.SaveAsync();
-                    return "created";
+                    var post = (Internship)p;
+                    await _notificationService.CreateNotificationAsync(new NotificationCreationDto { ActorID = savedOpportunityDto.StudentId,ReceiverID = post.CompanyId, Content = "NOT"});
+					return "created";
                 }
                 catch (Exception ex)
                 {

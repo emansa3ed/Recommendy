@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 
 public class NotificationHub : Hub
 {
@@ -18,10 +19,12 @@ public class NotificationHub : Hub
 
 	public override async Task OnConnectedAsync()
 	{
-	//	var httpContext = Context.GetHttpContext();
-	//	var id = httpContext.Request.Query.First();
-	//	var user = await _userManager.GetUserAsync(httpContext.User);
-		var userId = _userManager.GetUserId(Context.User);
+		var httpContext = Context.GetHttpContext();
+		var id = httpContext.Request.Cookies.First();
+		var handler = new JwtSecurityTokenHandler();
+		var jwtToken = handler.ReadJwtToken(id.Value); 
+
+		var userId = jwtToken.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
 		if (userId != null)
 		{
 			lock (_lock)
@@ -39,7 +42,12 @@ public class NotificationHub : Hub
 
 	public override async Task OnDisconnectedAsync(Exception? exception)
 	{
-		var userId = _userManager.GetUserId(Context.User);
+		var httpContext = Context.GetHttpContext();
+		var id = httpContext.Request.Cookies.First();
+		var handler = new JwtSecurityTokenHandler();
+		var jwtToken = handler.ReadJwtToken(id.Value);
+
+		var userId = jwtToken.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
 		if (userId != null)
 		{
 			lock (_lock)
