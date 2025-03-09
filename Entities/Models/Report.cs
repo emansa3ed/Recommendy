@@ -15,7 +15,7 @@ namespace Entities.Models
         public int TypeId { get; set; }
         public ReportType Type { get; set; }
         public string Content { get; set; }
-        public string Status { get; set; } = "Unreviewed";
+        public string Status { get; set; } = "UnReviewed";/// "UnReviewed" ,,,,,,,"Reviewed"
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
   

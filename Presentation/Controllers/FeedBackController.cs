@@ -41,6 +41,7 @@ namespace Presentation.Controllers
 		{
 			if (!ModelState.IsValid)
 				return BadRequest(ModelState);
+			
 			var res = await _service.FeedbackService.GetAllFeedbackAsync(CompanyID, PostId, feedBack);
 
 			Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(res.MetaData));

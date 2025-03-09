@@ -29,7 +29,7 @@ namespace Presentation.Controllers
 
         }
 
-
+        [Authorize(Roles = "Student")]
         [HttpPost("Students/{StudentId}/Posts/{PostId}")]
 
         public async Task<ActionResult> CreateReport([FromRoute] string StudentId, [FromRoute] int PostId, ReportDtoCreation reportDtoCreation)
@@ -40,10 +40,13 @@ namespace Presentation.Controllers
 
             return Ok();
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpGet("all")]
         public async Task<ActionResult<ApiResponse<PagedList<ReportDto>>>> GetReports([FromQuery] ReportParameters reportParameters)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+           
             var pagedResult = await _service.ReportService.GetReportsAsync(reportParameters, trackChanges: false);
 
             Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagedResult.MetaData));
@@ -53,7 +56,7 @@ namespace Presentation.Controllers
 
 
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpGet("{ReportId}")]
         public async Task<ActionResult<ApiResponse<ReportDto>>> GetReport( [FromRoute]int ReportId)
         {
@@ -63,6 +66,7 @@ namespace Presentation.Controllers
 
 
         }
+        [Authorize(Roles = "Admin")]
 
         [HttpDelete("{ReportId}")]
         public async Task<ActionResult> DeleteReport( [FromRoute]  int ReportId)

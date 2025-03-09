@@ -15,5 +15,10 @@ namespace Repository.Extensions
             .Skip((PageNumber - 1) * PageSize)
             .Take(PageSize);
         }
+        public static IQueryable<Report> Filter(this IQueryable<Report> reports, string  Status) => (Status != null)
+        ? reports
+        .Where(e => e.Status.Equals(Status) )
+        : reports;
     }
+
 }
