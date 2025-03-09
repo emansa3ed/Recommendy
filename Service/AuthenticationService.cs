@@ -19,6 +19,7 @@ using Entities.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http;
 using System.Text.Json;
+using System.Transactions;
 
 namespace Service
 {
@@ -51,105 +52,112 @@ namespace Service
 
 		public async Task<IdentityResult> RegisterUser(UserForRegistrationDto userForRegistration, HttpContext HttpContext)
         {
-
-          if (userForRegistration.Roles.Any(role => role.Equals("University", StringComparison.OrdinalIgnoreCase) ||  role.Equals("Company", StringComparison.OrdinalIgnoreCase)))
+            using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
-                
-                if (string.IsNullOrEmpty(userForRegistration.Url))
+
+                if (userForRegistration.Roles.Any(role => role.Equals("University", StringComparison.OrdinalIgnoreCase) || role.Equals("Company", StringComparison.OrdinalIgnoreCase)))
                 {
+
+                    if (string.IsNullOrEmpty(userForRegistration.Url))
+                    {
+                        return IdentityResult.Failed(new IdentityError
+                        {
+                            Code = "UrlRequired",
+                            Description = "URL is required for university or company registration."
+                        });
+                    }
+
+                    if (!Uri.TryCreate(userForRegistration.Url, UriKind.Absolute, out _))
+                    {
+                        return IdentityResult.Failed(new IdentityError
+                        {
+                            Code = "InvalidUrl",
+                            Description = "Invalid URL format for University or Company URL."
+                        });
+                    }
+
+
+
+
+                }
+                else if (userForRegistration.Roles.Any(role => role.Equals("Admin", StringComparison.OrdinalIgnoreCase)))
+                {
+
                     return IdentityResult.Failed(new IdentityError
                     {
-                        Code = "UrlRequired",
-                        Description = "URL is required for university or company registration."
+                        Code = "InvalidRole",
+                        Description = "The specified role is not allowed. Allowed roles are: Student, Company, University."
                     });
+
                 }
 
-                if (!Uri.TryCreate(userForRegistration.Url, UriKind.Absolute, out _))
-                {
-                    return IdentityResult.Failed(new IdentityError
-                    {
-                        Code = "InvalidUrl",
-                        Description = "Invalid URL format for University or Company URL."
-                    });
-                }
-                
-
-
-
-            }
-            else if (userForRegistration.Roles.Any(role => role.Equals("Admin", StringComparison.OrdinalIgnoreCase))){
-
-                return IdentityResult.Failed(new IdentityError 
-                {
-                     Code = "InvalidRole",
-                     Description = "The specified role is not allowed. Allowed roles are: Student, Company, University."
-                });
-
-            }
-
-            var user = _mapper.Map<User>(userForRegistration);
-            var result = await _userManager.CreateAsync(user, userForRegistration.Password);
-            if (result.Succeeded)
-            {
-                await _userManager.AddToRolesAsync(user, userForRegistration.Roles);
+                var user = _mapper.Map<User>(userForRegistration);
+                var result = await _userManager.CreateAsync(user, userForRegistration.Password);
+                var roleRes = await _userManager.AddToRolesAsync(user, userForRegistration.Roles);
                 var roles = await _userManager.GetRolesAsync(user);
-                user.Discriminator = roles.FirstOrDefault();
-                await _userManager.UpdateAsync(user);
-                ////////////////// photo 
-               
-                string url = _repository.File.UploadImage("Uploads", userForRegistration.UserImage).Result;            
-                user.UrlPicture = url;
-
-                await _userManager.UpdateAsync(user);
-                ///////////////////////////////////////
-                if (roles.Any(role => role.Equals("Student", StringComparison.OrdinalIgnoreCase)))
+                if (result.Succeeded)
                 {
+                    user.Discriminator = roles.FirstOrDefault();
+                    await _userManager.UpdateAsync(user);
+                    ////////////////// photo 
 
-                    Student student = new Student();
-                    student.StudentId = user.Id;
-                    _repository.Student.CreateStudent(student);
-                    _repository.SaveAsync().Wait();
+                    string url = _repository.File.UploadImage("Uploads", userForRegistration.UserImage).Result;
+                    user.UrlPicture = url;
 
+                    await _userManager.UpdateAsync(user);
+                    ///////////////////////////////////////
+                    if (roles.Any(role => role.Equals("Student", StringComparison.OrdinalIgnoreCase)))
+                    {
+
+                        Student student = new Student();
+                        student.StudentId = user.Id;
+                        _repository.Student.CreateStudent(student);
+                        _repository.SaveAsync().Wait();
+
+
+                    }
+                    else if (roles.Any(role => role.Equals("Company", StringComparison.OrdinalIgnoreCase)))
+                    {
+
+
+                        Company company = new Company();
+                        company.CompanyId = user.Id;
+                        company.CompanyUrl = userForRegistration.Url;
+                        _repository.Company.CreateCompany(company);
+                        _repository.SaveAsync().Wait();
+
+
+
+                    }
+                    else if (roles.Any(role => role.Equals("University", StringComparison.OrdinalIgnoreCase)))
+                    {
+                        University university = new University();
+                        university.UniversityId = user.Id;
+                        university.UniversityUrl = userForRegistration.Url;
+                        var CounryName = await GetCounryName(HttpContext);
+                        var res = _repository.Country.GetAllCountries(false).Where(c => c.Name == CounryName).SingleOrDefault();
+                        if (res != null)
+                            university.CountryId = res.Id;
+                        else
+                        {
+                            Country country = new Country();
+                            country.Name = CounryName;
+                            _repository.Country.CreateCountry(country);
+                            university.Country = country;
+                        }
+                        _repository.university.CreateUniversity(university);
+                        await _repository.SaveAsync();
+                    }
 
                 }
-                else if (roles.Any(role => role.Equals("Company", StringComparison.OrdinalIgnoreCase)))
-                {
 
+                var result1 = await _userCodeService.GenerateUserCodeForConfirmtationAsync(user.Id);
+				if (!roleRes.Succeeded)
+					return roleRes;
+                transaction.Complete();
+				return result;
 
-                    Company company = new Company();
-                    company.CompanyId = user.Id;
-                    company.CompanyUrl = userForRegistration.Url;
-                    _repository.Company.CreateCompany(company);
-                    _repository.SaveAsync().Wait();
-
-
-
-                }
-                else if (roles.Any(role => role.Equals("University", StringComparison.OrdinalIgnoreCase)))
-                {
-                    University university = new University();
-                    university.UniversityId = user.Id;
-                    university.UniversityUrl = userForRegistration.Url;
-                    var CounryName = await GetCounryName(HttpContext);
-                    var res = _repository.Country.GetAllCountries(false).Where(c=>c.Name==CounryName).SingleOrDefault();
-                    if (res != null)
-                        university.CountryId = res.Id;
-                    else
-					{
-						Country country = new Country();
-						country.Name = CounryName;
-						_repository.Country.CreateCountry(country);
-						university.Country = country;
-					}
-					_repository.university.CreateUniversity(university);
-					await _repository.SaveAsync();
-                }
-                
-            }
-
-           var result1 =   await _userCodeService.GenerateUserCodeForConfirmtationAsync(user.Id);
-            
-             return result;
+			}
         }
 
         private async Task<string> GetCounryName(HttpContext HttpContext)

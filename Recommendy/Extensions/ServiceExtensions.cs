@@ -10,6 +10,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
+using System.IdentityModel.Tokens.Jwt;
+using Azure.Core;
 
 namespace Recommendy.Extensions
 {
@@ -50,7 +53,7 @@ namespace Recommendy.Extensions
                 o.Password.RequireUppercase = false;
                 o.Password.RequireNonAlphanumeric = false;
                 o.Password.RequiredLength = 10;
-                o.User.RequireUniqueEmail = true;
+                o.User.RequireUniqueEmail = true; 
                 
             })
             .AddEntityFrameworkStores<RepositoryContext>()
@@ -80,7 +83,62 @@ namespace Recommendy.Extensions
                     IssuerSigningKey = new  SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["SecretKey"])),
                         RoleClaimType = ClaimTypes.Role
                 };
-            });
+
+				options.Events = new JwtBearerEvents
+				{
+					OnMessageReceived = context =>
+					{
+                        var c = context.Request;
+						var accessToken = context.Request.Cookies["authToken"];
+
+						var path = context.HttpContext.Request.Path;
+
+
+						if (!string.IsNullOrEmpty(accessToken) &&
+							path.StartsWithSegments("/notificationHub"))
+						{
+
+							context.Token = accessToken;
+                   
+						}
+						return Task.CompletedTask;
+					},
+
+
+					   OnTokenValidated = context =>
+					   {
+						       var path = context.HttpContext.Request.Path;
+
+                               var accessToken = context.Request.Cookies["authToken"];
+
+                           if (!string.IsNullOrEmpty(accessToken) &&
+                               path.StartsWithSegments("/notificationHub"))
+                           {
+                               var handler = new JwtSecurityTokenHandler();
+                               var jwtToken = handler.ReadJwtToken(accessToken);
+                               var userId = jwtToken.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
+
+                               if (!string.IsNullOrEmpty(userId))
+                               {
+                                   if (context.Principal == null)
+                                   {
+                                       context.Principal = new ClaimsPrincipal();
+                                   }
+
+                                   context.Principal.AddIdentity(new ClaimsIdentity(new[]
+                                   {
+                                new Claim(ClaimTypes.NameIdentifier, userId)
+                                }));
+                               }
+                           }
+						   return Task.CompletedTask;
+					   }
+
+
+				};
+
+
+			});
         }
     }
 }

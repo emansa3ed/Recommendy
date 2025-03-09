@@ -40,16 +40,7 @@ namespace Service
 			_repository.NotificationRepository.CreateNotification(notificationEntity);
 			await _repository.SaveAsync();
 			string jsonData = JsonSerializer.Serialize(notification);
-			var _userConnections = NotificationHub.GetUsersConnections();
-			if (!string.IsNullOrEmpty(notification.ReceiverID) && _userConnections.TryGetValue(notification.ReceiverID, out var connectionIds))
-			{
-				foreach (var connectionId in connectionIds)
-				{
-					await _hubContext.Clients.Client(connectionId).SendAsync("ReceiveNotification", jsonData);
-				}
-			}
-
-			//await _hubContext.Clients.Client(notificationEntity.ReceiverID).SendAsync("ReceiveNotification", jsonData);
+			await _hubContext.Clients.User(notification.ReceiverID).SendAsync("ReceiveNotification", jsonData);
 		}
 
 		public async Task<PagedList<NotificationDto>> GetAllNotificationskAsync(string ReceiverID, NotificationParameters notification, bool TrackChanges = false)
