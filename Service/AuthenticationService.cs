@@ -80,7 +80,11 @@ namespace Service
 
 
                 }
-                else if (userForRegistration.Roles.Any(role => role.Equals("Admin", StringComparison.OrdinalIgnoreCase)))
+                else if (userForRegistration.Roles.Any(role => role.Equals("Student", StringComparison.OrdinalIgnoreCase)))
+                {
+
+                }
+                else 
                 {
 
                     return IdentityResult.Failed(new IdentityError
