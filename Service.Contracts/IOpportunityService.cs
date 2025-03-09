@@ -1,6 +1,6 @@
 ﻿using Entities.Models;
-using Shared.DTO;
 using Shared.DTO.Internship;
+using Shared.DTO.opportunity;
 using Shared.DTO.Scholaship;
 using System;
 using System.Collections.Generic;
