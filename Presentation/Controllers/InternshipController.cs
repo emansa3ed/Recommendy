@@ -2,18 +2,19 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
-using Shared.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Entities.GeneralResponse;
+using Shared.DTO.Internship;
+using Entities.Models;
 
 
 namespace Presentation.Controllers
 {
-    [Route("api/[Controller]")]
+    [Route("api/Companies/{CompanyID}/[controller]")]
     [ApiController]
     [Authorize(Roles = "Company")]
 
@@ -22,7 +23,7 @@ namespace Presentation.Controllers
 
         private readonly IServiceManager _service;
      
-        public InternshipController( IServiceManager service, IFileRepository fileRepository) {
+        public InternshipController( IServiceManager service) {
 
             _service = service; 
            
@@ -31,183 +32,121 @@ namespace Presentation.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> CreateInternship([FromForm] InternshipCreationDto internshipCreation)
+        public async Task<ActionResult<ApiResponse<Internship>>> CreateInternship( [FromRoute] string CompanyID ,[FromForm] InternshipCreationDto internshipCreation)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            try
-            {
+            var result = await _service.InternshipService.CreateInternship(CompanyID, internshipCreation);
               
-                var result = await _service.InternshipService.CreateInternship(internshipCreation);
-              
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                
-                return StatusCode(500, new ApiResponse<int>
+                return Ok(  new ApiResponse<Internship>
                 {
-                    Success = false,
-                    Message = "An error occurred while creating the internship."+ ex.Message,
-                    Data = -1
-                });
-            }
+                    Success = true,
+                    Message = "Internship created successfully.",
+                    Data = result
+                });      
         }
 
 
 
 
 
-        [HttpPost("Positions")]
-        public async Task<IActionResult> CreatePosition( [FromBody]InternshipPositionDto internshipPositionDto)
+        [HttpPost("{InternshipId}/Positions")]
+        public async Task<IActionResult> CreatePosition([FromRoute] string CompanyID, [FromRoute] int InternshipId, [FromBody]InternshipPositionDto internshipPositionDto)
         {
-            try
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result =   await _service.InternshipPosition.CreateInternshipPosition(CompanyID, InternshipId, internshipPositionDto);
+
+
+            return Ok(new ApiResponse<InternshipPosition>
             {
-                var result =   await _service.InternshipPosition.CreateInternshipPosition(internshipPositionDto);
-                return Ok(result);
-            }
-            catch (Exception ex) {
+                Success = true,
+                Message = "InternshipPosition created successfully.",
+                Data = result
+            });
 
-                return StatusCode(500, new ApiResponse<int>
-                {
-                    Success = false,
-                    Message = "An error occurred while creating the internshipPosition." + ex.Message,
-                 
-                });
-            }
 
+        }
+        [HttpGet("StoredPositions")]
+        public async Task<IActionResult> GetPosition([FromRoute] string CompanyID)
+        {
+            
+                var result =   _service.PositionService.GetAllPositions(CompanyID, false);
+
+            return Ok(new ApiResponse<IQueryable<Position>>
+            {
+                Success = true,
+                Message = "Fetch Positions .",
+                Data = result
+            });
+
+
+
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetInternshipByCompanyId([FromRoute] string CompanyID)
+        {
+            var internshipDto = await _service.InternshipService.GetInternshipsByCompanyId(CompanyID);
+
+            return Ok(new ApiResponse  <List<InternshipDto>>
+            {
+                Success = true,
+                Message = "Fetch Positions .",
+                Data = internshipDto
+            });
+
+        }
+
+
+        [HttpDelete("{InternshipId}")]
+
+        public async Task<IActionResult> DeleteInternship([FromRoute] string CompanyID, [FromRoute] int InternshipId)
+        {
+
+          
+
+               await _service.InternshipService.DeleteInternship(CompanyID, InternshipId, false);
+
+                return NoContent();
            
-        }
-        [HttpGet("Positions")]
-        public async Task<IActionResult> GetPosition()
-        {
-            try
-            {
-                var result =  _service.PositionService.GetAllPositions(false);
-                return Ok(result);
-
-            }
-            catch (Exception ex) {
-
-                 return StatusCode(500, new ApiResponse<int>
-                {
-                    Success = false,
-                    Message = "An error occurred while Geting the Positions." + ex.Message,
-
-                });
-            }
-
-        }
-
-        [HttpGet("Company/{id:Guid}")]
-        public async Task<IActionResult> GetInternshipByCompanyId(string id)
-        {
-            var internshipDto = await _service.InternshipService.GetInternshipsByCompanyId(id);
-
-            if (internshipDto == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(internshipDto);
-        }
-
-
-        [HttpDelete]
-
-        public async Task<IActionResult> DeleteInternship(int Id)
-        {
-
-            try
-            {
-
-              var  result = await _service.InternshipService.DeleteInternship(Id, false);
-                return Ok();
-            }
-            catch (Exception ex) {
-
-
-                return StatusCode(500, new ApiResponse<int>
-                {
-                    Success = false,
-                    Message = $"Failed to delete internship. {ex.Message} | Inner Exception: {ex.InnerException?.Message}",
-                    Data = -1
-                });
-
-            }
           
 
         }
 
-        [HttpDelete("Positions")]
-        public  async Task<IActionResult> DeletePosition(int InternshipId, int PositionId)
+        [HttpDelete("{InternshipId}/positions{PositionId}")]
+        public  async Task<IActionResult> DeletePosition([FromRoute] string CompanyID, [FromRoute] int InternshipId, [FromRoute] int PositionId)
         {
 
-            try
-            {
-                 var result = await _service.InternshipPosition.DeleteInternshipPosition(InternshipId, PositionId);
+                 await _service.InternshipPosition.DeleteInternshipPosition(CompanyID, InternshipId, PositionId);
 
-                return Ok();
-            }
-            catch (Exception ex) {
-
-                return StatusCode(500, new ApiResponse<int>
-                {
-                    Success = false,
-                    Message = $"Failed to Delete InternshipPosition . {ex.Message} | Inner Exception: {ex.InnerException?.Message}",
-                    Data = -1
-                });
-
-
-            }
-
-
+            return NoContent();
 
         }
-        [HttpPatch("{Id:int}")]
 
-        public async Task<IActionResult> UpdateInternship(int Id, [FromForm] InternshipUpdateDto internshipUpdateDto) 
+
+        [HttpPatch("{InternshipId}")]
+
+        public async Task<IActionResult> UpdateInternship([FromRoute] string CompanyID, [FromRoute]int InternshipId, [FromForm] InternshipUpdateDto internshipUpdateDto) 
         {
-            try
-            {
-               var result=  await _service.InternshipService.UpdateInternship(Id, internshipUpdateDto);
-                if (result == true)
-                    return Ok();
-                else return BadRequest();
-            }
-            catch ( Exception ex){
+           
+                await _service.InternshipService.UpdateInternship(CompanyID, InternshipId, internshipUpdateDto);
 
-                return StatusCode(500, new ApiResponse<int>
-                {
-                    Success = false,
-                    Message = $"Failed to update internship. {ex.Message} | Inner Exception: {ex.InnerException?.Message}",
-                    Data = -1
-                });
-
-
-
-            }
-
+            return NoContent();
         
         }
 
-        [HttpPatch("Position")]
+        [HttpPatch("{InternshipId}/positions{PositionId}")]
 
-        public async Task<IActionResult> UpdateInternshipPosition(int InternshipId, int PositionId , [FromBody] InternshipPositionUpdateDto internshipPositionUpdate)
+        public async Task<IActionResult> UpdateInternshipPosition([FromRoute] string CompanyID, [FromRoute] int InternshipId, [FromRoute] int PositionId, [FromBody] InternshipPositionUpdateDto internshipPositionUpdate)
         {
-            try
-            {
-               
-                var result = await _service.InternshipPosition.UpdateInternshipPosition(InternshipId, PositionId, internshipPositionUpdate);
-              if(result == true) return Ok();   
-              else return BadRequest();
             
-            }
-
-            catch (Exception ex)
-            {
-                throw new Exception($"Failed to edit internshipPosition. {ex.Message} | Inner Exception: {ex.InnerException?.Message}");
-
-            }
+               
+                 await _service.InternshipPosition.UpdateInternshipPosition(CompanyID, InternshipId, PositionId, internshipPositionUpdate);
+              
+             return NoContent();
         }
 
     }

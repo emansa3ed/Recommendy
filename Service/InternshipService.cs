@@ -1,13 +1,15 @@
 using AutoMapper;
 using Contracts;
+using Entities.Exceptions;
 using Entities.GeneralResponse;
 using Entities.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
-using Shared.DTO;
+using Shared.DTO.Internship;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,10 +28,14 @@ namespace Service
 
         }
 
-        public  async Task<ApiResponse<Internship>> CreateInternship(InternshipCreationDto internshipDto) {
+        public  async Task<Internship> CreateInternship(  string CompanyId ,InternshipCreationDto internshipDto) 
+        {
 
-            try
-            {
+           var company  = _repositoryManager.Company.GetCompany(CompanyId,false);
+            if (company == null)
+                throw  new CompanyNotFoundException(CompanyId);
+
+           
                 var internship =  _mapper.Map<Internship>(internshipDto);
 
                 string url = _repositoryManager.File.UploadImage("Internships", internshipDto.Image).Result;
@@ -38,69 +44,41 @@ namespace Service
                  _repositoryManager.Intership.CreateIntership(internship);
                
                  await _repositoryManager.SaveAsync();
-                return new ApiResponse<Internship>
-                {
-                    Success = true,
-                    Message = "Internship created successfully.",
-                    Data = internship
-                };
+
+            return internship;
 
 
-            }
-            catch (Exception ex)
-            {
-                return new ApiResponse<Internship>
-                {
-                    Success = false,
-                    Message = $"Failed to create internship. {ex.Message} | Inner Exception: {ex.InnerException?.Message}",
-                    Data = null
-                };
-            }
+             
 
         }
-        public  async Task<ApiResponse<int>> DeleteInternship(int Id , bool trackChanges) {
+        public  async Task DeleteInternship( string CompanyId, int Id , bool trackChanges) 
+        {
+            var company = _repositoryManager.Company.GetCompany(CompanyId, false);
+            if (company == null)
+                throw new CompanyNotFoundException(CompanyId);
 
-            try
-            {
+            var Internship = _repositoryManager.Intership.GetInternshipById(Id, false);
+            if (Internship == null)
+                throw new InternshipNotFoundException(Id);
 
-                _repositoryManager.Intership.DeleteIntership(Id , trackChanges);
+
+            _repositoryManager.Intership.DeleteIntership(Id , trackChanges);
                 await _repositoryManager.SaveAsync();
 
-            }
-            catch (Exception ex) {
-
-
-                return new ApiResponse<int>
-                {
-
-                    Success = false,
-                    Message = $"Failed to delete internship. {ex.Message} | Inner Exception: {ex.InnerException?.Message}",
-                    Data = -1
-                };
-            
-            
-            }
-            return new ApiResponse<int>
-            {
-
-                Success = true,
-                Message = $" deleted internship.",
-                Data = 1
-            };
-
-
-
-
         }
 
-        public async Task<bool> UpdateInternship(int id, InternshipUpdateDto internshipDto)
+        public async Task UpdateInternship( string CompanyId,  int id, InternshipUpdateDto internshipDto)
         {
           
             var existingInternship =  _repositoryManager.Intership.GetInternshipById(id, true);
             if (existingInternship == null)
-            {
-                return false; 
-            }
+              throw new InternshipNotFoundException(id);
+            
+            var company = _repositoryManager.Company.GetCompany(CompanyId, false);
+            if (company == null)
+                throw new CompanyNotFoundException(CompanyId);
+
+           
 
 
 
@@ -128,24 +106,21 @@ namespace Service
 
                 existingInternship.UrlPicture = url;
             }
-
-            try
-            {
+           
                  _repositoryManager.Save();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Failed to update internship. {ex.Message} | Inner Exception: {ex.InnerException?.Message}");
-            }
+          
         }
     
 
 
 
-        public async Task<List<InternshipDto>> GetInternshipsByCompanyId(string companyId)
+        public async Task<List<InternshipDto>> GetInternshipsByCompanyId(string CompanyId)
         {
-            var internships = await _repositoryManager.Intership.GetInternshipsByCompanyId(companyId, trackChanges: false);
+            var company = _repositoryManager.Company.GetCompany(CompanyId, false);
+            if (company == null)
+                throw new CompanyNotFoundException(CompanyId);
+
+            var internships = await _repositoryManager.Intership.GetInternshipsByCompanyId(CompanyId, trackChanges: false);
             List<InternshipDto> result = _mapper.Map<List<InternshipDto>>(internships);
             return result;
         }
@@ -154,21 +129,19 @@ namespace Service
 
         public async Task<InternshipDto> GetInternshipById(int id, bool trackChanges)
         {
-            try
-            {
-                var internship =  _repositoryManager.Intership.GetInternshipById(id, trackChanges);
+            
+               var internship =  _repositoryManager.Intership.GetInternshipById(id, trackChanges);
+            if (internship == null)
+                throw new InternshipNotFoundException(id);
+
                 var internshipDto = _mapper.Map<InternshipDto>(internship);
                 return internshipDto;
 
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error occurred while retrieving scholarship", ex);
-            }
+         
         }
 
 
-        //
+      
         public async Task<IEnumerable<InternshipDto>> GetAllInternships(bool trackChanges)
         {
             try

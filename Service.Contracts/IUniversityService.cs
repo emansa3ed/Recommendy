@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Shared.DTO;
+using Shared.DTO.University;
 
 namespace Service.Contracts
 {

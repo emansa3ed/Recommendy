@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Shared.DTO;
 using Entities.Models;
+using Shared.DTO.Country;
 namespace Service.Contracts
 {
     public interface ICountryService

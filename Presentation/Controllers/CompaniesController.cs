@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
-using Shared.DTO;
+using Shared.DTO.Company;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,16 +26,9 @@ namespace Presentation.Controllers
         [HttpGet("profile/{id}")]
         public IActionResult GetCompany(string id)
         {
-            try
-            {
                 var company = _service.CompanyService.GetCompany(id, trackChanges: false);
                 return Ok(company);
-            }
-            catch (CompanyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-
+           
         }
 
 
@@ -43,21 +36,7 @@ namespace Presentation.Controllers
 
         public async Task<IActionResult> EditProfile(string id, [FromBody] CompanyDto companyDto)
         {
-            var username = User.Identity.Name;
-            if (username == null)
-            {
-                return Unauthorized();
-            }
-            var user = await _service.UserService.GetDetailsByUserName(username);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            // only allowed for university 
-            if (!user.Discriminator.Equals("Company", StringComparison.OrdinalIgnoreCase))
-            {
-                return Forbid();
-            }
+                   
             await _service.CompanyService.UpdateCompany(id, companyDto, trackChanges: true);
             return NoContent();
         }

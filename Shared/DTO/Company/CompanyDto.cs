@@ -4,27 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shared.DTO
+namespace Shared.DTO.Company
 {
-    public record UniversityDto
+    public record CompanyDto
     {
 
-        public string? UniversityUrl { get; init; }
+        public string? CompanyUrl { get; init; }
         public string? UserName { get; init; }
-        public int? CountryId { get; init; }
         public string? Bio { get; init; }
         public string? PhoneNumber { get; init; }
-
 
     }
-    public record EditUniversityProfileDto
+    public record CompanyViewDto
     {
-        public string? UniversityUrl { get; init; }
+        public string? CompanyUrl { get; init; }
+        public string? UrlPicture { get; init; }
         public string? UserName { get; init; }
-        public int? CountryId { get; init; }
         public string? Bio { get; init; }
         public string? PhoneNumber { get; init; }
-        public IEnumerable<CountryDto>? Countries { get; init; }
-
     }
 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Shared.DTO;
+using Shared.DTO.Company;
 
 namespace Service.Contracts
 {

@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Contracts;
+using Entities.Exceptions;
 using Entities.GeneralResponse;
 using Entities.Models;
+using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
-using Shared.DTO;
+using Shared.DTO.Internship;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Service
@@ -26,103 +29,86 @@ namespace Service
         }
 
 
-        public async Task<ApiResponse<int>> CreateInternshipPosition(InternshipPositionDto internshipPositionDto)
+        public async Task<InternshipPosition> CreateInternshipPosition( string CompanyId, int InternshipId, InternshipPositionDto internshipPositionDto)
         {
+            var company = _repositoryManager.Company.GetCompany(CompanyId, false);
+            if (company == null)
+                throw new CompanyNotFoundException(CompanyId);
 
-            try
-            {
-                var internshipPosition = _mapper.Map<InternshipPosition>(internshipPositionDto);
+            var Internship = _repositoryManager.Intership.GetInternshipById(InternshipId, false);
+            if (Internship == null)
+                throw new InternshipNotFoundException(InternshipId);
+
+
+            var internshipPosition = _mapper.Map<InternshipPosition>(internshipPositionDto);
 
                 _repositoryManager.InternshipPosition.CreateInternshipPosition(internshipPosition);
-                _repositoryManager.SaveAsync().Wait();
-            }
-            catch (Exception ex)
-            {
-
-                return new ApiResponse<int>
-                {
-                    Success = false,
-                    Message = $"Failed to create internshipPosition. {ex.Message} | Inner Exception: {ex.InnerException?.Message}",
-                    Data = -1
-
-                };
+               await  _repositoryManager.SaveAsync();
 
 
-            }
 
-
-            return new ApiResponse<int>
-            {
-                Success = true,
-                Message = " created internshipPosition. ",
-                Data = 1
-
-
-            };
+            return internshipPosition;
 
 
 
 
         }
 
-        public async Task<ApiResponse<int>> DeleteInternshipPosition(int InternshipId, int PositionId)
+        public async Task DeleteInternshipPosition(string CompanyId  , int InternshipId, int PositionId)
         {
+            var company = _repositoryManager.Company.GetCompany(CompanyId, false);
+            if (company == null)
+                throw new CompanyNotFoundException(CompanyId);
 
-            try
-            {
-                _repositoryManager.InternshipPosition.DeleteInternshipPosition(InternshipId, PositionId);
+            var Internship = _repositoryManager.Intership.GetInternshipById(InternshipId, false);
+            if (Internship == null)
+                throw new InternshipNotFoundException(InternshipId);
+
+               var InternshipPosition =   _repositoryManager.InternshipPosition.GetInternshipPosition(InternshipId, PositionId);
+
+            if (InternshipPosition == null)
+
+                throw new InternshipPositionNotFoundException();
+
+
+            _repositoryManager.InternshipPosition.DeleteInternshipPosition(InternshipId, PositionId);
                 await _repositoryManager.SaveAsync();
 
+     
 
-            }
-            catch (Exception ex)
-            {
-                return new ApiResponse<int>
-                {
-                    Success = false,
-                    Message = $"Failed to Delete internshipPosition. {ex.Message} | Inner Exception: {ex.InnerException?.Message}",
-                    Data = -1
-
-                };
-
-            }
+           
 
 
 
-            return new ApiResponse<int>
-            {
-                Success = true,
-                Message = " Deleted internshipPosition. ",
-                Data = 1
-
-
-            };
-
+        
         }
-        public  async Task<bool> UpdateInternshipPosition(int IntrenshipId, int PositionId, InternshipPositionUpdateDto internshipupdatePosition)
+        public  async Task UpdateInternshipPosition(string CompanyId, int InternshipId, int PositionId, InternshipPositionUpdateDto internshipupdatePosition)
         {
-            var intershipposition = _repositoryManager.InternshipPosition.GetInternshipPosition(IntrenshipId, PositionId);
+            var company = _repositoryManager.Company.GetCompany(CompanyId, false);
+            if (company == null)
+                throw new CompanyNotFoundException(CompanyId);
+
+            var Internship = _repositoryManager.Intership.GetInternshipById(InternshipId, false);
+            if (Internship == null)
+                throw new InternshipNotFoundException(InternshipId);
+
+            var internshipPosition = _repositoryManager.InternshipPosition.GetInternshipPosition(InternshipId, PositionId);
+
+            if (internshipPosition == null)
+
+                throw new InternshipPositionNotFoundException();
+
+
 
             if (!string.IsNullOrEmpty(internshipupdatePosition.Requirements))
-                intershipposition.Requirements = internshipupdatePosition.Requirements;
+                internshipPosition.Requirements = internshipupdatePosition.Requirements;
 
             if (internshipupdatePosition.NumOfOpenings >= 0)
-                intershipposition.NumOfOpenings = internshipupdatePosition.NumOfOpenings;
+                internshipPosition.NumOfOpenings = internshipupdatePosition.NumOfOpenings;
 
-            try
-            {
+           
                 await _repositoryManager.SaveAsync();
-                return true;
-
-            }
-            catch (Exception ex) 
-            {
-
-                throw new Exception($"Failed to edit internshipPosition. {ex.Message} | Inner Exception: {ex.InnerException?.Message}");
-
-            }
-
-
+           
         }
     }
 

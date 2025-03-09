@@ -12,7 +12,7 @@ namespace Presentation.Controllers
 {
     [Route("api/[Controller]")]
     [ApiController]
-   // [Authorize]
+    [Authorize]
     public class CountriesController : ControllerBase
     {
 
@@ -23,17 +23,11 @@ namespace Presentation.Controllers
 
         public IActionResult GetCountries()
         {
-            try
-            {
+            
                 var Countries =
                 _service.CountryService.GetAllCountries(trackChanges: false);
                 return Ok(Countries);
 
-            }
-            catch
-            {
-                return StatusCode(500, "Internal server error");
-            }
         }
     }
 }

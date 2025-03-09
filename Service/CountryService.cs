@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 using Contracts;
 using Entities.Models;
 using Entities.Exceptions;
-using Shared.DTO;
 using AutoMapper;
+using Shared.DTO.Country;
 
 namespace Service
 {
@@ -26,19 +26,14 @@ namespace Service
 
         public IEnumerable<CountryDto> GetAllCountries(bool trackChanges)
         {
-            try
-            {
+            
                 var countries =
              _repository.Country.GetAllCountries(trackChanges);
 
                 var countriesDto = _mapper.Map<IEnumerable<CountryDto>>(countries);
 
                 return countriesDto;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("something error");
-            }
+           
         }
 
         public CountryDto GetCountryById(int countryId, bool trackChanges)

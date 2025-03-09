@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Shared.DTO;
+using Shared.DTO.Authentication;
 using System;
 using System.Collections.Generic;
 using System.Linq;

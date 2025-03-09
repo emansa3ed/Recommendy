@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Shared.DTO;
+using Shared.DTO.Student;
 using System;
 using System.Collections.Generic;
 using System.Linq;

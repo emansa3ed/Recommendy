@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Contracts;
 using Service.Contracts;
-using Shared.DTO;
 using Entities.Exceptions;
 using Entities.Models;
 using Microsoft.Extensions.Logging;
 using System.Net.NetworkInformation;
 using Shared.RequestFeatures;
 using System.Collections.Concurrent;
+using Shared.DTO.Scholaship;
 
 namespace Service
 {
@@ -96,6 +96,7 @@ namespace Service
             var scholarship = _repository.Scholarship.GetScholarshipById(id, trackChanges);
             if (scholarship == null)
                 throw new ScholarshipNotFoundException(id);
+
             var scholarshipDto = _mapper.Map<GetScholarshipDto>(scholarship);
             return scholarshipDto;
 

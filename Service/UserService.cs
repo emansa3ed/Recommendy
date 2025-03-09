@@ -7,10 +7,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Shared.DTO;
 using AutoMapper;
 using Entities.Exceptions;
 using Microsoft.AspNetCore.Http;
+using Shared.DTO.User;
+using Shared.DTO.Student;
 
 namespace Service
 {

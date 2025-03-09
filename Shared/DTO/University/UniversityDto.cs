@@ -3,30 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Shared.DTO.Country;
 
-namespace Shared.DTO
+namespace Shared.DTO.University
 {
-    public record StudentDto
+    public record UniversityDto
     {
-        public string? UrlPicture { get; init; }
+
+        public string? UniversityUrl { get; init; }
         public string? UserName { get; init; }
-        public string? UrlResume { get; init; }
+        public int? CountryId { get; init; }
         public string? Bio { get; init; }
         public string? PhoneNumber { get; init; }
 
-    }
-    public record StudentForUpdateDto
-    {
 
+    }
+    public record EditUniversityProfileDto
+    {
+        public string? UniversityUrl { get; init; }
         public string? UserName { get; init; }
+        public int? CountryId { get; init; }
         public string? Bio { get; init; }
-        public string? UrlResume { get; init; }
         public string? PhoneNumber { get; init; }
-    }
+        public IEnumerable<CountryDto>? Countries { get; init; }
 
-    public record ChangePasswordDto
-    {
-        public string CurrentPassword { get; init; }
-        public string NewPassword { get; init; }
     }
 }

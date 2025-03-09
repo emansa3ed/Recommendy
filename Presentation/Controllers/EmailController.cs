@@ -9,12 +9,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Entities.Exceptions;
 using Entities.Models;
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
 using Service.Contracts;
-using Shared.DTO;
 using Microsoft.AspNetCore.Identity;
+using Shared.DTO.Email;
 
 
 
@@ -45,35 +45,19 @@ namespace Presentation.Controllers
         [HttpGet("ConfirmEmail")]
         public async Task<IActionResult> ConfirmEmail(string userId, string Usercode)
         {
-            try
-            {
+            
                 var result = await _service.EmailsService.ConfirmEmailAsync(userId, Usercode);
                 return Ok(result);
 
-            }
-            catch (Exception ex)
-            {
-
-                return BadRequest($"Error confirming email. {ex.Message} | Inner Exception: {ex.InnerException?.Message}");
-
-
-            }
 
         }
         [HttpPost("GenerateUserCode")]
         public async Task<IActionResult> GenerateUserCode(string userId)
         {
-            try
-            {
+            
                 var result = await _service.userCodeService.GenerateUserCodeForConfirmtationAsync(userId);
                 return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Error Generate UserCode . {ex.Message} | Inner Exception: {ex.InnerException?.Message}");
-
-
-            }
+           
 
         }
     }

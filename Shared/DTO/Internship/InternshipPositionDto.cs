@@ -5,12 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shared.DTO
+namespace Shared.DTO.Internship
 {
     public record InternshipPositionDto
     {
 
-        [Required(ErrorMessage = "InternshipId is required") ]
+        [Required(ErrorMessage = "InternshipId is required")]
         public int InternshipId { get; set; }
         [Required(ErrorMessage = "PositionId is required")]
         public int PositionId { get; set; }

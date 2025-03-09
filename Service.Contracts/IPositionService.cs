@@ -9,6 +9,6 @@ namespace Service.Contracts
 {
     public interface IPositionService
     {
-        public IQueryable<Position> GetAllPositions(bool trackChanges);
+        public IQueryable<Position> GetAllPositions(string CompanyId,bool trackChanges);
     }
 }

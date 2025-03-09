@@ -5,17 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 using Entities.GeneralResponse;
 using Entities.Models;
-using Shared.DTO;
+using Shared.DTO.Internship;
 
 
 namespace Service.Contracts
 {
     public interface IInternshipService
     {
-       Task< ApiResponse<Internship>> CreateInternship(InternshipCreationDto intersnhip);
-        Task<bool> UpdateInternship( int Id , InternshipUpdateDto internshipUpdateDto);
+       Task< Internship> CreateInternship( string CompanyId , InternshipCreationDto intersnhip);
+        Task UpdateInternship(string CompanyId , int Id , InternshipUpdateDto internshipUpdateDto);
 
-        Task<ApiResponse<int>> DeleteInternship(int Id , bool trackChanges);
+        Task DeleteInternship(string CompanyId,int Id , bool trackChanges);
         Task<List<InternshipDto>> GetInternshipsByCompanyId(string companyId);
 
 

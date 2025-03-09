@@ -1,9 +1,17 @@
 ﻿using AutoMapper;
 using Entities.Models;
 using Shared.DTO;
+using Shared.DTO.Authentication;
+using Shared.DTO.Company;
+using Shared.DTO.Country;
 using Shared.DTO.Feedback;
+using Shared.DTO.Internship;
 using Shared.DTO.Notification;
 using Shared.DTO.Report;
+using Shared.DTO.Scholaship;
+using Shared.DTO.Student;
+using Shared.DTO.University;
+using Shared.DTO.User;
 
 namespace Recommendy
 {

@@ -4,16 +4,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Shared.DTO;
 using Entities.GeneralResponse;
+using Shared.DTO.Internship;
 
 namespace Service.Contracts
 {
     public interface IInternshipPositionService
     {
-        public Task<ApiResponse<int>> CreateInternshipPosition(InternshipPositionDto internshipPosition);
-        public Task<bool> UpdateInternshipPosition(int InternshipId,int PositionId, InternshipPositionUpdateDto internshipPosition);
-        public Task<ApiResponse<int>> DeleteInternshipPosition(int InternshipId  , int PositionId); 
+        public Task<InternshipPosition> CreateInternshipPosition( string CompanyId,int InternshipId, InternshipPositionDto internshipPosition);
+        public Task UpdateInternshipPosition(string CompanyId, int InternshipId,int PositionId, InternshipPositionUpdateDto internshipPosition);
+        public Task DeleteInternshipPosition(string CompanyId,int InternshipId  , int PositionId); 
             
 
 

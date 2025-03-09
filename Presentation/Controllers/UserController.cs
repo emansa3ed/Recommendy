@@ -1,9 +1,12 @@
 ﻿using Entities.Exceptions;
+using Entities.GeneralResponse;
+using Entities.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
-using Shared.DTO;
+using Shared.DTO.Student;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Presentation.Controllers
 {
-    [Route("api/[Controller]")]
+    [Route("api/User/{UserId}")]
     [ApiController]
     [Authorize]
     public  class UserController : ControllerBase
@@ -25,65 +28,24 @@ namespace Presentation.Controllers
 
 
         [HttpPost("change-password")]
-        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto changePasswordDto)
+        public async Task<IActionResult> ChangePassword( [FromRoute] string UserId ,  [FromBody] ChangePasswordDto changePasswordDto)
         {
-            if (changePasswordDto == null)
-            {
-                return BadRequest("ChangePasswordDto object is null");
-            }
-            var username = User.Identity.Name;
-            if (username == null)
-            {
-                throw new UnauthorizedAccessException();//////استخدام middel ware
-            }
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            var user = await _service.UserService.GetDetailsByUserName(username);
-            if (user == null)
-            {
-                return NotFound("User not found.");
-            }
-           
-
-            try
-            {
-                await _service.UserService.ChangePasswordAsync(user.Id, changePasswordDto);
-                return NoContent();
-            }
-            catch (UniversityNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (ApplicationException ex)
-            {
-                return BadRequest(ex.Message);
-            }
+                await _service.UserService.ChangePasswordAsync(UserId, changePasswordDto);
+            return NoContent();
         }
 
         [HttpPost("upload-profile-picture")]
 
-        public async Task<IActionResult> UploadProfilePicture(IFormFile file)
+        public async Task<IActionResult> UploadProfilePicture([FromRoute] string UserId ,IFormFile file)
         {
-            var username = User.Identity.Name;
-            if (username == null)
-            {
-                return Unauthorized();
-            }
-
-            var user = await _service.UserService.GetDetailsByUserName(username);
-            if (user == null)
-            {
-                return NotFound("User not found.");
-            }
+          
            
-            try
-            {
-                var imageUrl = await _service.UserService.UploadProfilePictureAsync(file, user.Id);
-                return Ok(new { ImageUrl = imageUrl });
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
-            }
+                var imageUrl = await _service.UserService.UploadProfilePictureAsync(file, UserId);
+            return NoContent();
+           
         }
     }
 }

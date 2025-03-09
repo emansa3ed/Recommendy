@@ -1,4 +1,5 @@
 ﻿using Contracts;
+using Entities.Exceptions;
 using Entities.Models;
 using Microsoft.AspNetCore.Identity;
 using Service.Contracts;
@@ -29,14 +30,15 @@ namespace Service
 
 
 
-            try
-            {
-                User user =   _userManager.FindByIdAsync(UserId).Result;
+            
+                User user =   await _userManager.FindByIdAsync(UserId);
                 if (user == null) {
 
-                    return $"there is no user for this id  .";
+                    throw new UserNotFoundException(UserId);
+
 
                 }
+
                 if (user.EmailConfirmed == true) return "User already confirmed ";
 
                int NumOFCodes  =    await _repository.UserCodeRepository.GetNumByIdAsync(UserId);
@@ -66,12 +68,7 @@ namespace Service
                 if (result == "Email sended")
                     return "Email sended";
                 else return result;
-            }
-            catch (Exception ex)
-            {
-                return $"Error Generate UserCode . {ex.Message} | Inner Exception: {ex.InnerException?.Message}";
-
-            }
+           
           
 
         }
@@ -79,15 +76,17 @@ namespace Service
         public async Task<string> GenerateUserCodeForResetPasswordAsync(string UserId)
         {
 
-            try
-            {
-                User user = _userManager.FindByIdAsync(UserId).Result;
+           
+                User user =  await  _userManager.FindByIdAsync(UserId);
                 if (user == null)
                 {
 
-                    return $"there is no user for this id  .";
+                    throw new UserNotFoundException(UserId);
 
                 }
+
+
+
                 int NumOFCodes = await _repository.UserCodeRepository.GetNumByIdAsync(UserId);
                 if (NumOFCodes >= 1)
                 {
@@ -152,15 +151,7 @@ namespace Service
                 if (result == "Email Sended")
                     return "Email Sended";
                 else return result;
-            }
-            catch (Exception ex)
-            {
-                return $"Error Generate UserCode . {ex.Message} | Inner Exception: {ex.InnerException?.Message}";
-
-
-
-
-            }
+           
         }
 
             private string GenerateRandomNumericToken(int length = 8)

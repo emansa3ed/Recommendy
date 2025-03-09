@@ -1,9 +1,13 @@
 using Entities.Exceptions;
+using Entities.GeneralResponse;
+using Entities.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
-using Shared.DTO;
+using Shared.DTO.Internship;
+using Shared.DTO.Scholaship;
+using Shared.DTO.Student;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Presentation.Controllers
 {
-    [Route("api/students")]
+    [Route("api/students/{StudentId}")]
     [ApiController]
     [Authorize(Roles ="Student")]
     public class StudentController : ControllerBase
@@ -28,130 +32,59 @@ namespace Presentation.Controllers
 
    
 
-        [HttpGet("profile/{id}")]
-        public IActionResult GetStudent(string id)
+        [HttpGet("profile")]
+        public IActionResult GetStudent( [FromRoute]string StudentId)
         {
-            try
-            {
-                var student = _service.StudentService.GetStudent(id, trackChanges: false);
-                return Ok(student);
-            }
-            catch (StudentNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
+          
+                var student = _service.StudentService.GetStudent(StudentId, trackChanges: false);
+
+                 return Ok(new ApiResponse<StudentDto>
+                {
+                    Success = true,
+                    Message = "fetch data  successfully.",
+                    Data= student
+
+                }); 
+         
         }
 
 
-        [HttpPatch("edit-profile/{id}")]
-        public async Task<IActionResult> UpdateStudentProfile(string id, [FromBody] StudentForUpdateDto studentForUpdate)
+        [HttpPatch("edit-profile")]
+        public async Task<IActionResult> UpdateStudentProfile( [FromRoute] string StudentId, [FromBody] StudentForUpdateDto studentForUpdate)
         {
-            if (studentForUpdate == null)
-            {
-                return BadRequest("StudentForUpdateDto object is null");
-            }
-            var username = User.Identity.Name;
-            if (username == null)
-            {
-                return Unauthorized();
-            }
 
-            try
-            {
-                var user = await _service.UserService.GetDetailsByUserName(username);
-                if (user == null)
-                {
-                    return NotFound();
-                }
-                //only allowed for student 
-                if (!user.Discriminator.Equals("Student", StringComparison.OrdinalIgnoreCase))
-                {
-                    return Forbid();
-                }
-                await _service.StudentService.UpdateStudentProfileAsync(id, studentForUpdate);
-                return NoContent();
-            }
-            catch (StudentNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
+            await _service.StudentService.UpdateStudentProfileAsync(StudentId, studentForUpdate);
+            return NoContent();
+
         }
-
        
-
-
-
        
 
 
         [HttpGet("saved-scholarships")]
-        public async Task<IActionResult> GetSavedScholarships()
+        public async Task<IActionResult> GetSavedScholarships([FromRoute] string StudentId)
         {
-            try
-            {
+            
+                var savedScholarships = await _service.OpportunityService.GetSavedScholarshipsAsync(StudentId);
 
-                var username = User.Identity.Name;
-                if (username == null)
-                {
-                    return Unauthorized();
-                }
+         return Ok(new ApiResponse<IEnumerable< GetScholarshipDto>> {  Success = true , Message = "ChangePassword successfully."  ,
+             Data = savedScholarships });
 
-                var user = await _service.UserService.GetDetailsByUserName(username);
-                if (user == null)
-                {
-                    return NotFound("User not found.");
-                }
-
-
-                if (!user.Discriminator.Equals("Student", StringComparison.OrdinalIgnoreCase))
-                {
-                    return Forbid();
-                }
-
-
-                var savedScholarships = await _service.OpportunityService.GetSavedScholarshipsAsync(user.Id);
-
-                return Ok(savedScholarships);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Internal server error while retrieving saved scholarships.");
-            }
         }
 
         [HttpGet("saved-internships")]
-        public async Task<IActionResult> GetSavedInternships()
+        public async Task<IActionResult> GetSavedInternships([FromRoute] string StudentId)
         {
-            try
+            
+            var savedInternships = await _service.OpportunityService.GetSavedInternshipsAsync(StudentId);
+
+            return Ok(new ApiResponse<IEnumerable<InternshipDto>>
             {
+                Success = true,
+                Message = "fetch data  successfully.",
+                Data = savedInternships
+            });
 
-                var username = User.Identity.Name;
-                if (username == null)
-                {
-                    return Unauthorized();
-                }
-
-                var user = await _service.UserService.GetDetailsByUserName(username);
-                if (user == null)
-                {
-                    return NotFound("User not found.");
-                }
-
-
-                if (!user.Discriminator.Equals("Student", StringComparison.OrdinalIgnoreCase))
-                {
-                    return Forbid();
-                }
-
-
-                var savedInternships = await _service.OpportunityService.GetSavedInternshipsAsync(user.Id);
-
-                return Ok(savedInternships);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Internal server error while retrieving saved internships.");
-            }
         }
 
     }

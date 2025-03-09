@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shared.DTO
+namespace Shared.DTO.Scholaship
 {
     public record EditedScholarshipDto(
         int Id,

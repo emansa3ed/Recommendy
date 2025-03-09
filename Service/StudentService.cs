@@ -3,7 +3,6 @@ using Contracts;
 using Entities.Exceptions;
 using Entities.Models;
 using Microsoft.AspNetCore.Identity;
-using Shared.DTO;
 using Service.Contracts;
 using System;
 using System.Collections.Generic;
@@ -11,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Shared.DTO.Student;
 
 namespace Service
 {
@@ -30,6 +30,7 @@ namespace Service
             var student = _repository.Student.GetStudent(id, trackChanges);
             if (student is null)
                 throw new StudentNotFoundException(id);
+
             var studentDto = _mapper.Map<StudentDto>(student);
             return studentDto;
         }

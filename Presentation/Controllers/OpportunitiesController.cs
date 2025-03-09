@@ -1,7 +1,10 @@
+using Entities.GeneralResponse;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DTO;
+using Shared.DTO.Internship;
+using Shared.DTO.Scholaship;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,29 +15,25 @@ namespace Presentation.Controllers
 {
     [Route("api/[Controller]")]
     [ApiController]
-    public class OpportunitiesController : ControllerBase 
+    [Authorize(Roles = "Student")]
+    public class OpportunitiesController : ControllerBase
     {
 
-         private readonly  IServiceManager _service;
-        public OpportunitiesController (IServiceManager ServiceManager) { 
-        
-         _service = ServiceManager;
-        
+        private readonly IServiceManager _service;
+        public OpportunitiesController(IServiceManager ServiceManager)
+        {
+
+            _service = ServiceManager;
+
         }
 
         [HttpGet("Scholarships/all")]
         public async Task<IActionResult> GetScholarships()
         {
-            try
-            {
-                var scholarships = await _service.ScholarshipService.GetAllScholarships(trackChanges: false);
-                return Ok(scholarships);
-            }
-            catch (Exception ex)
-            {
-                // Log the exception (you can use ILogger here)
-                return StatusCode(500, $"Internal server error: {ex.Message} ");
-            }
+
+            var scholarships = await _service.ScholarshipService.GetAllScholarships(trackChanges: false);
+            return Ok(scholarships);
+
         }
 
 
@@ -42,18 +41,16 @@ namespace Presentation.Controllers
         [HttpGet("Scholarships/{id:int}")]
         public async Task<ActionResult<GetScholarshipDto>> GetOneScholarship(int id)
         {
-            try
+
+            var scholarship = await _service.ScholarshipService.GetScholarshipById(id, trackChanges: false);
+
+            return Ok(new ApiResponse<GetScholarshipDto>
             {
-                var scholarship = await _service.ScholarshipService.GetScholarshipById(id, trackChanges: false);
-                if (scholarship == null)
-                    return NotFound($"Scholarship with ID: {id} not found");
-                return Ok(scholarship);
-            }
-            catch (Exception ex)
-            {
-                // Log the exception
-                return StatusCode(500, "Internal server error while retrieving scholarship");
-            }
+                Success = true,
+                Message = "fetch data  successfully.",
+                Data = scholarship
+            });
+
         }
 
 
@@ -61,76 +58,42 @@ namespace Presentation.Controllers
         [HttpGet("Internships/all")]
         public async Task<IActionResult> GetInternships()
         {
-            try
-            {
-                var internships = await _service.InternshipService.GetAllInternships(trackChanges: false);
-                return Ok(internships);
-            }
-            catch (Exception ex)
-            { 
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+
+            var internships = await _service.InternshipService.GetAllInternships(trackChanges: false);
+            return Ok(internships);
+
         }
 
 
         [HttpGet("Internships/{id:int}")]
         public async Task<ActionResult<InternshipDto>> GetOneInternship(int id)
         {
-            try
-            {
-                var internship = await _service.InternshipService.GetInternshipById(id, trackChanges: false);
-                if (internship == null)
-                    return NotFound($"Internship with ID: {id} not found");
-                return Ok(internship);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Internal server error while retrieving scholarship");
-            }
+
+            var internship = await _service.InternshipService.GetInternshipById(id, trackChanges: false);
+
+            return Ok(internship);
+
         }
 
         [HttpPost("SavedOpportunity")]
-        [Authorize(Roles = "Student")]
-        public async Task<IActionResult> SavedOpportunity(  [FromBody] SavedOpportunityDto savedOpportunityDto)
+
+        public async Task<IActionResult> SavedOpportunity([FromBody] SavedOpportunityDto savedOpportunityDto)
         {
 
-            
-            
-            
-            try
-            {
-                var result = await _service.OpportunityService.SavedOpportunity(savedOpportunityDto);
-                return Ok(result);
-            }
+             await _service.OpportunityService.SavedOpportunity(savedOpportunityDto);
 
-            catch {
-                return StatusCode(500, "failed save");
-
-            }
-
-
-       
+            return Ok();
 
         }
 
         [HttpDelete("UnSavedOpportunity")]
-        [Authorize(Roles = "Student")]
         public async Task<IActionResult> UnSavedOpportunity([FromBody] SavedOpportunityDto savedOpportunityDto)
         {
-            try
-            {
-                var result = await _service.OpportunityService.DeleteOpportunity(savedOpportunityDto);
-                return Ok(result);
-            }
-            catch (Exception ex) 
-            {
-                return StatusCode(500, "failed save");
-            }
 
-           
-               
+            await _service.OpportunityService.DeleteOpportunity(savedOpportunityDto);
 
-            
+            return Ok();
+
 
         }
     }

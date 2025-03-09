@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Contracts;
 using Entities.Models;
 using Shared.DTO;
+using Entities.Exceptions;
 
 namespace Service
 {
@@ -66,17 +67,17 @@ namespace Service
       
         public async Task<IActionResult> ConfirmEmailAsync(string  userId, string token)
         {
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                throw  new UserNotFoundException(userId);
+            }
+
             var userToken = await _repository.UserCodeRepository.GetAsync(userId, token);
             if (userToken == null || userToken.ExpirationDate < DateTime.UtcNow)
             {
                 return new BadRequestObjectResult("Code not found or expired");
-            }
-
-
-            var user = await _userManager.FindByIdAsync(userId); 
-            if (user == null)
-            {
-                return new BadRequestObjectResult("User not found");
             }
 
             try

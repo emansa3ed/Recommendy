@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Service.Contracts;
-using Shared.DTO;
 using System.Text.Json;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +14,7 @@ using Entities.Exceptions;
 using Entities.GeneralResponse;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Shared.RequestFeatures;
+using Shared.DTO.Scholaship;
 
 namespace Presentation.Controllers
 {
