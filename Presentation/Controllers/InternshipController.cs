@@ -91,7 +91,7 @@ namespace Presentation.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ApiResponse<PagedList<InternshipDto>>>> GetInternshipByCompanyId([FromRoute] string CompanyID, [FromQuery] InternshipParameters internshipParameters)
+        public async Task<ActionResult<ApiResponse<PagedList<InternshipDto>>>> GetInternshipsByCompanyId([FromRoute] string CompanyID, [FromQuery] InternshipParameters internshipParameters)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
