@@ -10,13 +10,17 @@ using System.Threading.Tasks;
 using Entities.GeneralResponse;
 using Shared.DTO.Internship;
 using Entities.Models;
+using Shared.RequestFeatures;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Text.Json;
+using Shared.DTO.Report;
 
 
 namespace Presentation.Controllers
 {
     [Route("api/Companies/{CompanyID}/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Company")]
+   [Authorize(Roles = "Company")]
 
     public class InternshipController : ControllerBase
     {
@@ -87,16 +91,17 @@ namespace Presentation.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetInternshipByCompanyId([FromRoute] string CompanyID)
+        public async Task<ActionResult<ApiResponse<PagedList<InternshipDto>>>> GetInternshipByCompanyId([FromRoute] string CompanyID, [FromQuery] InternshipParameters internshipParameters)
         {
-            var internshipDto = await _service.InternshipService.GetInternshipsByCompanyId(CompanyID);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            return Ok(new ApiResponse  <List<InternshipDto>>
-            {
-                Success = true,
-                Message = "Fetch Positions .",
-                Data = internshipDto
-            });
+            var internshipDto = await _service.InternshipService.GetInternshipsByCompanyId(CompanyID, internshipParameters);
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(internshipDto.MetaData));
+
+
+            return Ok(new ApiResponse<PagedList<InternshipDto>> { Success = true, Message = "Fetch success", Data = internshipDto }); 
+
 
         }
 

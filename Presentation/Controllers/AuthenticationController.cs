@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Shared.DTO.Authentication;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Presentation.Controllers
 {
@@ -87,7 +88,7 @@ namespace Presentation.Controllers
         }
 
         [HttpGet("GetMe")]
-
+        [Authorize]
         public async Task<IActionResult> GetMe(string token)
         {
             try

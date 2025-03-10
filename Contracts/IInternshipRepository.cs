@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Entities.Models;
+using Shared.RequestFeatures;
 
 namespace Contracts
 {
@@ -15,7 +16,7 @@ namespace Contracts
 
         void DeleteIntership(int Id, bool trackChanges);
 
-       Task<List<Internship>> GetInternshipsByCompanyId(string  id, bool trackChanges);
+        Task<PagedList<Internship>> GetInternshipsByCompanyId(string  id, InternshipParameters internshipParameters, bool trackChanges);
 
 
         IEnumerable<Internship> GetAllInternships(bool trackChanges);

@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Entities.GeneralResponse;
 using Entities.Models;
 using Shared.DTO.Internship;
+using Shared.DTO.Report;
+using Shared.RequestFeatures;
 
 
 namespace Service.Contracts
@@ -16,7 +18,7 @@ namespace Service.Contracts
         Task UpdateInternship(string CompanyId , int Id , InternshipUpdateDto internshipUpdateDto);
 
         Task DeleteInternship(string CompanyId,int Id , bool trackChanges);
-        Task<List<InternshipDto>> GetInternshipsByCompanyId(string companyId);
+        Task<PagedList<InternshipDto>> GetInternshipsByCompanyId(string companyId , InternshipParameters internshipParameters);
 
 
         

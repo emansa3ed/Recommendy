@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DTO.Internship;
+using Shared.DTO.Report;
+using Shared.RequestFeatures;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
@@ -114,15 +116,17 @@ namespace Service
 
 
 
-        public async Task<List<InternshipDto>> GetInternshipsByCompanyId(string CompanyId)
+        public async Task<PagedList<InternshipDto>> GetInternshipsByCompanyId(string CompanyId , InternshipParameters internshipParameters)
         {
             var company = _repositoryManager.Company.GetCompany(CompanyId, false);
             if (company == null)
                 throw new CompanyNotFoundException(CompanyId);
 
-            var internships = await _repositoryManager.Intership.GetInternshipsByCompanyId(CompanyId, trackChanges: false);
+            var internships = await _repositoryManager.Intership.GetInternshipsByCompanyId(CompanyId,internshipParameters, trackChanges: false);
             List<InternshipDto> result = _mapper.Map<List<InternshipDto>>(internships);
-            return result;
+
+            return new PagedList<InternshipDto>(result, internships.MetaData.TotalCount, internshipParameters.PageNumber, internshipParameters.PageSize);
+
         }
 
 

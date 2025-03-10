@@ -5,7 +5,11 @@ namespace Entities.Models
 {
     public class User : IdentityUser
     {
-       
+
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+
+
         public string ?UrlPicture { get; set; }
         public string ?Bio { get; set; }
         public string? Discriminator { get; set; }

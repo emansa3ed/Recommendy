@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Entities.Models;
 using Contracts;
 using Microsoft.EntityFrameworkCore;
+using Shared.RequestFeatures;
+using Repository.Extensions;
 
 namespace Repository
 {
@@ -36,15 +38,28 @@ namespace Repository
 
         public void UpdateIntership(  Internship internship) => Update(internship);
 
-        public async Task<List<Internship>> GetInternshipsByCompanyId(string companyId, bool trackChanges)
+        public async Task<PagedList<Internship>> GetInternshipsByCompanyId(string companyId,InternshipParameters internshipParameters ,bool trackChanges)
         {
-            return await FindByCondition(i => i.CompanyId == companyId, trackChanges)
+            var internship =  await FindByCondition(i => i.CompanyId == companyId, trackChanges)
                 .Include(i => i.InternshipPositions)
                  .ThenInclude(ip => ip.Position)
-                 .Include(i => i.Company) 
-                 .ThenInclude(c => c.User) 
+                 .Include(i => i.Company)
+                 .ThenInclude(c => c.User)
+                 .Paging(internshipParameters.PageNumber, internshipParameters.PageSize)
                  .ToListAsync();
+
+            var count = await FindByCondition(i => i.CompanyId == companyId, trackChanges)
+                .Include(i => i.InternshipPositions)
+                 .ThenInclude(ip => ip.Position)
+                 .Include(i => i.Company)
+                 .ThenInclude(c => c.User)
+                 .CountAsync();
+
+
+            return new PagedList<Internship>(internship, count, internshipParameters.PageNumber, internshipParameters.PageSize);
+
         }
+     
 
 
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DTO.Authentication;
 using System;
@@ -11,6 +12,7 @@ namespace Presentation.Controllers
 {
     [Route("api/token")]
     [ApiController]
+    [Authorize]
     public class TokenController : ControllerBase
     {
         private readonly IServiceManager _service;
