@@ -20,6 +20,13 @@ namespace Repository.Extensions
             .Skip((PageNumber - 1) * PageSize)
             .Take(PageSize);
         }
+        public static IQueryable<Internship> Search(this IQueryable<Internship> Internship, string searchTerm)
+        {
+            if (string.IsNullOrWhiteSpace(searchTerm))
+                return Internship;
+            var lowerCaseTerm = searchTerm.Trim().ToLower();
+            return Internship.Where(e => (e.Name.ToLower().Contains(lowerCaseTerm)));
+        }
+    }
 
-	}
 }
