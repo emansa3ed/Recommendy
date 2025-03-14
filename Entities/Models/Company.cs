@@ -11,9 +11,9 @@ namespace Entities.Models
         public string? CompanyUrl { get; set; }
         [JsonIgnore]
         public virtual User User { get; set; }
-        
 
-        public virtual ICollection<Internship> Internships { get; set; }
+		[JsonIgnore]
+		public virtual ICollection<Internship> Internships { get; set; }
 
     }
 }

@@ -5,10 +5,12 @@ using Service.Contracts;
 using Shared.DTO.Internship;
 using Shared.DTO.opportunity;
 using Shared.DTO.Scholaship;
+using Shared.RequestFeatures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Presentation.Controllers
@@ -28,11 +30,13 @@ namespace Presentation.Controllers
         }
 
         [HttpGet("Scholarships/all")]
-        public async Task<IActionResult> GetScholarships()
+        public async Task<IActionResult> GetScholarships([FromQuery] ScholarshipsParameters scholarshipsParameters)
         {
 
-            var scholarships = await _service.ScholarshipService.GetAllScholarships(trackChanges: false);
-            return Ok(scholarships);
+            var scholarships = await _service.ScholarshipService.GetAllScholarships(scholarshipsParameters,trackChanges: false);
+			Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(scholarships.MetaData));
+
+			return Ok(scholarships);
 
         }
 
@@ -56,11 +60,13 @@ namespace Presentation.Controllers
 
 
         [HttpGet("Internships/all")]
-        public async Task<IActionResult> GetInternships()
+        public async Task<IActionResult> GetInternships([FromQuery] InternshipParameters internshipParameters)
         {
 
-            var internships = await _service.InternshipService.GetAllInternships(trackChanges: false);
-            return Ok(internships);
+            var internships = await _service.InternshipService.GetAllInternships(internshipParameters,trackChanges: false);
+			Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(internships.MetaData));
+
+			return Ok(internships);
 
         }
 

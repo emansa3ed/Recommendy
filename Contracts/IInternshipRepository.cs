@@ -19,7 +19,7 @@ namespace Contracts
         Task<PagedList<Internship>> GetInternshipsByCompanyId(string  id, InternshipParameters internshipParameters, bool trackChanges);
 
 
-        IEnumerable<Internship> GetAllInternships(bool trackChanges);
+        Task<PagedList<Internship>> GetAllInternshipsAsync(InternshipParameters internshipParameters,bool trackChanges);
         Internship GetInternshipById(int id, bool trackChanges);
 
 

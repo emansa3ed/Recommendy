@@ -1,4 +1,5 @@
 ﻿using Entities.Models;
+using Shared.DTO.Company;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,8 +17,9 @@ namespace Shared.DTO.Internship
         public string Description { get; set; }
         public string UrlPicture { get; set; }
         public bool Paid { get; set; }
-        public string CompanyName { get; set; }
         public string Approach { get; set; }
+
+        public CompanyDto Company { get; set; }
 
         public List<InternshipPositionViewDto> Positions { get; set; }
     }

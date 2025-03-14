@@ -10,7 +10,7 @@ namespace Service.Contracts
     public interface ICountryService
     {
 
-        IEnumerable<CountryDto> GetAllCountries(bool trackChanges);
+        Task<IEnumerable<CountryDto>> GetAllCountriesAsync(bool trackChanges);
         CountryDto GetCountryById(int countryId, bool trackChanges);
 
     }

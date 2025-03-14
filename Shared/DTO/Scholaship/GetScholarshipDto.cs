@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shared.DTO.University;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,8 +26,8 @@ namespace Shared.DTO.Scholaship
         public string UniversityId { get; set; }
         public DateTime CreatedAt { get; set; }
         public Dictionary<string, string> Requirements { get; set; }
-        public string UniversityUrl { get; set; }
-        public string UserName { get; set; }
+
+        public UniversityViewDto University { get; set; }
     }
 
 }

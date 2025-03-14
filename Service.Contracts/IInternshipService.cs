@@ -24,7 +24,7 @@ namespace Service.Contracts
         
         Task<InternshipDto> GetInternshipById(int id, bool trackChanges);
 
-        Task<IEnumerable<InternshipDto>> GetAllInternships(bool trackChanges);
+        Task<PagedList<InternshipDto>> GetAllInternships(InternshipParameters internshipParameters, bool trackChanges);
 
 
     }

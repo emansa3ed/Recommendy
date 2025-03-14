@@ -40,7 +40,7 @@ namespace Presentation.Controllers
 
             return Ok();
         }
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpGet("all")]
         public async Task<ActionResult<ApiResponse<PagedList<ReportDto>>>> GetReports([FromQuery] ReportParameters reportParameters)
         {

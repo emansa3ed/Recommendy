@@ -13,6 +13,9 @@ using System.Net.NetworkInformation;
 using Shared.RequestFeatures;
 using System.Collections.Concurrent;
 using Shared.DTO.Scholaship;
+using Microsoft.Extensions.Caching.Memory;
+using System.Text.Json;
+using Shared.DTO.Internship;
 
 namespace Service
 {
@@ -20,17 +23,19 @@ namespace Service
     {
         private readonly IRepositoryManager _repository;
         private readonly IMapper _mapper;
-        private readonly ILogger<ScholarshipService> _logger;
+		private readonly MyMemoryCache _memoryCache;
+		private readonly ILogger<ScholarshipService> _logger;
 
-        public ScholarshipService(IRepositoryManager repository, IMapper mapper, ILogger<ScholarshipService> logger)
+        public ScholarshipService(IRepositoryManager repository, IMapper mapper, ILogger<ScholarshipService> logger,MyMemoryCache memoryCache)
         {
             _repository = repository;
             _mapper = mapper;
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        }
+			_memoryCache = memoryCache;
+		}
 
 
-        public async Task<PagedList<EditedScholarshipDto>> GetAllScholarshipsForUniversity(string universityId, ScholarshipsParameters scholarshipsParameters, bool trackChanges)
+		public async Task<PagedList<EditedScholarshipDto>> GetAllScholarshipsForUniversity(string universityId, ScholarshipsParameters scholarshipsParameters, bool trackChanges)
         {
 
             var university = await _repository.university.GetUniversityAsync(universityId, trackChanges);
@@ -70,28 +75,36 @@ namespace Service
             return scholarshipToReturn;
         }
 
-        public async Task<IEnumerable<GetScholarshipDto>> GetAllScholarships(bool trackChanges)
+        public async Task<PagedList<GetScholarshipDto>> GetAllScholarships(ScholarshipsParameters scholarshipsParameters, bool trackChanges)
         {
-            try
-            {
-                // Retrieve scholarships from the repository
-                var scholarships =  _repository.Scholarship.GetAllScholarships(trackChanges);
+			if (!_memoryCache.Cache.TryGetValue(scholarshipsParameters.ToString(), out PagedList<Scholarship> cacheValue))
+			{
+				cacheValue = await _repository.Scholarship.GetAllScholarshipsAsync(scholarshipsParameters,trackChanges);
 
-                // Map scholarships to DTOs using AutoMapper
-                var scholarshipDto = _mapper.Map<IEnumerable<GetScholarshipDto>>(scholarships);
-
-                return scholarshipDto;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred while fetching scholarships.");
-                throw new Exception("Something went wrong while fetching scholarships.");
-            }
-        }
-  
+				var jsonSize = JsonSerializer.SerializeToUtf8Bytes(cacheValue).Length;
 
 
-        public async Task<GetScholarshipDto> GetScholarshipById(int id, bool trackChanges)
+				var cacheEntryOptions = new MemoryCacheEntryOptions()
+					.SetSize(jsonSize)
+					.SetSlidingExpiration(TimeSpan.FromSeconds(5))
+					.SetAbsoluteExpiration(TimeSpan.FromSeconds(10));
+
+				_memoryCache.Cache.Set(scholarshipsParameters.ToString(), cacheValue, cacheEntryOptions);
+			}
+
+			// Retrieve scholarships from the repository
+			var scholarships = cacheValue;
+
+            // Map scholarships to DTOs using AutoMapper
+            var scholarshipDto = _mapper.Map<List<GetScholarshipDto>>(scholarships);
+
+			return new PagedList<GetScholarshipDto>(scholarshipDto, scholarships.MetaData.TotalCount, scholarshipsParameters.PageNumber, scholarshipsParameters.PageSize); ;
+
+		}
+
+
+
+		public async Task<GetScholarshipDto> GetScholarshipById(int id, bool trackChanges)
         {
             var scholarship = _repository.Scholarship.GetScholarshipById(id, trackChanges);
             if (scholarship == null)

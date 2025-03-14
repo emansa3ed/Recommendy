@@ -47,7 +47,7 @@ namespace Presentation.Controllers
             var university =await _service.UniversityService.GetUniversityAsync(id, trackChanges: false);
 
 
-            var countries = _service.CountryService.GetAllCountries(trackChanges: false);
+            var countries = await _service.CountryService.GetAllCountriesAsync(trackChanges: false);
 
 
             var response = new EditUniversityProfileDto

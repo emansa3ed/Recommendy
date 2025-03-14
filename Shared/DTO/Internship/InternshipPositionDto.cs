@@ -10,8 +10,6 @@ namespace Shared.DTO.Internship
     public record InternshipPositionDto
     {
 
-        [Required(ErrorMessage = "InternshipId is required")]
-        public int InternshipId { get; set; }
         [Required(ErrorMessage = "PositionId is required")]
         public int PositionId { get; set; }
         [Required(ErrorMessage = "Requirements is required")]

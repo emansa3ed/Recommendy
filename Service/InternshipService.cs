@@ -5,7 +5,9 @@ using Entities.GeneralResponse;
 using Entities.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Service.Contracts;
+using Shared.DTO.Feedback;
 using Shared.DTO.Internship;
 using Shared.DTO.Report;
 using Shared.RequestFeatures;
@@ -14,6 +16,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Service
@@ -22,13 +25,14 @@ namespace Service
     {
         private readonly IRepositoryManager _repositoryManager;
         private readonly IMapper _mapper;
-        public InternshipService(IRepositoryManager repositoryManager , IMapper mapper) { 
+		private readonly MyMemoryCache _memoryCache;
+
+		public InternshipService(IRepositoryManager repositoryManager , IMapper mapper, MyMemoryCache memoryCache) { 
           
             _repositoryManager = repositoryManager;
             _mapper = mapper;
-
-
-        }
+            _memoryCache = memoryCache;
+		}
 
         public  async Task<Internship> CreateInternship(  string CompanyId ,InternshipCreationDto internshipDto) 
         {
@@ -146,18 +150,26 @@ namespace Service
 
 
       
-        public async Task<IEnumerable<InternshipDto>> GetAllInternships(bool trackChanges)
+        public async Task<PagedList<InternshipDto>> GetAllInternships(InternshipParameters internshipParameters, bool trackChanges)
         {
-            try
-            {
-                var internships = _repositoryManager.Intership.GetAllInternships(trackChanges);
-                var internshipDto = _mapper.Map<IEnumerable<InternshipDto>>(internships);
-                return await Task.FromResult(internshipDto);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Something went wrong while fetching Internships.");
-            }
+			if (!_memoryCache.Cache.TryGetValue(internshipParameters.ToString(), out PagedList<Internship> cacheValue))
+			{
+				cacheValue = await _repositoryManager.Intership.GetAllInternshipsAsync(internshipParameters, trackChanges);
+
+				var jsonSize = JsonSerializer.SerializeToUtf8Bytes(cacheValue).Length;
+
+
+				var cacheEntryOptions = new MemoryCacheEntryOptions()
+					.SetSize(jsonSize)
+					.SetSlidingExpiration(TimeSpan.FromSeconds(5))
+					.SetAbsoluteExpiration(TimeSpan.FromSeconds(10));
+
+				_memoryCache.Cache.Set(internshipParameters.ToString(), cacheValue, cacheEntryOptions);
+			}
+            var internships = cacheValue;
+
+			var internshipDto = _mapper.Map<List<InternshipDto>>(internships);
+			return new PagedList<InternshipDto>(internshipDto, internships.MetaData.TotalCount, internshipParameters.PageNumber, internshipParameters.PageSize); ;
         }
 
        

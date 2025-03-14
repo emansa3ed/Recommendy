@@ -60,7 +60,7 @@ namespace Service
                     await _repositoryManager.OpportunityRepository.SavedOpportunity(savedPost);
                     await _repositoryManager.SaveAsync();
                     var post = (Internship)p;
-                    await _notificationService.CreateNotificationAsync(new NotificationCreationDto { ActorID = savedOpportunityDto.StudentId,ReceiverID = post.CompanyId, Content = "NOT"});
+                  //  await _notificationService.CreateNotificationAsync(new NotificationCreationDto { ActorID = savedOpportunityDto.StudentId,ReceiverID = post.CompanyId, Content = "NOT"});
 					
                 
                

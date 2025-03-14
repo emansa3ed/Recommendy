@@ -40,18 +40,22 @@ namespace Repository
         public void UpdateScholarship(Scholarship scholarship) => Update(scholarship);
         public void DeleteScholarship(Scholarship scholarship) => Delete(scholarship);
 
-        //  public IEnumerable<Scholarship> GetAllScholarships(bool trackChanges) => FindAll(trackChanges).Where(s => !s.IsBanned).OrderByDescending(s => s.CreatedAt).ToList();
+		//  public IEnumerable<Scholarship> GetAllScholarships(bool trackChanges) => FindAll(trackChanges).Where(s => !s.IsBanned).OrderByDescending(s => s.CreatedAt).ToList();
 
 
-        public IEnumerable<Scholarship> GetAllScholarships(bool trackChanges)
+		public async Task<PagedList<Scholarship>> GetAllScholarshipsAsync(ScholarshipsParameters scholarshipsParameters, bool trackChanges)
         {
-            return FindAll(trackChanges)
-                .Where(s => !s.IsBanned)
-                .OrderByDescending(s => s.CreatedAt)
-                .Include(s => s.University) 
-                .ThenInclude(u => u.User) 
-                .ToList();
-        }
+			var res = await FindByCondition((s => !s.IsBanned),trackChanges)
+			    .Paging(scholarshipsParameters.PageNumber, scholarshipsParameters.PageSize)
+				.Filter(scholarshipsParameters.fund, scholarshipsParameters.degree)
+				.Search(scholarshipsParameters.searchTerm)
+				.Include(s => s.University)
+				.ThenInclude(u => u.User)
+				.ToListAsync();
+
+			var count = await FindByCondition((s => !s.IsBanned), trackChanges).CountAsync();
+			return new PagedList<Scholarship>(res, count, scholarshipsParameters.PageNumber, scholarshipsParameters.PageSize);
+		}
 
         public Scholarship GetScholarshipById(int id, bool trackChanges) => FindByCondition(s => s.Id == id, trackChanges).Where(s => !s.IsBanned).Include(s => s.University)
                 .ThenInclude(u => u.User).SingleOrDefault();

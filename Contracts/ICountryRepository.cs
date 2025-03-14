@@ -9,7 +9,7 @@ namespace Contracts
 {
     public interface ICountryRepository 
     {
-        IEnumerable<Country> GetAllCountries(bool trackChanges);
+        Task<IEnumerable<Country>> GetAllCountriesAsync(bool trackChanges);
         Country GetCountryById(int countryId, bool trackChanges);
 		int CreateCountry(Country Country);
 

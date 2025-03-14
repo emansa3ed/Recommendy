@@ -21,12 +21,12 @@ namespace Presentation.Controllers
 
         [HttpGet]
 
-        public IActionResult GetCountries()
+        public async Task<IActionResult> GetCountries()
         {
-            
-                var Countries =
-                _service.CountryService.GetAllCountries(trackChanges: false);
-                return Ok(Countries);
+            var Countries =
+            await _service.CountryService.GetAllCountriesAsync(trackChanges: false);
+
+            return Ok(Countries);
 
         }
     }
