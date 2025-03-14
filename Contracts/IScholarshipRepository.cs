@@ -16,7 +16,7 @@ namespace Contracts
             void CreateScholarship(Scholarship scholarship);
             void UpdateScholarship(Scholarship scholarship);
             void DeleteScholarship(Scholarship scholarship);
-            IEnumerable<Scholarship> GetAllScholarships(bool trackChanges);
+            Task<PagedList<Scholarship>> GetAllScholarshipsAsync(ScholarshipsParameters scholarshipsParameters, bool trackChanges);
             Scholarship GetScholarshipById(int id, bool trackChanges);
     }
 

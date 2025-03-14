@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Repository.Extensions
 {
-	public static class RepositoryOrderScholarship
+	public static class RepositoryScholarshipExtensions
 	{
 		public static IQueryable<Scholarship> Paging(this IQueryable<Scholarship> Scholarship, int PageNumber, int PageSize)
 		{

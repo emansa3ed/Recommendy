@@ -27,7 +27,7 @@ namespace Recommendy
 
             CreateMap<Internship, InternshipDto>()
               .ForMember(dest => dest.Positions, opt => opt.MapFrom(src => src.InternshipPositions))
-              .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Company.User.UserName));
+              .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.Company));
 
             CreateMap<InternshipPosition, InternshipPositionViewDto>()
                    .ForMember(dest => dest.PositionName, opt => opt.MapFrom(src => src.Position.Name));
@@ -81,8 +81,7 @@ namespace Recommendy
             CreateMap<Scholarship, GetScholarshipDto>()
              .ForMember(dest => dest.Degree, opt => opt.MapFrom(src => src.Degree.ToString())) 
              .ForMember(dest => dest.Funded, opt => opt.MapFrom(src => src.Funded.ToString()))  
-             .ForMember(dest => dest.UniversityUrl, opt => opt.MapFrom(src => src.University.UniversityUrl))
-             .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.University.User.UserName));
+             .ForMember(dest => dest.University, opt => opt.MapFrom(src => src.University));
 
 
             CreateMap<ScholarshipForCreationDto, Scholarship>();

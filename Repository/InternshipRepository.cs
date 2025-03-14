@@ -59,23 +59,26 @@ namespace Repository
             return new PagedList<Internship>(internship, count, internshipParameters.PageNumber, internshipParameters.PageSize);
 
         }
-     
 
 
 
-        public IEnumerable<Internship> GetAllInternships(bool trackChanges) =>
-        FindAll(trackChanges)
-        .Include(i => i.InternshipPositions)
-        .ThenInclude(ip => ip.Position)
-        .Include(i => i.Company) 
-        .ThenInclude(c => c.User)
-        .Where(i => i.IsBanned != true)
-        .OrderByDescending(i => i.CreatedAt)
-        .ToList();
+
+		public async Task<PagedList<Internship>> GetAllInternshipsAsync(InternshipParameters internshipParameters,bool trackChanges)
+        {
+		    var res = await FindByCondition((i => i.IsBanned != true), trackChanges)
+                .Paging(internshipParameters.PageNumber, internshipParameters.PageSize)
+                .Filter(internshipParameters.Paid)
+                .Include(i => i.Company)
+                .ThenInclude(c => c.User)
+                .ToListAsync();
+			var count = await FindByCondition((i => i.IsBanned != true), trackChanges).CountAsync();
+			return new PagedList<Internship>(res, count, internshipParameters.PageNumber, internshipParameters.PageSize);
+
+		}
 
 
 
-        public Internship GetInternshipById(int id, bool trackChanges)
+		public Internship GetInternshipById(int id, bool trackChanges)
         {
             return FindByCondition(i => i.Id == id, trackChanges)
                 .Where(i => i.IsBanned != true)

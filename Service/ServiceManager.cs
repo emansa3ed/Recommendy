@@ -43,26 +43,26 @@ namespace Service
             UserManager<User> userManager,IConfiguration configuration, 
             IWebHostEnvironment _webHostEnvironment, ILogger<ServiceManager> logger, 
             ILoggerFactory loggerFactory, IHttpContextAccessor httpContextAccessor, IEmailsService emailsService, IUserCodeService userCodeService,HttpClient httpClient,
-            IHubContext<NotificationHub> _hubContext)
+            IHubContext<NotificationHub> _hubContext, MyMemoryCache memoryCache)
         {
             _logger = logger;
 
-            _countryService = new Lazy<ICountryService>(() => new  CountryService(repositoryManager, mapper));
+            _countryService = new Lazy<ICountryService>(() => new  CountryService(repositoryManager, mapper, memoryCache));
             _authenticationService = new Lazy<IAuthenticationService>(() => new AuthenticationService(mapper, userManager, configuration, repositoryManager ,httpContextAccessor , userCodeService,httpClient));
            _userService = new Lazy<IUserService>(()=>  new UserService(repositoryManager,userManager ,mapper , emailsService));
-            _internshipService =    new Lazy<IInternshipService>(() =>  new InternshipService(repositoryManager , mapper));
+            _internshipService =    new Lazy<IInternshipService>(() =>  new InternshipService(repositoryManager , mapper, memoryCache));
             _internshipPositionService = new Lazy<IInternshipPositionService>(() => new InternshipPositionService(repositoryManager ,mapper));  
             _positionService = new Lazy<IPositionService>(()=> new PositionService(repositoryManager));
 
             var scholarshipServiceLogger = loggerFactory.CreateLogger<ScholarshipService>();
-            _scholarshipService = new Lazy<IScholarshipService>(() => new ScholarshipService(repositoryManager, mapper,  scholarshipServiceLogger));
+            _scholarshipService = new Lazy<IScholarshipService>(() => new ScholarshipService(repositoryManager, mapper,  scholarshipServiceLogger, memoryCache));
            _universityService  = new Lazy<IUniversityService>(() => new UniversityService(repositoryManager, mapper , userManager));
             _emailsService = new Lazy<IEmailsService>(() => new EmailsService(configuration , repositoryManager , userManager));
             _userCodeService = new Lazy<IUserCodeService>(() => new UserCodeService(repositoryManager, emailsService,userManager));
             _companyService = new Lazy<ICompanyService>(() => new CompanyService( repositoryManager ,mapper ,userManager));
             _studentService = new Lazy<IStudentService>(() => new StudentService(repositoryManager ,mapper , userManager));
 			_feedbackService = new Lazy<IFeedbackService>(() => new FeedbackService(repositoryManager, mapper));
-            _reportService = new Lazy<IReportService>(() => new ReportService( repositoryManager , mapper));
+            _reportService = new Lazy<IReportService>(() => new ReportService( repositoryManager , mapper, memoryCache));
 			_notificationservice = new Lazy<INotificationService>(() => new NotificationService( repositoryManager , mapper, _hubContext, userManager));
             _opportunityService = new Lazy<IOpportunityService>(() =>  new OpportunityService(repositoryManager , mapper,_notificationservice.Value));
 

@@ -139,8 +139,9 @@ namespace Service
                         university.UniversityId = user.Id;
                         university.UniversityUrl = userForRegistration.Url;
                         var CounryName = await GetCounryName(HttpContext);
-                        var res = _repository.Country.GetAllCountries(false).Where(c => c.Name == CounryName).SingleOrDefault();
-                        if (res != null)
+                        var contries = await _repository.Country.GetAllCountriesAsync(false);
+						var res = contries.Where(c => c.Name == CounryName).SingleOrDefault();
+						if (res != null)
                             university.CountryId = res.Id;
                         else
                         {

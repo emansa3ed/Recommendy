@@ -24,5 +24,10 @@ namespace Shared.RequestFeatures
 		}
 
 		//public string? ordereby { get; set; }
+
+		public override string ToString()
+		{
+			return maxPageSize.ToString() + PageNumber.ToString() + _pageSize.ToString();
+		}
 	}
 }

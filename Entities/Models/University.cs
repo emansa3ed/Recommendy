@@ -18,7 +18,8 @@ namespace Entities.Models
        
         public virtual Country Country { get; set; }
 
-        public virtual ICollection<Scholarship> Scholarships { get; set; }
+		[JsonIgnore]
+		public virtual ICollection<Scholarship> Scholarships { get; set; }
 
 
     }

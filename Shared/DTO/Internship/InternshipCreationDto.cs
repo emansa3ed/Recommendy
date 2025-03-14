@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Shared.DTO.Internship
 {
     public record InternshipCreationDto
-    {
+    { 
 
 
         [Required(ErrorMessage = "Name is required")]
@@ -24,9 +24,6 @@ namespace Shared.DTO.Internship
 
         [Required(ErrorMessage = "Description is required")]
         public string? Description { get; set; }
-
-        [Required(ErrorMessage = "Company ID is required")]
-        public string? CompanyId { get; set; }
 
         [Required(ErrorMessage = "Paid status is required")]
         public bool? Paid { get; set; }

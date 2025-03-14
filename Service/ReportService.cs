@@ -12,6 +12,8 @@ using Entities.Models;
 using Shared.RequestFeatures;
 using Shared.DTO.Feedback;
 using Org.BouncyCastle.Utilities;
+using Microsoft.Extensions.Caching.Memory;
+using System.Text.Json;
 
 
 namespace Service
@@ -20,12 +22,13 @@ namespace Service
     {
         private readonly IRepositoryManager _repository;
         private readonly IMapper _mapper;
+		private readonly MyMemoryCache _memoryCache;
 
-        public ReportService(IRepositoryManager repository, IMapper mapper) { 
+		public ReportService(IRepositoryManager repository, IMapper mapper, MyMemoryCache memoryCache) { 
 
             _repository = repository;
             _mapper = mapper;
-
+            _memoryCache = memoryCache;
         }  
 
         public  async Task   CreateReport(  string StudentId , int  PostId  , ReportDtoCreation reportDtoCreation)
@@ -96,8 +99,25 @@ namespace Service
 
         public async Task<PagedList<ReportDto>> GetReportsAsync(ReportParameters reportParameters, bool trackChanges=false)
         {
-            var result = await _repository.ReportRepository.GetReportsAsync(reportParameters, trackChanges);
-            var mappedResult = _mapper.Map<List<ReportDto>>(result);
+
+			if (!_memoryCache.Cache.TryGetValue(reportParameters.ToString(), out PagedList<Report> cacheValue))
+			{
+				cacheValue = await _repository.ReportRepository.GetReportsAsync(reportParameters, trackChanges);
+
+				var jsonSize = JsonSerializer.SerializeToUtf8Bytes(cacheValue).Length;
+
+
+				var cacheEntryOptions = new MemoryCacheEntryOptions()
+					.SetSize(jsonSize)
+					.SetSlidingExpiration(TimeSpan.FromSeconds(5))
+					.SetAbsoluteExpiration(TimeSpan.FromSeconds(10));
+
+				_memoryCache.Cache.Set(reportParameters.ToString(), cacheValue, cacheEntryOptions);
+			}
+
+            var result = cacheValue;
+
+			var mappedResult = _mapper.Map<List<ReportDto>>(result);
            // return mappedResult;
             return new PagedList<ReportDto>(mappedResult, result.MetaData.TotalCount, reportParameters.PageNumber, reportParameters.PageSize);
 

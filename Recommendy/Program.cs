@@ -40,10 +40,11 @@ namespace Recommendy
             builder.Services.AddSwaggerGen();
             builder.Services.ConfigureIdentity();
             builder.Services.ConfigureJWT(builder.Configuration);
+			builder.Services.AddSingleton<MyMemoryCache>();
 
 
 
-            var app = builder.Build();
+			var app = builder.Build();
 			app.UseCors("CorsPolicy");
             app.ConfigureExceptionHandler();
 

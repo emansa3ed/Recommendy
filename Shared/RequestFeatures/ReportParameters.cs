@@ -13,7 +13,10 @@ namespace Shared.RequestFeatures
         [Required(ErrorMessage = "Status is required")]
         public string Status { get; set; }
 
+		public override string ToString()
+		{
+			return base.ToString() + Status.ToString();
+		}
 
-
-    }
+	}
 }
