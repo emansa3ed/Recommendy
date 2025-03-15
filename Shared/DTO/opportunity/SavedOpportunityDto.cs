@@ -9,9 +9,6 @@ namespace Shared.DTO.opportunity
 {
     public record SavedOpportunityDto
     {
-        [Required(ErrorMessage = " StudentId is  Required")]
-
-        public string StudentId { get; set; }
 
         [Required(ErrorMessage = " PostId is  Required")]
         public int PostId { get; set; }
