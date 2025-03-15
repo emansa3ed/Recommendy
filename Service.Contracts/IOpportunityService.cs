@@ -12,8 +12,8 @@ namespace Service.Contracts
 {
     public interface IOpportunityService
     {
-        Task SavedOpportunity(SavedOpportunityDto savedPost);
-        Task DeleteOpportunity(SavedOpportunityDto savedPost);
+        Task SavedOpportunity(string StudentId,SavedOpportunityDto savedPost);
+        Task DeleteOpportunity(string StudentId,SavedOpportunityDto savedPost);
 
         Task<IEnumerable<GetScholarshipDto>> GetSavedScholarshipsAsync(string studentId);
         Task<IEnumerable<InternshipDto>> GetSavedInternshipsAsync(string studentId);

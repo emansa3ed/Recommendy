@@ -27,15 +27,15 @@ namespace Service
 			_notificationService = notificationService;
 		}
          
-       public async Task SavedOpportunity(SavedOpportunityDto savedOpportunityDto)
+       public async Task SavedOpportunity(string StudentId, SavedOpportunityDto savedOpportunityDto)
         {
-            var student = _repositoryManager.Student.GetStudent(savedOpportunityDto.StudentId,false);
+            var student = _repositoryManager.Student.GetStudent(StudentId,false);
             if (student is null)
-                throw new StudentNotFoundException(savedOpportunityDto.StudentId);
+                throw new StudentNotFoundException(StudentId);
 
 
 
-            var result=  await _repositoryManager.OpportunityRepository.GetSavedOpportunity(savedOpportunityDto.StudentId, savedOpportunityDto.PostId, savedOpportunityDto.Type);
+            var result=  await _repositoryManager.OpportunityRepository.GetSavedOpportunity(StudentId, savedOpportunityDto.PostId, savedOpportunityDto.Type);
 
             object p;
             if (result == null)
@@ -67,13 +67,13 @@ namespace Service
             }
            
         }
-        public async Task DeleteOpportunity(SavedOpportunityDto savedOpportunityDto)
+        public async Task DeleteOpportunity(string StudentId,SavedOpportunityDto savedOpportunityDto)
         {
-            var student = _repositoryManager.Student.GetStudent(savedOpportunityDto.StudentId, false);
+            var student = _repositoryManager.Student.GetStudent(StudentId, false);
             if (student is null)
-                throw new StudentNotFoundException(savedOpportunityDto.StudentId);
+                throw new StudentNotFoundException(StudentId);
 
-            var result =  await _repositoryManager.OpportunityRepository.GetSavedOpportunity(savedOpportunityDto.StudentId, savedOpportunityDto.PostId, savedOpportunityDto.Type);
+            var result =  await _repositoryManager.OpportunityRepository.GetSavedOpportunity(StudentId, savedOpportunityDto.PostId, savedOpportunityDto.Type);
             if (result != null)
             {
                 if (savedOpportunityDto.Type == 'I')
