@@ -1,4 +1,5 @@
 using Entities.GeneralResponse;
+using Entities.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
@@ -15,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Presentation.Controllers
 {
-    [Route("api/[Controller]")]
+    [Route("api/Student/{StudentId}/[controller]")]
     [ApiController]
     [Authorize(Roles = "Student")]
     public class OpportunitiesController : ControllerBase
@@ -36,7 +37,7 @@ namespace Presentation.Controllers
             var scholarships = await _service.ScholarshipService.GetAllScholarships(scholarshipsParameters,trackChanges: false);
 			Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(scholarships.MetaData));
 
-			return Ok(scholarships);
+            return Ok(new ApiResponse<PagedList<GetScholarshipDto>> { Success = true, Message = "Fetch success", Data = scholarships });
 
         }
 
@@ -66,7 +67,7 @@ namespace Presentation.Controllers
             var internships = await _service.InternshipService.GetAllInternships(internshipParameters,trackChanges: false);
 			Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(internships.MetaData));
 
-			return Ok(internships);
+            return Ok(new ApiResponse<PagedList<InternshipDto>> { Success = true, Message = "Fetch success", Data = internships });
 
         }
 
@@ -77,26 +78,26 @@ namespace Presentation.Controllers
 
             var internship = await _service.InternshipService.GetInternshipById(id, trackChanges: false);
 
-            return Ok(internship);
+            return Ok(new ApiResponse<InternshipDto> { Success = true, Message = "Fetch success", Data = internship });
 
         }
 
-        [HttpPost("SavedOpportunity")]
-
-        public async Task<IActionResult> SavedOpportunity([FromBody] SavedOpportunityDto savedOpportunityDto)
+     
+        [HttpPost("{PostId}")]
+        public async Task<IActionResult> SavedOpportunity( [FromRoute] string StudentId, [FromRoute]int PostId, [FromQuery] char Type)
         {
-
-             await _service.OpportunityService.SavedOpportunity(savedOpportunityDto);
+            
+             await _service.OpportunityService.SavedOpportunity(StudentId, PostId, Type);
 
             return Ok();
 
         }
 
-        [HttpDelete("UnSavedOpportunity")]
-        public async Task<IActionResult> UnSavedOpportunity([FromBody] SavedOpportunityDto savedOpportunityDto)
+        [HttpDelete("{PostId}")]
+        public async Task<IActionResult> UnSavedOpportunity([FromRoute] string StudentId, [FromRoute]int PostId, [FromQuery] char Type)
         {
 
-            await _service.OpportunityService.DeleteOpportunity(savedOpportunityDto);
+            await _service.OpportunityService.DeleteOpportunity(StudentId, PostId, Type);
 
             return Ok();
 

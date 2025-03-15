@@ -2,6 +2,7 @@
 using Contracts;
 using Entities.Exceptions;
 using Entities.Models;
+using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DTO.Internship;
 using Shared.DTO.Notification;
@@ -27,39 +28,46 @@ namespace Service
 			_notificationService = notificationService;
 		}
          
-       public async Task SavedOpportunity(SavedOpportunityDto savedOpportunityDto)
+       public async Task SavedOpportunity( string StudentId,  int PostId,  char Type)
         {
-            var student = _repositoryManager.Student.GetStudent(savedOpportunityDto.StudentId,false);
+            var student = _repositoryManager.Student.GetStudent(StudentId,false);
             if (student is null)
-                throw new StudentNotFoundException(savedOpportunityDto.StudentId);
+                throw new StudentNotFoundException(StudentId);
 
 
 
-            var result=  await _repositoryManager.OpportunityRepository.GetSavedOpportunity(savedOpportunityDto.StudentId, savedOpportunityDto.PostId, savedOpportunityDto.Type);
+            var result=  await _repositoryManager.OpportunityRepository.GetSavedOpportunity(StudentId,PostId, Type);
 
             object p;
             if (result == null)
             {
-                if (savedOpportunityDto.Type == 'I')
+                if (Type == 'I')
                 {
-                    var internship = _repositoryManager.Intership.GetInternshipById(savedOpportunityDto.PostId, false);
+                    var internship = _repositoryManager.Intership.GetInternshipById(PostId, false);
                     if (internship == null)
-                    throw new InternshipNotFoundException(savedOpportunityDto.PostId);
+                    throw new InternshipNotFoundException(PostId);
                     p = internship;
 				}
-				else
+                else if (Type == 'S')
                 {
-                    var scholarship = _repositoryManager.Scholarship.GetScholarshipById(savedOpportunityDto.PostId, false);
+                    var scholarship = _repositoryManager.Scholarship.GetScholarshipById(PostId, false);
                     if (scholarship == null)
-                     throw new ScholarshipNotFoundException(savedOpportunityDto.PostId);
-					p = scholarship;
+                        throw new ScholarshipNotFoundException(PostId);
+                }
+                else
+                {
+                    throw new SavedPostNotFoundException();
 
-				}
-				
-                    var savedPost = _mapper.Map<SavedPost>(savedOpportunityDto);
+                }
+
+
+                var savedPost = new SavedPost();
+                savedPost.StudentId = StudentId;
+                savedPost.PostId = PostId;
+                savedPost.Type = Type;
                     await _repositoryManager.OpportunityRepository.SavedOpportunity(savedPost);
                     await _repositoryManager.SaveAsync();
-                    var post = (Internship)p;
+                  
                   //  await _notificationService.CreateNotificationAsync(new NotificationCreationDto { ActorID = savedOpportunityDto.StudentId,ReceiverID = post.CompanyId, Content = "NOT"});
 					
                 
@@ -67,32 +75,41 @@ namespace Service
             }
            
         }
-        public async Task DeleteOpportunity(SavedOpportunityDto savedOpportunityDto)
+        public async Task DeleteOpportunity(string StudentId, int PostId, char Type)
         {
-            var student = _repositoryManager.Student.GetStudent(savedOpportunityDto.StudentId, false);
-            if (student is null)
-                throw new StudentNotFoundException(savedOpportunityDto.StudentId);
 
-            var result =  await _repositoryManager.OpportunityRepository.GetSavedOpportunity(savedOpportunityDto.StudentId, savedOpportunityDto.PostId, savedOpportunityDto.Type);
+            var student = _repositoryManager.Student.GetStudent(StudentId, false);
+            if (student is null)
+                throw new StudentNotFoundException(StudentId);
+
+            var result =  await _repositoryManager.OpportunityRepository.GetSavedOpportunity(StudentId, PostId, Type);
             if (result != null)
             {
-                if (savedOpportunityDto.Type == 'I')
+                if (Type == 'I')
                 {
-                    var internship = _repositoryManager.Intership.GetInternshipById(savedOpportunityDto.PostId, false);
+                    var internship = _repositoryManager.Intership.GetInternshipById(PostId, false);
                     if (internship == null)
-                        throw new InternshipNotFoundException(savedOpportunityDto.PostId);
+                        throw new InternshipNotFoundException(PostId);
 
+                }
+                else  if(Type =='S')
+                {
+                    var scholarship = _repositoryManager.Scholarship.GetScholarshipById(PostId, false);
+                    if (scholarship == null)
+                        throw new ScholarshipNotFoundException(PostId);
                 }
                 else
                 {
-                    var scholarship = _repositoryManager.Scholarship.GetScholarshipById(savedOpportunityDto.PostId, false);
-                    if (scholarship == null)
-                        throw new ScholarshipNotFoundException(savedOpportunityDto.PostId);
+                    throw new SavedPostNotFoundException();
+
                 }
 
 
 
-                var savedPost = _mapper.Map<SavedPost>(savedOpportunityDto);
+                var savedPost = new SavedPost();
+                savedPost.StudentId = StudentId;
+                savedPost.PostId = PostId;
+                savedPost.Type = Type;
                 await _repositoryManager.OpportunityRepository.DeleteOpportunity(savedPost);
                 await _repositoryManager.SaveAsync();
               
