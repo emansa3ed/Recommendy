@@ -121,7 +121,7 @@ namespace Presentation.Controllers
 
         }
 
-        [HttpDelete("{InternshipId}/positions{PositionId}")]
+        [HttpDelete("{InternshipId}/positions/{PositionId}")]
         public  async Task<IActionResult> DeletePosition([FromRoute] string CompanyID, [FromRoute] int InternshipId, [FromRoute] int PositionId)
         {
 

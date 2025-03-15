@@ -57,7 +57,7 @@ namespace Service
 
         public async Task DeleteInternshipPosition(string CompanyId  , int InternshipId, int PositionId)
         {
-            var company = _repositoryManager.Company.GetCompany(CompanyId, false);
+            var company =   _repositoryManager.Company.GetCompany(CompanyId, false);
             if (company == null)
                 throw new CompanyNotFoundException(CompanyId);
 
@@ -65,7 +65,7 @@ namespace Service
             if (Internship == null)
                 throw new InternshipNotFoundException(InternshipId);
 
-               var InternshipPosition =   _repositoryManager.InternshipPosition.GetInternshipPosition(InternshipId, PositionId);
+               var InternshipPosition =  _repositoryManager.InternshipPosition.GetInternshipPosition(InternshipId, PositionId);
 
             if (InternshipPosition == null)
 
@@ -75,13 +75,7 @@ namespace Service
             _repositoryManager.InternshipPosition.DeleteInternshipPosition(InternshipId, PositionId);
                 await _repositoryManager.SaveAsync();
 
-     
-
-           
-
-
-
-        
+       
         }
         public  async Task UpdateInternshipPosition(string CompanyId, int InternshipId, int PositionId, InternshipPositionUpdateDto internshipupdatePosition)
         {

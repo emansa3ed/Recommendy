@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Entities.Models;
 using Contracts;
+using Microsoft.EntityFrameworkCore;
 
 namespace Repository
 {
@@ -17,9 +18,9 @@ namespace Repository
 
         public void CreateInternshipPosition(InternshipPosition internshipPosition) => Create(internshipPosition);
 
-        public void DeleteInternshipPosition(int InternshipId, int PositionId)
+        public async void DeleteInternshipPosition(int InternshipId, int PositionId)
         {
-            var result = FindByCondition(i => i.InternshipId == InternshipId && i.PositionId == PositionId, false);
+            var result =   await  FindByCondition(i => i.InternshipId == InternshipId && i.PositionId == PositionId, false).ToListAsync();
           
 
             foreach (var item in result)
