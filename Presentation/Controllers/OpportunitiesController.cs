@@ -17,7 +17,7 @@ namespace Presentation.Controllers
 {
 	[Route("api/[Controller]")]
 	[ApiController]
-	[Authorize(Roles = "Student")]
+//	[Authorize(Roles = "Student")]
 	public class OpportunitiesController : ControllerBase
 	{
 
@@ -36,13 +36,13 @@ namespace Presentation.Controllers
 			var scholarships = await _service.ScholarshipService.GetAllScholarships(scholarshipsParameters, trackChanges: false);
 			Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(scholarships.MetaData));
 
-			return Ok(scholarships);
+            return Ok(new ApiResponse<PagedList<GetScholarshipDto>> { Success = true, Message = "Fetch success", Data = scholarships });
 
-		}
+        }
 
 
 
-		[HttpGet("Scholarships/{id:int}")]
+        [HttpGet("Scholarships/{id:int}")]
 		public async Task<ActionResult<GetScholarshipDto>> GetOneScholarship(int id)
 		{
 
@@ -66,12 +66,12 @@ namespace Presentation.Controllers
 			var internships = await _service.InternshipService.GetAllInternships(internshipParameters, trackChanges: false);
 			Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(internships.MetaData));
 
-			return Ok(internships);
+            return Ok(new ApiResponse<PagedList<InternshipDto>> { Success = true, Message = "Fetch success", Data = internships });
 
-		}
+        }
 
 
-		[HttpGet("Internships/{id:int}")]
+        [HttpGet("Internships/{id:int}")]
 		public async Task<ActionResult<InternshipDto>> GetOneInternship(int id)
 		{
 
