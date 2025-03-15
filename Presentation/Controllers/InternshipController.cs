@@ -20,7 +20,7 @@ namespace Presentation.Controllers
 {
     [Route("api/Companies/{CompanyID}/[controller]")]
     [ApiController]
-   [Authorize(Roles = "Company")]
+    [Authorize(Roles = "Company")]
 
     public class InternshipController : ControllerBase
     {

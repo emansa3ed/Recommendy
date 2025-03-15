@@ -46,6 +46,7 @@ namespace Service
 
                 string url = _repositoryManager.File.UploadImage("Internships", internshipDto.Image).Result;
                  internship.UrlPicture = url;
+                 internship.CompanyId = CompanyId;
 
                  _repositoryManager.Intership.CreateIntership(internship);
                

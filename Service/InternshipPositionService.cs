@@ -41,6 +41,7 @@ namespace Service
 
 
             var internshipPosition = _mapper.Map<InternshipPosition>(internshipPositionDto);
+            internshipPosition.InternshipId = InternshipId;
 
                 _repositoryManager.InternshipPosition.CreateInternshipPosition(internshipPosition);
                await  _repositoryManager.SaveAsync();
