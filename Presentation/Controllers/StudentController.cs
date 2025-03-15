@@ -67,7 +67,7 @@ namespace Presentation.Controllers
             
                 var savedScholarships = await _service.OpportunityService.GetSavedScholarshipsAsync(StudentId);
 
-         return Ok(new ApiResponse<IEnumerable< GetScholarshipDto>> {  Success = true , Message = "ChangePassword successfully."  ,
+         return Ok(new ApiResponse<IEnumerable< GetScholarshipDto>> {  Success = true , Message = "fetch data  successfully."  ,
              Data = savedScholarships });
 
         }
