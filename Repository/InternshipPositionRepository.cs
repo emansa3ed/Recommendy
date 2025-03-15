@@ -18,29 +18,33 @@ namespace Repository
 
         public void CreateInternshipPosition(InternshipPosition internshipPosition) => Create(internshipPosition);
 
-        public async void DeleteInternshipPosition(int InternshipId, int PositionId)
+        public async Task DeleteInternshipPosition(int InternshipId, int PositionId)
         {
-            var result =   await  FindByCondition(i => i.InternshipId == InternshipId && i.PositionId == PositionId, false).ToListAsync();
-          
+            var result = await FindByCondition(i => i.InternshipId == InternshipId && i.PositionId == PositionId, true)
+                                 .ToListAsync();
 
-            foreach (var item in result)
+            if (result.Any())
             {
-
-                if (item != null)
+                foreach (var item in result)
                 {
-                    try
+                    if (item != null)
                     {
-                        Delete(item);
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new Exception($"Failed to Delete. {ex.Message} | Inner Exception: {ex.InnerException?.Message}");
+                        try
+                        {
+                            Delete(item);  
+
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new Exception($"Failed to Delete. {ex.Message} | Inner Exception: {ex.InnerException?.Message}");
+                        }
                     }
                 }
+
+             
             }
-
-
         }
+
 
         public InternshipPosition GetInternshipPosition(int InternshipId, int PositionId)
         {

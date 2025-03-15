@@ -72,7 +72,7 @@ namespace Service
                 throw new InternshipPositionNotFoundException();
 
 
-            _repositoryManager.InternshipPosition.DeleteInternshipPosition(InternshipId, PositionId);
+           await  _repositoryManager.InternshipPosition.DeleteInternshipPosition(InternshipId, PositionId);
                 await _repositoryManager.SaveAsync();
 
        
