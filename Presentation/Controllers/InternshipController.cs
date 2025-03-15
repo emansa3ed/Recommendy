@@ -20,7 +20,7 @@ namespace Presentation.Controllers
 {
     [Route("api/Companies/{CompanyID}/[controller]")]
     [ApiController]
-   [Authorize(Roles = "Company")]
+    [Authorize(Roles = "Company")]
 
     public class InternshipController : ControllerBase
     {
@@ -121,7 +121,7 @@ namespace Presentation.Controllers
 
         }
 
-        [HttpDelete("{InternshipId}/positions{PositionId}")]
+        [HttpDelete("{InternshipId}/positions/{PositionId}")]
         public  async Task<IActionResult> DeletePosition([FromRoute] string CompanyID, [FromRoute] int InternshipId, [FromRoute] int PositionId)
         {
 

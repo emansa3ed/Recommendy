@@ -86,17 +86,17 @@ namespace Presentation.Controllers
 		public async Task<IActionResult> SavedOpportunity([FromRoute] string StudentId, [FromBody] SavedOpportunityDto savedOpportunityDto)
 		{
 
-			await _service.OpportunityService.SavedOpportunity(StudentId,savedOpportunityDto);
+			await _service.OpportunityService.SavedOpportunity(StudentId, savedOpportunityDto);
 
 			return Ok();
 
 		}
 
 		[HttpDelete("UnSavedOpportunity/Student/{StudentId}")]
-		public async Task<IActionResult> UnSavedOpportunity([FromRoute] string StudentId,[FromBody] SavedOpportunityDto savedOpportunityDto)
+		public async Task<IActionResult> UnSavedOpportunity([FromRoute] string StudentId, [FromBody] SavedOpportunityDto savedOpportunityDto)
 		{
 
-			await _service.OpportunityService.DeleteOpportunity(StudentId,savedOpportunityDto);
+			await _service.OpportunityService.DeleteOpportunity(StudentId, savedOpportunityDto);
 
 			return Ok();
 

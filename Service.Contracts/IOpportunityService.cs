@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace Service.Contracts
 {
-    public interface IOpportunityService
-    {
-        Task SavedOpportunity(string StudentId,SavedOpportunityDto savedPost);
-        Task DeleteOpportunity(string StudentId,SavedOpportunityDto savedPost);
+	public interface IOpportunityService
+	{
+		Task SavedOpportunity(string StudentId, SavedOpportunityDto savedPost);
+		Task DeleteOpportunity(string StudentId, SavedOpportunityDto savedPost);
 
-        Task<IEnumerable<GetScholarshipDto>> GetSavedScholarshipsAsync(string studentId);
-        Task<IEnumerable<InternshipDto>> GetSavedInternshipsAsync(string studentId);
+		Task<IEnumerable<GetScholarshipDto>> GetSavedScholarshipsAsync(string studentId);
+		Task<IEnumerable<InternshipDto>> GetSavedInternshipsAsync(string studentId);
 
-    }
+	}
 }
