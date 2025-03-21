@@ -13,6 +13,8 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using System.IdentityModel.Tokens.Jwt;
 using Azure.Core;
+using System.Threading.RateLimiting;
+using Entities.GeneralResponse;
 
 namespace Recommendy.Extensions
 {
@@ -140,5 +142,44 @@ namespace Recommendy.Extensions
 
 			});
         }
-    }
+
+		public static void ConfigureRateLimiter(this IServiceCollection services)
+		{
+			services.AddRateLimiter(options =>
+			{
+				options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+					RateLimitPartition.GetSlidingWindowLimiter(
+						partitionKey: httpContext.User.Identity?.Name ??
+						  httpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault() ??
+						  httpContext.Connection.RemoteIpAddress?.ToString() ??
+						  "anonymous",
+						factory: partition => new SlidingWindowRateLimiterOptions
+						{
+							AutoReplenishment = true,
+							PermitLimit = 20,
+							SegmentsPerWindow = 5,
+							QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+							QueueLimit = 5,
+							Window = TimeSpan.FromSeconds(10)
+						}));
+
+				options.OnRejected = async (context, cancellationToken) =>
+				{
+					context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+
+					var response = new ApiResponse<object>
+					{
+						Success = false,
+						Message = "Rate limit exceeded. Please try again later.",
+						Data = null
+					};
+
+					context.HttpContext.Response.ContentType = "application/json";
+					await context.HttpContext.Response.WriteAsJsonAsync(response, cancellationToken);
+
+
+				};
+			});
+		}
+	}
 }

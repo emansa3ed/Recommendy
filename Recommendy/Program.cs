@@ -42,7 +42,7 @@ namespace Recommendy
             builder.Services.ConfigureJWT(builder.Configuration);
 			builder.Services.AddSingleton<MyMemoryCache>();
 
-
+            builder.Services.ConfigureRateLimiter();
 
 			var app = builder.Build();
 			app.UseCors("CorsPolicy");
@@ -55,7 +55,8 @@ namespace Recommendy
                 app.UseSwaggerUI();
             }
 
-            app.UseStaticFiles();
+			app.UseStaticFiles();
+            app.UseRateLimiter();
             app.UseAuthentication();
             app.UseAuthorization();
 
