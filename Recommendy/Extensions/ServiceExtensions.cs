@@ -97,7 +97,7 @@ namespace Recommendy.Extensions
 
 
 						if (!string.IsNullOrEmpty(accessToken) &&
-							path.StartsWithSegments("/notificationHub"))
+							( path.StartsWithSegments("/notificationHub") || path.StartsWithSegments("/feedbackHub") ))
 						{
 
 							context.Token = accessToken;
@@ -113,9 +113,9 @@ namespace Recommendy.Extensions
 
                                var accessToken = context.Request.Cookies["authToken"];
 
-                           if (!string.IsNullOrEmpty(accessToken) &&
-                               path.StartsWithSegments("/notificationHub"))
-                           {
+						   if (!string.IsNullOrEmpty(accessToken) &&
+							   (path.StartsWithSegments("/notificationHub") || path.StartsWithSegments("/feedbackHub")))
+						   {
                                var handler = new JwtSecurityTokenHandler();
                                var jwtToken = handler.ReadJwtToken(accessToken);
                                var userId = jwtToken.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
