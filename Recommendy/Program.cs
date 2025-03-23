@@ -63,6 +63,7 @@ namespace Recommendy
 
             app.MapControllers();
 			app.MapHub<NotificationHub>("/notificationHub"); 
+			app.MapHub<NotificationHub>("/feedbackHub");
 
 
 			app.Run();
