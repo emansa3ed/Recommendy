@@ -23,6 +23,7 @@ namespace Entities.Models
         public Admin Admin { get; set; }
         public virtual ICollection<UserCode> userCodes { get; set; }
         public virtual ICollection<Notification> Notification { get; set; }
+        public ICollection<ChatUsers> ChatMemberships { get; set; }
 
-	}
+    }
 }

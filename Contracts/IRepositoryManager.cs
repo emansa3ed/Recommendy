@@ -31,7 +31,9 @@ namespace Contracts
 		public IFeedbackRepository FeedbackRepository { get; }
 		public INotificationRepository NotificationRepository { get; }
         IReportRepository ReportRepository { get; }
+        IChatUsersRepository ChatUsersRepository { get; }
 
+        IChatMessagesRepository ChatMessagesRepository { get; }
         void Save();
         Task SaveAsync();
     }

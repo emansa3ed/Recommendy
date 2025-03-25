@@ -28,6 +28,8 @@ namespace Repository
         private readonly Lazy<IFeedbackRepository>  _feedbackRepository;
         private readonly Lazy<IReportRepository> _reportRepository;
         private readonly Lazy<INotificationRepository> _notificationRepository;
+       private readonly Lazy<IChatUsersRepository> _chatUsersRepository;
+        private readonly Lazy<IChatMessagesRepository> _chatMessagesRepository;
 		public RepositoryManager(RepositoryContext repositoryContext , UserManager<User> userManager , IWebHostEnvironment webHostEnvironment)
         {
             _repositoryContext = repositoryContext;
@@ -48,7 +50,12 @@ namespace Repository
 			_feedbackRepository = new Lazy<IFeedbackRepository>(() => new FeedbackRepository(repositoryContext));
             _reportRepository = new Lazy<IReportRepository>(()=> new ReportRepository(repositoryContext));
 			_notificationRepository = new Lazy<INotificationRepository>(() => new NotificationRepository(repositoryContext));
-		}
+            _chatUsersRepository = new Lazy<IChatUsersRepository>(() => new ChatUsersRepository(repositoryContext));
+
+            _chatMessagesRepository = new Lazy<IChatMessagesRepository>(() => new ChatMessagesRepository(repositoryContext));
+
+
+        }
 
         public ICountryRepository Country => _countryRepository.Value;
         public IStudentRepository Student => _studentRepository.Value;  
@@ -74,7 +81,11 @@ namespace Repository
 
 		public INotificationRepository NotificationRepository => _notificationRepository.Value;
 
-		public async Task SaveAsync() => await _repositoryContext.SaveChangesAsync();
+        public IChatUsersRepository ChatUsersRepository => _chatUsersRepository.Value;
+
+        public IChatMessagesRepository ChatMessagesRepository => _chatMessagesRepository.Value;
+
+        public async Task SaveAsync() => await _repositoryContext.SaveChangesAsync();
         public void Save() => _repositoryContext.SaveChanges();
 
 

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Repository;
 
@@ -11,9 +12,11 @@ using Repository;
 namespace Recommendy.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20250325141955_editchatmodels")]
+    partial class editchatmodels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,11 +55,13 @@ namespace Recommendy.Migrations
 
                     b.Property<string>("SenderId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ChatId");
+
+                    b.HasIndex("SenderId");
 
                     b.ToTable("ChatMessages");
                 });
@@ -84,7 +89,7 @@ namespace Recommendy.Migrations
 
                     b.HasIndex("FirstUserId");
 
-                    b.ToTable("ChatUsers");
+                    b.ToTable("ChatGroups");
                 });
 
             modelBuilder.Entity("Entities.Models.Company", b =>
@@ -769,8 +774,16 @@ namespace Recommendy.Migrations
                     b.HasOne("Entities.Models.ChatUsers", "chatUsers")
                         .WithMany("Messages")
                         .HasForeignKey("ChatId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.HasOne("Entities.Models.User", "Sender")
+                        .WithMany("Messages")
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Sender");
 
                     b.Navigation("chatUsers");
                 });
@@ -780,7 +793,7 @@ namespace Recommendy.Migrations
                     b.HasOne("Entities.Models.User", "User")
                         .WithMany("ChatMemberships")
                         .HasForeignKey("FirstUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -1013,6 +1026,8 @@ namespace Recommendy.Migrations
 
                     b.Navigation("Company")
                         .IsRequired();
+
+                    b.Navigation("Messages");
 
                     b.Navigation("Notification");
 

@@ -37,6 +37,8 @@ namespace Repository
         public DbSet<Interest> Interests { get; set; }
         public DbSet<UserInterest> UserInterests { get; set; }
         public DbSet<UserCode> userCodes { get; set; }
+        public DbSet<ChatUsers> ChatUsers { get; set; }
+        public DbSet<ChatMessage> ChatMessages { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -144,11 +146,6 @@ namespace Repository
                 .HasForeignKey(ip => ip.PositionId)
                 .OnDelete(DeleteBehavior.NoAction); ;
 
-/*            builder.Entity<Feedback>()
-                .HasOne<Student>()
-                .WithMany()
-                .HasForeignKey(f => f.StudentId)
-                .OnDelete(DeleteBehavior.Cascade);*/
 
 
             builder.Entity<Report>()
@@ -174,6 +171,27 @@ namespace Repository
                 .WithMany()
                 .HasForeignKey(ui => ui.InterestId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+
+
+           
+
+
+            builder.Entity<ChatUsers>()
+               .HasOne(m => m.User)
+               .WithMany(u => u.ChatMemberships)
+               .HasForeignKey(m => m.FirstUserId)
+               .OnDelete(DeleteBehavior.Cascade);
+
+
+            builder.Entity<ChatMessage>()
+               .HasOne(m => m.chatUsers)
+               .WithMany(g => g.Messages)
+               .HasForeignKey(m => m.ChatId)
+               .OnDelete(DeleteBehavior.Cascade);
+
+
+
 
         }
     }

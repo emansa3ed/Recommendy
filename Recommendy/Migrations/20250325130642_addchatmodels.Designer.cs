@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Repository;
 
@@ -11,9 +12,11 @@ using Repository;
 namespace Recommendy.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20250325130642_addchatmodels")]
+    partial class addchatmodels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,6 +33,33 @@ namespace Recommendy.Migrations
                     b.HasKey("AdminId");
 
                     b.ToTable("Admins");
+                });
+
+            modelBuilder.Entity("Entities.Models.ChatMembers", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ChatId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("JoinedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChatId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ChatGroupMembers");
                 });
 
             modelBuilder.Entity("Entities.Models.ChatMessage", b =>
@@ -52,11 +82,13 @@ namespace Recommendy.Migrations
 
                     b.Property<string>("SenderId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ChatId");
+
+                    b.HasIndex("SenderId");
 
                     b.ToTable("ChatMessages");
                 });
@@ -72,19 +104,9 @@ namespace Recommendy.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("FirstUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("SecondUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("FirstUserId");
-
-                    b.ToTable("ChatUsers");
+                    b.ToTable("ChatGroups");
                 });
 
             modelBuilder.Entity("Entities.Models.Company", b =>
@@ -764,6 +786,25 @@ namespace Recommendy.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Entities.Models.ChatMembers", b =>
+                {
+                    b.HasOne("Entities.Models.ChatUsers", "chatUsers")
+                        .WithMany("Members")
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Entities.Models.User", "User")
+                        .WithMany("GroupMemberships")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+
+                    b.Navigation("chatUsers");
+                });
+
             modelBuilder.Entity("Entities.Models.ChatMessage", b =>
                 {
                     b.HasOne("Entities.Models.ChatUsers", "chatUsers")
@@ -772,18 +813,15 @@ namespace Recommendy.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("chatUsers");
-                });
-
-            modelBuilder.Entity("Entities.Models.ChatUsers", b =>
-                {
-                    b.HasOne("Entities.Models.User", "User")
-                        .WithMany("ChatMemberships")
-                        .HasForeignKey("FirstUserId")
+                    b.HasOne("Entities.Models.User", "Sender")
+                        .WithMany("Messages")
+                        .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Sender");
+
+                    b.Navigation("chatUsers");
                 });
 
             modelBuilder.Entity("Entities.Models.Company", b =>
@@ -986,6 +1024,8 @@ namespace Recommendy.Migrations
 
             modelBuilder.Entity("Entities.Models.ChatUsers", b =>
                 {
+                    b.Navigation("Members");
+
                     b.Navigation("Messages");
                 });
 
@@ -1009,10 +1049,12 @@ namespace Recommendy.Migrations
                     b.Navigation("Admin")
                         .IsRequired();
 
-                    b.Navigation("ChatMemberships");
-
                     b.Navigation("Company")
                         .IsRequired();
+
+                    b.Navigation("GroupMemberships");
+
+                    b.Navigation("Messages");
 
                     b.Navigation("Notification");
 
