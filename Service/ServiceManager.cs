@@ -39,6 +39,7 @@ namespace Service
         private readonly Lazy<INotificationService> _notificationservice;
 
         private readonly Lazy<IChatUsersService> _chatUsersService;
+        private readonly Lazy<IChatMessageService> _chatMessageService;
 
 
 		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper,
@@ -69,6 +70,7 @@ namespace Service
             _opportunityService = new Lazy<IOpportunityService>(() =>  new OpportunityService(repositoryManager , mapper,_notificationservice.Value));
              _chatUsersService = new Lazy<IChatUsersService>(() => new ChatUsersService(repositoryManager ));
 
+            _chatMessageService = new Lazy<IChatMessageService>(() => new ChatMessageService(repositoryManager ,mapper));
 
 		}
 
@@ -100,6 +102,7 @@ namespace Service
         public INotificationService NotificationService => _notificationservice.Value;
 
         public IChatUsersService ChatUsersService => _chatUsersService.Value;
+        public IChatMessageService ChatMessageService => _chatMessageService.Value;
 
 
     }

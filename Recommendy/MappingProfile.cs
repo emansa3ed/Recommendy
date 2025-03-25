@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Entities.Models;
 using Shared.DTO.Authentication;
+using Shared.DTO.Chat;
 using Shared.DTO.Company;
 using Shared.DTO.Country;
 using Shared.DTO.Feedback;
@@ -24,6 +25,7 @@ namespace Recommendy
             CreateMap<UserForRegistrationDto, User>();
             CreateMap<InternshipCreationDto, Internship>();
             CreateMap<InternshipPositionDto, InternshipPosition>();
+            CreateMap<ChatMessageDto, ChatMessage>();
 
             CreateMap<Internship, InternshipDto>()
               .ForMember(dest => dest.Positions, opt => opt.MapFrom(src => src.InternshipPositions))

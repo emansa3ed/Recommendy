@@ -23,5 +23,12 @@ namespace Repository
 
         }
 
+        public async Task<ChatUsers> GetChatByUserId(int ChatId, bool trackchange)
+        {
+
+            return await FindByCondition(i => i.Id == ChatId, trackchange).FirstOrDefaultAsync();
+
+        }
+
     }
 }

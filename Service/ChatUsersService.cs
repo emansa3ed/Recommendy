@@ -35,22 +35,35 @@ namespace Service
             if (user2 == null) 
                 throw new UserNotFoundException(seccondUserId);
 
+            if(FirstUserId.Equals(seccondUserId))
+                throw new BadRequestException("the two ids is same ");
+
+
             var chat = await _repositoryManager.ChatUsersRepository.GetChatByUserIds(FirstUserId, seccondUserId, false);
 
-            if (chat == null)
-            {
-                ChatUsers chatUsers= new ChatUsers();
-
-                chatUsers.FirstUserId = FirstUserId;
-                chatUsers.SecondUserId = seccondUserId;
-                _repositoryManager.ChatUsersRepository.CreateChatUsers(chatUsers);
-               await  _repositoryManager.SaveAsync();
-            }
-            chat = await _repositoryManager.ChatUsersRepository.GetChatByUserIds(FirstUserId, seccondUserId, false);
 
             return chat;
 
 
         }
+
+        public async Task<ChatUsers> CreateChat(string FirstUserId, string seccondUserId)
+        {
+           
+                ChatUsers chatUsers = new ChatUsers();
+
+                chatUsers.FirstUserId = FirstUserId;
+                chatUsers.SecondUserId = seccondUserId;
+                _repositoryManager.ChatUsersRepository.CreateChatUsers(chatUsers);
+                await _repositoryManager.SaveAsync();
+
+            var chat = await _repositoryManager.ChatUsersRepository.GetChatByUserIds(FirstUserId, seccondUserId, false);
+
+
+            return chat;
+
+
+        }
+
     }
 }

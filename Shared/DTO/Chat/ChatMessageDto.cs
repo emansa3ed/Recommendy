@@ -7,11 +7,15 @@ using System.Threading.Tasks;
 
 namespace Shared.DTO.Chat
 {
-    public record ChatUsersDTo
+    public record ChatMessageDto
     {
         [Required]
-        public string secondUserId {  get; set; }
+        public string SenderId { get; set; }
+        [Required]
+        public string Message
+        {
+            get; set;
 
-
+        }
     }
 }

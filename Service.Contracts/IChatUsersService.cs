@@ -13,6 +13,6 @@ namespace Service.Contracts
 
         Task<ChatUsers> GetChatByUserIds(string FirstUserId ,string secondUserId);
 
-
+        Task<ChatUsers> CreateChat(string FirstUserId, string seccondUserId);
     }
 }
