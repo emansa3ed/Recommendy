@@ -18,6 +18,8 @@ namespace Presentation.Controllers
 {
     [Route("api/User/{UserId}/[Controller]")]
     [ApiController]
+    [Authorize] 
+
     public class ChatController : ControllerBase
     {
         private readonly IServiceManager _service;
@@ -63,7 +65,7 @@ namespace Presentation.Controllers
 
             var user = await _userManager.GetUserAsync(User);
           
-            chatMessageDto.SenderId = user.Id;
+            //chatMessageDto.SenderId = user.Id;
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
