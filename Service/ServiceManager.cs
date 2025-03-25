@@ -38,6 +38,8 @@ namespace Service
         private readonly Lazy<IReportService> _reportService;
         private readonly Lazy<INotificationService> _notificationservice;
 
+        private readonly Lazy<IChatUsersService> _chatUsersService;
+
 
 		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper,
             UserManager<User> userManager,IConfiguration configuration, 
@@ -65,7 +67,7 @@ namespace Service
             _reportService = new Lazy<IReportService>(() => new ReportService( repositoryManager , mapper, memoryCache));
 			_notificationservice = new Lazy<INotificationService>(() => new NotificationService( repositoryManager , mapper, _hubContext, userManager));
             _opportunityService = new Lazy<IOpportunityService>(() =>  new OpportunityService(repositoryManager , mapper,_notificationservice.Value));
-
+             _chatUsersService = new Lazy<IChatUsersService>(() => new ChatUsersService(repositoryManager ));
 
 
 		}
@@ -97,6 +99,8 @@ namespace Service
         public IReportService ReportService => _reportService.Value;    
         public INotificationService NotificationService => _notificationservice.Value;
 
+        public IChatUsersService ChatUsersService => _chatUsersService.Value;
 
-	}
+
+    }
 }

@@ -1,5 +1,6 @@
 ﻿using Contracts;
 using Entities.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,13 @@ namespace Repository
 
 
        public  void CreateChatUsers(ChatUsers chatUsers) => Create(chatUsers);
+
+      public async Task<ChatUsers> GetChatByUserIds(string FirstUserId, string secondUserId ,  bool trackchange)
+        {
+              
+            return await   FindByCondition(i=>i.FirstUserId == FirstUserId && i.SecondUserId == secondUserId, trackchange).FirstOrDefaultAsync();
+
+        }
 
     }
 }

@@ -27,6 +27,6 @@ namespace Service.Contracts
 		IFeedbackService FeedbackService { get; }
         IReportService ReportService { get; }   
         INotificationService NotificationService { get; }
-
-	}
+        IChatUsersService ChatUsersService { get; }
+    }
 }
