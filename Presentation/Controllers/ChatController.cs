@@ -63,7 +63,7 @@ namespace Presentation.Controllers
 
             var user = await _userManager.GetUserAsync(User);
           
-           // chatMessageDto.SenderId = user.Id;
+            chatMessageDto.SenderId = user.Id;
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
