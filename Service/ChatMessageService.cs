@@ -34,6 +34,9 @@ namespace Service
             if (Chat == null)
                 throw new ChatNotFoundException(chatId);
 
+            if (chatMessageDto.SenderId != Chat.SecondUserId && chatMessageDto.SenderId!=Chat.FirstUserId)
+                throw new BadRequestException("not allowed send messages in this chat ");
+
             var message = _mapper.Map < ChatMessage>(chatMessageDto);
             message.ChatId = chatId;    
             _repositoryManager.ChatMessagesRepository.CreateMessage(message);
