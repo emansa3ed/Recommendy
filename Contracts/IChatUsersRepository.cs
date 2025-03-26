@@ -12,7 +12,7 @@ namespace Contracts
         void CreateChatUsers(ChatUsers chatUsers);
 
         Task<ChatUsers> GetChatByUserIds(string FirstUserId, string secondUserId, bool trackchange);
-        Task<ChatUsers> GetChatByUserId(int ChatId, bool trackchange);
+        Task<ChatUsers> GetChatByChatId(int ChatId, bool trackchange);
 
 
 

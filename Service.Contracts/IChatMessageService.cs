@@ -12,6 +12,6 @@ namespace Service.Contracts
     public interface IChatMessageService
     {
 
-        Task SendMessage(int ChatId, ChatMessageDto chatMessageDto);
+        Task SendMessage(string UserId, string SecondUserId, int ChatId, string Message);
     }
 }

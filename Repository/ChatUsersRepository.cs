@@ -19,11 +19,12 @@ namespace Repository
       public async Task<ChatUsers> GetChatByUserIds(string FirstUserId, string secondUserId ,  bool trackchange)
         {
               
-            return await   FindByCondition(i=>i.FirstUserId == FirstUserId && i.SecondUserId == secondUserId, trackchange).FirstOrDefaultAsync();
+            return await   FindByCondition(i=>(i.FirstUserId == FirstUserId && i.SecondUserId == secondUserId)|| i.FirstUserId == secondUserId && i.SecondUserId == FirstUserId, trackchange)
+                .FirstOrDefaultAsync();
 
         }
 
-        public async Task<ChatUsers> GetChatByUserId(int ChatId, bool trackchange)
+        public async Task<ChatUsers> GetChatByChatId(int ChatId, bool trackchange)
         {
 
             return await FindByCondition(i => i.Id == ChatId, trackchange).FirstOrDefaultAsync();
