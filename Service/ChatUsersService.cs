@@ -21,25 +21,18 @@ namespace Service
         }
 
 
-        public async Task<ChatUsers> GetChatByUserIds(string FirstUserId, string seccondUserId)
+        public async Task<ChatUsers> GetChatByUserIds(string FirstUserId, string CurrentUserId)
         {
             var user1 =  await _repositoryManager.User.GetById(FirstUserId);
 
             if (user1 == null)
                 throw new UserNotFoundException(FirstUserId);
 
-
-
-            var user2 =  await _repositoryManager.User.GetById(seccondUserId);
-
-            if (user2 == null) 
-                throw new UserNotFoundException(seccondUserId);
-
-            if(FirstUserId.Equals(seccondUserId))
+            if(FirstUserId.Equals(CurrentUserId))
                 throw new BadRequestException("the two ids is same ");
 
 
-            var chat = await _repositoryManager.ChatUsersRepository.GetChatByUserIds(FirstUserId, seccondUserId, false);
+            var chat = await _repositoryManager.ChatUsersRepository.GetChatByUserIds(FirstUserId, CurrentUserId, false);
 
 
             return chat;
@@ -47,17 +40,17 @@ namespace Service
 
         }
 
-        public async Task<ChatUsers> CreateChat(string FirstUserId, string seccondUserId)
+        public async Task<ChatUsers> CreateChat(string FirstUserId, string CurrentUserId)
         {
            
                 ChatUsers chatUsers = new ChatUsers();
 
                 chatUsers.FirstUserId = FirstUserId;
-                chatUsers.SecondUserId = seccondUserId;
+                chatUsers.SecondUserId = CurrentUserId;
                 _repositoryManager.ChatUsersRepository.CreateChatUsers(chatUsers);
                 await _repositoryManager.SaveAsync();
 
-            var chat = await _repositoryManager.ChatUsersRepository.GetChatByUserIds(FirstUserId, seccondUserId, false);
+            var chat = await _repositoryManager.ChatUsersRepository.GetChatByUserIds(FirstUserId, CurrentUserId, false);
 
 
             return chat;

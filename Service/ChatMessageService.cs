@@ -27,18 +27,16 @@ namespace Service
         
         }
 
-        public async Task SendMessage(int chatId, ChatMessageDto chatMessageDto)
+        public async Task SendMessage(string UserId,string SecondUserId, int ChatId, string Message)
         {
 
-            var Chat = await _repositoryManager.ChatUsersRepository.GetChatByUserId(chatId, false);
+            var Chat = await _repositoryManager.ChatUsersRepository.GetChatByUserIds(UserId, SecondUserId, false);
             if (Chat == null)
-                throw new ChatNotFoundException(chatId);
+                throw new ChatNotFoundException(ChatId);
+            if (Chat.Id != ChatId)
+                throw new InvalidChatIdBadRequestException(ChatId);
 
-            if (chatMessageDto.SenderId != Chat.SecondUserId && chatMessageDto.SenderId!=Chat.FirstUserId)
-                throw new BadRequestException("not allowed send messages in this chat ");
-
-            var message = _mapper.Map < ChatMessage>(chatMessageDto);
-            message.ChatId = chatId;    
+			var message =new ChatMessage() { Message = Message ,ChatId =ChatId,CreatedAt = DateTime.Now,SenderId=UserId};
             _repositoryManager.ChatMessagesRepository.CreateMessage(message);
 
             await _repositoryManager.SaveAsync();

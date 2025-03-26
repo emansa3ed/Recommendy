@@ -23,25 +23,22 @@ namespace Presentation.Controllers
     public class ChatController : ControllerBase
     {
         private readonly IServiceManager _service;
-       private readonly UserManager<User> _userManager;
 
-        public ChatController(IServiceManager serviceManager, UserManager<User> userManager)
+        public ChatController(IServiceManager serviceManager)
         {
             _service = serviceManager;
-            _userManager = userManager;
-
-
         }
 
 
-        [HttpGet("{secondUserId}")]
-        public async Task<ActionResult> GetChat([FromRoute] string secondUserId , [FromRoute]  string UserId)
+        [HttpGet]
+        public async Task<ActionResult> GetChat([FromRoute]  string UserId)
         {
 
+            var CurrentUser = await _service.UserService.GetDetailsByUserName(User.Identity.Name);
 
-            var chat = await _service.ChatUsersService.GetChatByUserIds(UserId, secondUserId);
+			var chat = await _service.ChatUsersService.GetChatByUserIds(UserId, CurrentUser.Id);
             if (chat == null)
-                chat =  await CreateChat( secondUserId, UserId);
+                chat =  await CreateChat(CurrentUser.Id, UserId);
 
             return Ok(new ApiResponse<int> { Success = true, Message = "Fetch success", Data = chat.Id });
 
@@ -58,24 +55,6 @@ namespace Presentation.Controllers
 
         }
 
-
-        [HttpPost("{ChatId}")]
-        public async Task<ActionResult> SendMessage([FromRoute] int ChatId, [FromBody] ChatMessageDto chatMessageDto)
-        {
-
-            var user = await _userManager.GetUserAsync(User);
-          
-            //chatMessageDto.SenderId = user.Id;
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-
-               await _service.ChatMessageService.SendMessage(ChatId, chatMessageDto);
-
-            return Ok();
-
-        }
 
 
     }
