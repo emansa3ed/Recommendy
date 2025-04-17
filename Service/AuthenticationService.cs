@@ -140,8 +140,8 @@ namespace Service
                         university.UniversityUrl = userForRegistration.Url;
                         var CounryName = await GetCounryName(HttpContext);
                         var contries = await _repository.Country.GetAllCountriesAsync(false);
-						var res = contries.Where(c => c.Name == CounryName).SingleOrDefault();
-						if (res != null)
+                        var res = contries.Where(c => c.Name == CounryName).SingleOrDefault();
+                        if (res != null)
                             university.CountryId = res.Id;
                         else
                         {
@@ -155,6 +155,8 @@ namespace Service
                     }
 
                 }
+                else
+                    return result;
 
                 var result1 = await _userCodeService.GenerateUserCodeForConfirmtationAsync(user.Id);
 				if (!roleRes.Succeeded)
@@ -224,8 +226,8 @@ namespace Service
 
         private SigningCredentials GetSigningCredentials()
         {
-            var jwtSettings = _configuration.GetSection("JWT");
-            var key = Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]);
+			var jwtSettings = _configuration.GetSection("JWT");
+            var key = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("SecretKey"));
             var secret = new SymmetricSecurityKey(key);
 
             return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
@@ -290,7 +292,7 @@ namespace Service
                 ValidateIssuer = true,
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(
-               Encoding.UTF8.GetBytes(jwtSettings["SecretKey"])),
+               Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("SecretKey"))),
                 ValidateLifetime = true,
                 ValidIssuer = jwtSettings["validIssuer"],
                 ValidAudience = jwtSettings["validAudience"]

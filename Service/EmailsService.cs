@@ -40,7 +40,8 @@ namespace Service
                 using (var client = new SmtpClient())
                 {
                     await client.ConnectAsync("smtp.gmail.com", 465, true);
-                    client.Authenticate(EmailSettings["FromEmail"],EmailSettings["password"]);
+
+					client.Authenticate(EmailSettings["FromEmail"], Environment.GetEnvironmentVariable("EmailPassword"));
                     var bodybuilder = new BodyBuilder
                     {
                         HtmlBody = $"{Message}",
