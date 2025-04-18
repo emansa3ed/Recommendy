@@ -6,12 +6,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Service.Contracts;
 using Shared.DTO.Chat;
+using Shared.DTO.Internship;
 using Shared.DTO.Report;
 using Shared.RequestFeatures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Presentation.Controllers
@@ -33,8 +35,8 @@ namespace Presentation.Controllers
 
 
 
-		[HttpPost("{Message}")]
-		public async Task<ActionResult> SendMessage([FromRoute] int ChatId, [FromRoute] string UserId, string Message)
+		[HttpPost]
+		public async Task<ActionResult> SendMessage([FromRoute] int ChatId, [FromRoute] string UserId,  [FromBody]string Message)
 		{
 
 			var CurrentUser  = await _service.UserService.GetDetailsByUserName(User.Identity.Name);
@@ -51,14 +53,21 @@ namespace Presentation.Controllers
 
 		}
 
-/*		
+	
 		
  		[HttpGet]
-		public async Task<ActionResult> GetChatMessages([FromRoute] int ChatId, [FromRoute] string UserId)
+		public async Task<ActionResult<ApiResponse<PagedList<ChatMessageDto>>>> GetChatMessages([FromRoute] int ChatId, [FromRoute] string UserId, [FromQuery] MessageParameters messageParameters)
 		{
+            var CurrentUser = await _service.UserService.GetDetailsByUserName(User.Identity.Name);
 
 
-		}*/
+			var result =  await _service.ChatMessageService.GetChatMessages(ChatId, CurrentUser.Id, UserId, messageParameters);
 
-	}
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(result.MetaData));
+
+            return Ok(new ApiResponse<PagedList<ChatMessageDto>> { Success = true, Message = "Fetch success", Data = result });
+
+        }
+
+    }
 }

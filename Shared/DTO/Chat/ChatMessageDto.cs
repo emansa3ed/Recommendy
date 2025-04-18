@@ -9,13 +9,10 @@ namespace Shared.DTO.Chat
 {
     public record ChatMessageDto
     {
-        [Required]
-        public string SenderId { get; set; }
-        [Required]
-        public string Message
-        {
-            get; set;
 
-        }
+        public int Id { get; set; }
+        public int ChatId { get; set; }
+        public string SenderId { get; set; }
+        public string Message { get; set; }
     }
 }

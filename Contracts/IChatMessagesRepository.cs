@@ -1,4 +1,5 @@
 ﻿using Entities.Models;
+using Shared.RequestFeatures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,8 @@ namespace Contracts
         void DeleteMessage(ChatMessage chatMessage);
 
         void UpdateMessage(ChatMessage chatMessage);
+
+        Task<PagedList<ChatMessage>> GetChatMessages( int chatid ,  MessageParameters messageParameters, bool trackchanges);
 
 
     }

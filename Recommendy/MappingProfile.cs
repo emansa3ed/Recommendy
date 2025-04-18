@@ -25,7 +25,7 @@ namespace Recommendy
             CreateMap<UserForRegistrationDto, User>();
             CreateMap<InternshipCreationDto, Internship>();
             CreateMap<InternshipPositionDto, InternshipPosition>();
-            CreateMap<ChatMessageDto, ChatMessage>();
+            CreateMap<ChatMessage, ChatMessageDto>();
 
             CreateMap<Internship, InternshipDto>()
               .ForMember(dest => dest.Positions, opt => opt.MapFrom(src => src.InternshipPositions))
