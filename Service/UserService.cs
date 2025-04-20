@@ -31,12 +31,12 @@ namespace Service
            
         }
 
-        public  async Task<User> GetDetailsByUserName(string username)
+        public  async Task<UserDto> GetDetailsByUserName(string username)
         {
             var user =  await _userManager.FindByNameAsync(username);
             if (user == null)
 				throw new UserNotFoundException(username);
-			return user;
+			return _mapper.Map<UserDto>(user); ;
         }
 
         public async Task<UserDto> GetDetailsbyId(string Id)
@@ -84,11 +84,11 @@ namespace Service
             return imageUrl;
         }
 
-		public async Task AddPremiumUserRoleAsync(string Id, string SubscriptionID)
+		public async Task AddPremiumUserRoleAsync(string username, string SubscriptionID)
 		{
-			var user =  await _userManager.FindByIdAsync(Id);
+			var user =  await _userManager.FindByNameAsync(username);
 			if (user == null)
-				throw new UserNotFoundException(Id);
+				throw new UserNotFoundException(username);
             user.SubscriptionId = SubscriptionID;
 			var result = await _userManager.AddToRoleAsync(user, "PremiumUser");
 			if (!result.Succeeded)
@@ -98,22 +98,22 @@ namespace Service
             await _repository.SaveAsync();
 		}
 
-		public async Task<bool> IsInRoleAsync(string Id, string roleName)
+		public async Task<bool> IsInRoleAsync(string username, string roleName)
 		{
-			var user = await _userManager.FindByIdAsync(Id);
+			var user = await _userManager.FindByNameAsync(username);
 
 			if (user == null)
-				throw new UserNotFoundException(Id);
+				throw new UserNotFoundException(username);
 
 			return await _userManager.IsInRoleAsync(user, "PremiumUser");
 		}
 
-		public async Task<UserDto> CancelSubscriptionInPremium(string Id)
+		public async Task<UserDto> CancelSubscriptionInPremium(string username)
 		{
-			var user = await _userManager.FindByIdAsync(Id);
+			var user = await _userManager.FindByNameAsync(username);
 
 			if (user == null)
-				throw new UserNotFoundException(Id);
+				throw new UserNotFoundException(username);
 
 			using (var transaction = await _repository.BeginTransactionAsync()) 
 			{
