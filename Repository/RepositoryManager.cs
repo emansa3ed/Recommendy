@@ -2,6 +2,8 @@
 using Entities.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -88,6 +90,9 @@ namespace Repository
         public async Task SaveAsync() => await _repositoryContext.SaveChangesAsync();
         public void Save() => _repositoryContext.SaveChanges();
 
-
-    }
+		public async Task<IDbContextTransaction> BeginTransactionAsync()
+		{
+			return await _repositoryContext.Database.BeginTransactionAsync();
+		}
+	}
 }

@@ -17,6 +17,10 @@ namespace Service.Contracts
         Task ChangePasswordAsync(string studentId, ChangePasswordDto changePasswordDto);
         Task<string> UploadProfilePictureAsync(IFormFile file, string Id);
 
+        Task AddPremiumUserRoleAsync(string Id, string SubscriptionId);
+        Task<bool> IsInRoleAsync(string Id, string roleName);
+		Task<UserDto> CancelSubscriptionInPremium(string Id);
 
-    }
+
+	}
 }

@@ -12,6 +12,7 @@ using Entities.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Shared.DTO.User;
 using Shared.DTO.Student;
+using Stripe;
 
 namespace Service
 {
@@ -41,7 +42,9 @@ namespace Service
         public async Task<UserDto> GetDetailsbyId(string Id)
         {
             var user = await  _repository.User.GetById(Id);
-          var result = _mapper.Map< UserDto>(user);
+			if (user == null)
+				throw new UserNotFoundException(Id);
+			var result = _mapper.Map< UserDto>(user);
 
 
             return result;
@@ -63,7 +66,7 @@ namespace Service
 <p>We want to inform you that your password has been successfully changed.</p>
 <p>If you made this change, no further action is required.</p>
 <p>If you did not request this change, please contact our support team immediately.</p>
-<p>Best regards,<br>Your Support Team</p>";
+<p>Best regards,<br> Recommendy Team </p>";
 
             var email = await _emailsService.Sendemail(user.Email, body, subject);
 
@@ -80,5 +83,68 @@ namespace Service
              await _repository.SaveAsync();
             return imageUrl;
         }
-    }
+
+		public async Task AddPremiumUserRoleAsync(string Id, string SubscriptionID)
+		{
+			var user =  await _userManager.FindByIdAsync(Id);
+			if (user == null)
+				throw new UserNotFoundException(Id);
+            user.SubscriptionId = SubscriptionID;
+			var result = await _userManager.AddToRoleAsync(user, "PremiumUser");
+			if (!result.Succeeded)
+			{
+				throw new BadRequestException("Role assignment failed.");
+			}
+            await _repository.SaveAsync();
+		}
+
+		public async Task<bool> IsInRoleAsync(string Id, string roleName)
+		{
+			var user = await _userManager.FindByIdAsync(Id);
+
+			if (user == null)
+				throw new UserNotFoundException(Id);
+
+			return await _userManager.IsInRoleAsync(user, "PremiumUser");
+		}
+
+		public async Task<UserDto> CancelSubscriptionInPremium(string Id)
+		{
+			var user = await _userManager.FindByIdAsync(Id);
+
+			if (user == null)
+				throw new UserNotFoundException(Id);
+
+			using (var transaction = await _repository.BeginTransactionAsync()) 
+			{
+				try
+				{
+                    if (user.SubscriptionId == null)
+						throw new BadRequestException("User does not have an active subscription.");
+
+					var result = await _userManager.RemoveFromRoleAsync(user, "PremiumUser");
+
+					if (!result.Succeeded)
+						throw new BadRequestException("Role removal failed.");
+
+					var service = new SubscriptionService();
+					await service.CancelAsync(user.SubscriptionId);
+
+					user.SubscriptionId = null;
+
+					await _repository.SaveAsync();
+
+					await transaction.CommitAsync();
+                    return _mapper.Map<UserDto>(user);
+				}
+				catch (Exception ex)
+				{
+					await transaction.RollbackAsync();
+
+					throw new Exception("Error occurred while canceling the subscription: " + ex.Message);
+				}
+			}
+
+		}
+	}
 }

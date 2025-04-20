@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -36,5 +37,7 @@ namespace Contracts
         IChatMessagesRepository ChatMessagesRepository { get; }
         void Save();
         Task SaveAsync();
-    }
+        Task<IDbContextTransaction> BeginTransactionAsync();
+
+	}
 }
