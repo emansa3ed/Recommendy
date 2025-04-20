@@ -215,7 +215,7 @@ namespace Service
            _user.RefreshToken = refreshToken;
 
             if (populateExp)
-                _user.RefreshTokenExpiryTime = DateTime.Now.AddDays(1);
+                _user.RefreshTokenExpiryTime = DateTime.Now.AddDays(30);
 
             await _userManager.UpdateAsync(_user);
 

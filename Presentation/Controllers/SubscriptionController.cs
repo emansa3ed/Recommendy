@@ -29,10 +29,9 @@ public class SubscriptionController : ControllerBase
 	[Authorize]
 	public async Task<ActionResult<ApiResponse<SubscriptionResponse>>> UserSubscription( [FromServices] IServiceProvider sp)
 	{
-		var userEnt = await _service.UserService.GetDetailsByUserName(User.Identity.Name);
-		var user = await _service.UserService.GetDetailsbyId(userEnt.Id);
+		var user = await _service.UserService.GetDetailsByUserName(User.Identity.Name);
 		
-		if (await _service.UserService.IsInRoleAsync(user.Id, "PremiumUser"))
+		if (await _service.UserService.IsInRoleAsync(user.UserName, "PremiumUser"))
 			return BadRequest(new ApiResponse<SubscriptionResponse> { Success = false, Message = "User already has a subscription" });
 
 		var referer = Request.Headers.Referer;
@@ -97,7 +96,7 @@ public class SubscriptionController : ControllerBase
 			return BadRequest(new ApiResponse<SubscriptionResponse> { Success = false, Message = "Incorrect session sended" });
 
 		var user = await _service.UserService.GetDetailsbyId(UserId);
-		await _service.UserService.AddPremiumUserRoleAsync(user.Id,session.SubscriptionId);
+		await _service.UserService.AddPremiumUserRoleAsync(user.UserName,session.SubscriptionId);
 
 
 
@@ -144,7 +143,7 @@ public class SubscriptionController : ControllerBase
 	public async Task<ActionResult> CancelUserSubscription()
 	{
 		var user = await _service.UserService.GetDetailsByUserName(User.Identity.Name);
-		await _service.UserService.CancelSubscriptionInPremium(user.Id);
+		await _service.UserService.CancelSubscriptionInPremium(user.UserName);
 		var subject = "Subscription Cancelled Successfully";
 		var body = $@"
         <p>Dear {user.UserName},</p>

@@ -12,14 +12,14 @@ namespace Service.Contracts
 {
     public  interface IUserService
     {
-        Task<User> GetDetailsByUserName(string username);
+        Task<UserDto> GetDetailsByUserName(string username);
         Task<UserDto> GetDetailsbyId(string Id);
         Task ChangePasswordAsync(string studentId, ChangePasswordDto changePasswordDto);
         Task<string> UploadProfilePictureAsync(IFormFile file, string Id);
 
-        Task AddPremiumUserRoleAsync(string Id, string SubscriptionId);
-        Task<bool> IsInRoleAsync(string Id, string roleName);
-		Task<UserDto> CancelSubscriptionInPremium(string Id);
+        Task AddPremiumUserRoleAsync(string username, string SubscriptionId);
+        Task<bool> IsInRoleAsync(string username, string roleName);
+		Task<UserDto> CancelSubscriptionInPremium(string username);
 
 
 	}
