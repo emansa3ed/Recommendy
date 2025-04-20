@@ -15,8 +15,7 @@ using Stripe.Checkout;
 namespace Server.Controllers;
 
 [ApiController]
-[Authorize]
-[Route("[controller]/User/{UserId}")]
+[Route("[controller]")]
 public class SubscriptionController : ControllerBase
 {
 	private readonly IServiceManager _service;
@@ -27,9 +26,11 @@ public class SubscriptionController : ControllerBase
 	}
 
 	[HttpPost]
-	public async Task<ActionResult<ApiResponse<SubscriptionResponse>>> UserSubscription([FromRoute]string UserId, [FromServices] IServiceProvider sp)
+	[Authorize]
+	public async Task<ActionResult<ApiResponse<SubscriptionResponse>>> UserSubscription( [FromServices] IServiceProvider sp)
 	{
-		var user = await _service.UserService.GetDetailsbyId(UserId);
+		var userEnt = await _service.UserService.GetDetailsByUserName(User.Identity.Name);
+		var user = await _service.UserService.GetDetailsbyId(userEnt.Id);
 		
 		if (await _service.UserService.IsInRoleAsync(user.Id, "PremiumUser"))
 			return BadRequest(new ApiResponse<SubscriptionResponse> { Success = false, Message = "User already has a subscription" });
@@ -86,7 +87,7 @@ public class SubscriptionController : ControllerBase
 		return session.Id;
 	}
 
-	[HttpGet("Success")]
+	[HttpGet("User/{UserId}/Success")]
 	public async Task<ActionResult<ApiResponse<SubscriptionResponse>>> CheckoutSuccess([FromRoute] string UserId,[FromQuery] string sessionId)
 	{
 		var sessionService = new SessionService();
@@ -113,7 +114,7 @@ public class SubscriptionController : ControllerBase
 		return Ok();
 	}
 
-	[HttpGet("Fail")]
+	[HttpGet("User/{UserId}/Fail")]
 	public async Task<ActionResult<ApiResponse<SubscriptionResponse>>> CheckoutFail([FromRoute] string UserId, [FromQuery] string sessionId)
 	{
 		var sessionService = new SessionService();
@@ -138,10 +139,12 @@ public class SubscriptionController : ControllerBase
 	}
 
 	[HttpDelete("Cancel")]
+	[Authorize]
 
-	public async Task<ActionResult> CancelUserSubscription([FromRoute] string UserId)
+	public async Task<ActionResult> CancelUserSubscription()
 	{
-		var user =await _service.UserService.CancelSubscriptionInPremium(UserId);
+		var user = await _service.UserService.GetDetailsByUserName(User.Identity.Name);
+		await _service.UserService.CancelSubscriptionInPremium(user.Id);
 		var subject = "Subscription Cancelled Successfully";
 		var body = $@"
         <p>Dear {user.UserName},</p>
