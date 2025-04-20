@@ -5,6 +5,7 @@ using Repository;
 using Service.Contracts;
 using Service;
 using Microsoft.Extensions.Logging;
+using Stripe;
 
 
 namespace Recommendy
@@ -15,9 +16,10 @@ namespace Recommendy
         {
             var builder = WebApplication.CreateBuilder(args);
 
+			StripeConfiguration.ApiKey = Environment.GetEnvironmentVariable("StripeSecretKey");
 
 
-            builder.Services.ConfigureRepositoryManager(); ///manager//////////////
+			builder.Services.ConfigureRepositoryManager(); ///manager//////////////
             builder.Services.ConfigureServiceManager();   /// service manager
             builder.Services.ConfigureSqlContext(builder.Configuration);
             builder.Services.ConfigureCors();

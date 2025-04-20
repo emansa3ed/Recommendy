@@ -16,7 +16,8 @@ namespace Entities.Models
         public bool IsBanned { get; set; }=false;
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public string? RefreshToken { get; set; }
-        public DateTime RefreshTokenExpiryTime { get; set; }
+        public string? SubscriptionId { get; set; }
+		public DateTime RefreshTokenExpiryTime { get; set; }
         public University University { get; set; }
         public Company Company { get; set; }
         public Student Student { get; set; }

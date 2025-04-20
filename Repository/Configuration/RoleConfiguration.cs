@@ -34,7 +34,13 @@ namespace Repository.Configuration
                  {
                      Name = "University",
                      NormalizedName = "UNIVERSITY"
-                 }
+                 },
+
+                 new IdentityRole
+				 {
+					 Name = "PremiumUser",
+                    NormalizedName = "PREMIUMUSER"
+		        }
          );
 
         }
