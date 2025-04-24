@@ -156,4 +156,72 @@ public class SubscriptionController : ControllerBase
 		return Ok();
 	}
 
+
+	[HttpPost("SubscriptionRenewed")]
+	public async Task<IActionResult> SubscriptionRenewed()
+	{
+		var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
+
+		var endpointSecret = "whsec_FjYwpOYo84H5YT90lmziqco8zUuCTSIM";
+
+		Event stripeEvent;
+		var stripeSignature = Request.Headers["Stripe-Signature"];
+		stripeEvent = EventUtility.ConstructEvent(json, stripeSignature, endpointSecret);
+
+		var invoice = stripeEvent.Data.Object as Invoice;
+
+		var customerEmail = invoice?.CustomerEmail;
+
+
+		var user = await _service.UserService.GetDetailsByUserEmail(customerEmail);
+
+
+		var subject = "Subscription Renewed Successfully";
+		var body = $@"
+		<p>Dear {user.UserName},</p>
+		<p>Your subscription to the Premium version has been successfully renewed.</p>
+		<p>If you have any questions or need further assistance, please feel free to contact our support team.</p>
+		<p>Thank you for continuing to be a part of our service!</p>
+		<p>Best regards,<br> Recommendy Team </p>";
+
+		_service.EmailsService.Sendemail(user.Email, body, subject);
+
+
+		return Ok();
+	}
+
+	[HttpPost("PaymentFailed")]
+	public async Task<IActionResult> PaymentFailed()
+	{
+		var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
+
+		var endpointSecret = "whsec_FycPWdYVgjUc5ocJ7TFuR5KRpxh7hhO8";
+
+		Event stripeEvent;
+		var stripeSignature = Request.Headers["Stripe-Signature"];
+		stripeEvent = EventUtility.ConstructEvent(json, stripeSignature, endpointSecret);
+
+		var invoice = stripeEvent.Data.Object as Invoice;
+
+		var customerEmail = invoice?.CustomerEmail;
+
+		var user = await _service.UserService.GetDetailsByUserEmail(customerEmail);
+
+		await _service.UserService.CancelSubscriptionInPremium(user.UserName);
+
+		var subject = "Payment Failed for Your Subscription";
+		var body = $@"
+		<p>Dear {user.UserName},</p>
+		<p>Unfortunately, your recent subscription payment has failed. This may be due to an expired or declined card.</p>
+		<p>Please update your payment information to continue enjoying our Premium services.</p>
+		<p>If you need any help, don't hesitate to reach out to our support team.</p>
+		<p>Best regards,<br> Recommendy Team </p>";
+
+		_service.EmailsService.Sendemail(user.Email, body, subject);
+
+		return Ok();
+	}
+
+
+
 }
