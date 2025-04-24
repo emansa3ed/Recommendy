@@ -13,7 +13,8 @@ namespace Service.Contracts
     public  interface IUserService
     {
         Task<UserDto> GetDetailsByUserName(string username);
-        Task<UserDto> GetDetailsbyId(string Id);
+        Task<UserDto> GetDetailsByUserEmail(string email);
+		Task<UserDto> GetDetailsbyId(string Id);
         Task ChangePasswordAsync(string studentId, ChangePasswordDto changePasswordDto);
         Task<string> UploadProfilePictureAsync(IFormFile file, string Id);
 

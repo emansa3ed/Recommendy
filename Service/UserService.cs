@@ -36,7 +36,7 @@ namespace Service
             var user =  await _userManager.FindByNameAsync(username);
             if (user == null)
 				throw new UserNotFoundException(username);
-			return _mapper.Map<UserDto>(user); ;
+			return _mapper.Map<UserDto>(user); 
         }
 
         public async Task<UserDto> GetDetailsbyId(string Id)
@@ -145,6 +145,14 @@ namespace Service
 				}
 			}
 
+		}
+
+		public async Task<UserDto> GetDetailsByUserEmail(string email)
+		{
+			var user = await _userManager.FindByEmailAsync(email);
+			if (user == null)
+				throw new UserNotFoundException(email);
+			return _mapper.Map<UserDto>(user);
 		}
 	}
 }
