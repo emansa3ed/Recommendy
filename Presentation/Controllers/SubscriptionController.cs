@@ -204,7 +204,6 @@ public class SubscriptionController : ControllerBase
 		var invoice = stripeEvent.Data.Object as Invoice;
 
 		var customerEmail = invoice?.CustomerEmail;
-		customerEmail = "ms993118@gmail.com";
 
 		var user = await _service.UserService.GetDetailsByUserEmail(customerEmail);
 
