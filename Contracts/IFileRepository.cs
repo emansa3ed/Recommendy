@@ -13,5 +13,5 @@ namespace Contracts
 
         public Task<string> UploadImage(string Location, IFormFile file);
 
-    }
+	}
 }

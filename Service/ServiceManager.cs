@@ -40,18 +40,20 @@ namespace Service
 
         private readonly Lazy<IChatUsersService> _chatUsersService;
         private readonly Lazy<IChatMessageService> _chatMessageService;
+        private readonly Lazy<IResumeParserService> _resumeParserService;
+        private readonly Lazy<ISkillService> _skillService;
 
 
 		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper,
             UserManager<User> userManager,IConfiguration configuration, 
-            IWebHostEnvironment _webHostEnvironment, ILogger<ServiceManager> logger, 
-            ILoggerFactory loggerFactory, IHttpContextAccessor httpContextAccessor, IEmailsService emailsService, IUserCodeService userCodeService,HttpClient httpClient,
-            IHubContext<NotificationHub> _hubContext, MyMemoryCache memoryCache)
+             ILogger<ServiceManager> logger, 
+            ILoggerFactory loggerFactory, IHttpContextAccessor httpContextAccessor, IEmailsService emailsService,HttpClient httpClient,
+            IHubContext<NotificationHub> _hubContext, MyMemoryCache memoryCache,IResumeParserService resumeParserService)
         {
             _logger = logger;
 
             _countryService = new Lazy<ICountryService>(() => new  CountryService(repositoryManager, mapper, memoryCache));
-            _authenticationService = new Lazy<IAuthenticationService>(() => new AuthenticationService(mapper, userManager, configuration, repositoryManager ,httpContextAccessor , userCodeService,httpClient));
+            _authenticationService = new Lazy<IAuthenticationService>(() => new AuthenticationService(mapper, userManager, configuration, repositoryManager ,httpContextAccessor , userCodeService, resumeParserService,httpClient));
            _userService = new Lazy<IUserService>(()=>  new UserService(repositoryManager,userManager ,mapper , emailsService));
             _internshipService =    new Lazy<IInternshipService>(() =>  new InternshipService(repositoryManager , mapper, memoryCache));
             _internshipPositionService = new Lazy<IInternshipPositionService>(() => new InternshipPositionService(repositoryManager ,mapper));  
@@ -71,6 +73,10 @@ namespace Service
              _chatUsersService = new Lazy<IChatUsersService>(() => new ChatUsersService(repositoryManager ));
 
             _chatMessageService = new Lazy<IChatMessageService>(() => new ChatMessageService(repositoryManager ,mapper));
+
+			_resumeParserService = new Lazy<IResumeParserService>(() => new ResumeParserService(repositoryManager));
+			_skillService = new Lazy<ISkillService>(() => new SkillService(repositoryManager));
+
 
 		}
 
@@ -104,6 +110,8 @@ namespace Service
         public IChatUsersService ChatUsersService => _chatUsersService.Value;
         public IChatMessageService ChatMessageService => _chatMessageService.Value;
 
+		public IResumeParserService ResumeParserService => _resumeParserService.Value;
 
-    }
+		public ISkillService SkillService => _skillService.Value;
+	}
 }

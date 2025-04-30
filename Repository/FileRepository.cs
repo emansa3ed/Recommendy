@@ -5,6 +5,8 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Azure.Core;
+using Entities.Exceptions;
 
 namespace Repository
 {
@@ -54,5 +56,8 @@ namespace Repository
                 return "FailedToUploadImage";
             }
         }
-    }
+
+	
+			
+	}
 }

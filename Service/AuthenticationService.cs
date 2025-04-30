@@ -20,6 +20,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Transactions;
 using Shared.DTO.Authentication;
+using Entities.ResumeModels;
 
 namespace Service
 {
@@ -31,15 +32,15 @@ namespace Service
         private readonly IConfiguration _configuration;
         private readonly IRepositoryManager _repository;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IServiceManager _serviceManager;
         private readonly IUserCodeService _userCodeService;
+        private readonly IResumeParserService _resumeParserService;
 		private readonly HttpClient _httpClient;
 
 
 		private User? _user;
 
         public AuthenticationService(IMapper mapper, UserManager<User> userManager, 
-            IConfiguration configuration ,IRepositoryManager repository  , IHttpContextAccessor httpContextAccessor , IUserCodeService userCodeService, HttpClient httpClient)
+            IConfiguration configuration ,IRepositoryManager repository  , IHttpContextAccessor httpContextAccessor , IUserCodeService userCodeService,IResumeParserService resumeParserService, HttpClient httpClient)
         {
             _mapper = mapper;
             _userManager = userManager;
@@ -48,6 +49,7 @@ namespace Service
             _httpContextAccessor = httpContextAccessor;
             _userCodeService = userCodeService;
 			_httpClient = httpClient;
+			_resumeParserService = resumeParserService;
 		}
 
 		public async Task<IdentityResult> RegisterUser(UserForRegistrationDto userForRegistration, HttpContext HttpContext)
@@ -82,8 +84,15 @@ namespace Service
                 }
                 else if (userForRegistration.Roles.Any(role => role.Equals("Student", StringComparison.OrdinalIgnoreCase)))
                 {
-
-                }
+                    if (userForRegistration.ResumeFile == null)
+					{
+						return IdentityResult.Failed(new IdentityError
+						{
+							Code = "ResumeRequired",
+							Description = "Resume file is required for student registration."
+						});
+					}
+				}
                 else 
                 {
 
@@ -115,7 +124,8 @@ namespace Service
 
                         Student student = new Student();
                         student.StudentId = user.Id;
-                        _repository.Student.CreateStudent(student);
+						student.Skills = string.Join(",", await UploadResume(userForRegistration.ResumeFile));
+						_repository.Student.CreateStudent(student);
                         _repository.SaveAsync().Wait();
 
 
@@ -313,8 +323,34 @@ namespace Service
         }
 
 
+		private async Task<List<string>> UploadResume(IFormFile file)
+		{
+			string fileExtension = Path.GetExtension(file.FileName).ToLower();
 
-        public string ExtractUserIdFromToken(string token)
+			if (fileExtension != ".pdf" && fileExtension != ".docx" && fileExtension != ".doc")
+			{
+				throw new BadRequestException("Unsupported file format. Please upload PDF or Word documents.");
+			}
+
+			var tempFilePath = Path.GetTempFileName();
+            Resume parsedResume;
+			try
+			{
+				using (var stream = new FileStream(tempFilePath, FileMode.Create))
+				{
+					await file.CopyToAsync(stream);
+				}
+
+				parsedResume = _resumeParserService.ParseResume(tempFilePath, fileExtension);
+			}
+			finally
+			{
+				if (System.IO.File.Exists(tempFilePath))
+					System.IO.File.Delete(tempFilePath);
+			}
+            return parsedResume.Skills;
+		}
+		public string ExtractUserIdFromToken(string token)
         {
             var handler = new JwtSecurityTokenHandler();
 
