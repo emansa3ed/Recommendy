@@ -1,4 +1,5 @@
 ﻿using Entities.ResumeModels;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace Service.Contracts
 	{
 		public Resume ParseResume(string filePath, string fileExtension);
 		public List<string> GetSkillsList();
+		public Task<List<string>> UploadResume(IFormFile file);
 
 	}
 

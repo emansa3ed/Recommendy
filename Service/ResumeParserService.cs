@@ -1,14 +1,17 @@
 ﻿using Contracts;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+using Entities.Exceptions;
 using Entities.ResumeModels;
 using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.parser;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Service.Contracts;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
+using Path = System.IO.Path;
 
 namespace Service
 {
@@ -20,6 +23,35 @@ namespace Service
 		public ResumeParserService(IRepositoryManager repositoryManager)
 		{
 				_repositoryManager = repositoryManager;
+		}
+
+
+		public async Task<List<string>> UploadResume(IFormFile file)
+		{
+			string fileExtension = Path.GetExtension(file.FileName).ToLower();
+
+			if (fileExtension != ".pdf" && fileExtension != ".docx" && fileExtension != ".doc")
+			{
+				throw new BadRequestException("Unsupported file format. Please upload PDF or Word documents.");
+			}
+
+			var tempFilePath = Path.GetTempFileName();
+			Resume parsedResume;
+			try
+			{
+				using (var stream = new FileStream(tempFilePath, FileMode.Create))
+				{
+					await file.CopyToAsync(stream);
+				}
+
+				parsedResume = ParseResume(tempFilePath, fileExtension);
+			}
+			finally
+			{
+				if (System.IO.File.Exists(tempFilePath))
+					System.IO.File.Delete(tempFilePath);
+			}
+			return parsedResume.Skills;
 		}
 
 		public  Resume ParseResume(string filePath, string fileExtension)

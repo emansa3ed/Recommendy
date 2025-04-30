@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using System;
@@ -22,7 +23,7 @@ namespace Presentation.Controllers
 			_service = service;
 		}
 
-		[HttpGet("skills")]
+		[HttpGet]
 		public async Task<IActionResult> GetSkills()
 		{
 			string UserName = User.Identity.Name;
@@ -31,8 +32,22 @@ namespace Presentation.Controllers
 			return Ok(skills);
 		}
 
-		[HttpPost("skills")]
-		public async Task<IActionResult> AddSkills( [FromBody] List<string> skills)
+		[HttpPost("UploadResume")]
+		public async Task<IActionResult> UploadResume([FromForm]IFormFile ResumeFile)
+		{
+			string UserName = User.Identity.Name;
+			var user = await _service.UserService.GetDetailsByUserName(UserName);
+
+			var Skills = await _service.ResumeParserService.UploadResume(ResumeFile);
+
+			if (Skills == null || !Skills.Any())
+				return Ok();
+
+			return await AddSkills(Skills);
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> AddSkills([FromBody] List<string> skills)
 		{
 			string UserName = User.Identity.Name;
 			var user = await _service.UserService.GetDetailsByUserName(UserName);
@@ -44,7 +59,7 @@ namespace Presentation.Controllers
 			return NoContent();
 		}
 
-		[HttpDelete("skills/{skill}")]
+		[HttpDelete("{skill}")]
 		public async Task<IActionResult> RemoveSkill([FromRoute] string skill)
 		{
 			string UserName = User.Identity.Name;

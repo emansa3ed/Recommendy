@@ -26,7 +26,7 @@ namespace Shared.DTO.Authentication
         [Required(ErrorMessage = "UserImage is required")]
         public IFormFile? UserImage { get; init; }
 
-		public IFormFile ResumeFile { get; set; }
+		public IFormFile? ResumeFile { get; set; }
 
 
 		[Required(ErrorMessage = "Bio is required")]

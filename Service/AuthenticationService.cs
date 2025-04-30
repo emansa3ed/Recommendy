@@ -84,14 +84,7 @@ namespace Service
                 }
                 else if (userForRegistration.Roles.Any(role => role.Equals("Student", StringComparison.OrdinalIgnoreCase)))
                 {
-                    if (userForRegistration.ResumeFile == null)
-					{
-						return IdentityResult.Failed(new IdentityError
-						{
-							Code = "ResumeRequired",
-							Description = "Resume file is required for student registration."
-						});
-					}
+              
 				}
                 else 
                 {
@@ -121,13 +114,14 @@ namespace Service
                     ///////////////////////////////////////
                     if (roles.Any(role => role.Equals("Student", StringComparison.OrdinalIgnoreCase)))
                     {
-
                         Student student = new Student();
+                        if (userForRegistration.ResumeFile != null)
+                        {
+                            student.Skills = string.Join(",", await _resumeParserService.UploadResume(userForRegistration.ResumeFile));
+                        }
                         student.StudentId = user.Id;
-						student.Skills = string.Join(",", await UploadResume(userForRegistration.ResumeFile));
-						_repository.Student.CreateStudent(student);
+                        _repository.Student.CreateStudent(student);
                         _repository.SaveAsync().Wait();
-
 
                     }
                     else if (roles.Any(role => role.Equals("Company", StringComparison.OrdinalIgnoreCase)))
@@ -323,33 +317,7 @@ namespace Service
         }
 
 
-		private async Task<List<string>> UploadResume(IFormFile file)
-		{
-			string fileExtension = Path.GetExtension(file.FileName).ToLower();
-
-			if (fileExtension != ".pdf" && fileExtension != ".docx" && fileExtension != ".doc")
-			{
-				throw new BadRequestException("Unsupported file format. Please upload PDF or Word documents.");
-			}
-
-			var tempFilePath = Path.GetTempFileName();
-            Resume parsedResume;
-			try
-			{
-				using (var stream = new FileStream(tempFilePath, FileMode.Create))
-				{
-					await file.CopyToAsync(stream);
-				}
-
-				parsedResume = _resumeParserService.ParseResume(tempFilePath, fileExtension);
-			}
-			finally
-			{
-				if (System.IO.File.Exists(tempFilePath))
-					System.IO.File.Delete(tempFilePath);
-			}
-            return parsedResume.Skills;
-		}
+		
 		public string ExtractUserIdFromToken(string token)
         {
             var handler = new JwtSecurityTokenHandler();
