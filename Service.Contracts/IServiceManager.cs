@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Service.Contracts
 {
     public interface IServiceManager
@@ -28,7 +23,9 @@ namespace Service.Contracts
         IReportService ReportService { get; }   
         INotificationService NotificationService { get; }
         IChatUsersService ChatUsersService { get; }
-         IChatMessageService ChatMessageService { get; }
+        IChatMessageService ChatMessageService { get; }
+		IResumeParserService ResumeParserService { get; }
+		ISkillService  SkillService { get; }
 
-    }
+	}
 }

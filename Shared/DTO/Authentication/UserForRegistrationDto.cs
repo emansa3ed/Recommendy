@@ -25,7 +25,11 @@ namespace Shared.DTO.Authentication
         public string? PhoneNumber { get; init; }
         [Required(ErrorMessage = "UserImage is required")]
         public IFormFile? UserImage { get; init; }
-        [Required(ErrorMessage = "Bio is required")]
+
+		public IFormFile? ResumeFile { get; set; }
+
+
+		[Required(ErrorMessage = "Bio is required")]
 
         public string Bio { get; set; }
         public string? Url { get; set; }

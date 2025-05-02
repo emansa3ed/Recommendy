@@ -43,7 +43,7 @@ namespace Recommendy.Extensions
 
         public static void ConfigureSqlContext(this IServiceCollection services,
       IConfiguration configuration) =>
-     services.AddDbContext<RepositoryContext>(opts => 
+     services.AddDbContextPool<RepositoryContext>(opts => 
      opts.UseSqlServer(configuration.GetConnectionString("connection")));
 
         public static void ConfigureIdentity(this IServiceCollection services)

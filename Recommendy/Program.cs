@@ -24,7 +24,8 @@ namespace Recommendy
             builder.Services.ConfigureSqlContext(builder.Configuration);
             builder.Services.ConfigureCors();
             builder.Services.AddScoped<IEmailsService, EmailsService>();
-            builder.Services.AddScoped< IUserCodeService , UserCodeService > ();
+            builder.Services.AddScoped<IResumeParserService, ResumeParserService>();
+			builder.Services.AddScoped< IUserCodeService , UserCodeService > ();
             builder.Services.AddScoped<IFileRepository, FileRepository>();
 			builder.Services.AddHttpClient();
 			builder.Services.AddSignalR();

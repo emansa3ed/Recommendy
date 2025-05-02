@@ -17,6 +17,6 @@ namespace Service.Contracts
         Task<TokenDto> RefreshToken(TokenDto tokenDto);
 
 
-        string ExtractUserIdFromToken(string token);
+		string ExtractUserIdFromToken(string token);
     }
 }
