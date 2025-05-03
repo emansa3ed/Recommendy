@@ -9,11 +9,14 @@ namespace Repository.Extensions
 {
     public static class RepositoryInternshipExtensions
     {
-        public static IQueryable<Internship> Filter(this IQueryable<Internship> internships, bool paid)
-	    {
-            return internships
-		    .Where(i => i.Paid == paid);
+        public static IQueryable<Internship> Filter(this IQueryable<Internship> internships, bool? paid)
+        {
+            if (paid.HasValue)
+                return internships.Where(i => i.Paid == paid.Value);
+
+            return internships; 
         }
+
         public static IQueryable<Internship> Paging(this IQueryable<Internship> internships, int PageNumber, int PageSize)
         {
             return internships

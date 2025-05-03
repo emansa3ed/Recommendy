@@ -65,13 +65,14 @@ namespace Repository
 
 		public async Task<PagedList<Internship>> GetAllInternshipsAsync(InternshipParameters internshipParameters,bool trackChanges)
         {
-		    var res = await FindByCondition((i => i.IsBanned != true), trackChanges)
-                .Paging(internshipParameters.PageNumber, internshipParameters.PageSize)
-                .Filter(internshipParameters.Paid)
+		    var res = await FindByCondition((i => i.IsBanned != true), trackChanges).Include(i => i.InternshipPositions)
+                    .ThenInclude(ip => ip.Position)
+                .Filter(internshipParameters.Paid).Paging(internshipParameters.PageNumber, internshipParameters.PageSize)
                 .Include(i => i.Company)
                 .ThenInclude(c => c.User)
                 .ToListAsync();
-			var count = await FindByCondition((i => i.IsBanned != true), trackChanges).CountAsync();
+
+            var count = await FindByCondition((i => i.IsBanned != true), trackChanges).CountAsync();
 			return new PagedList<Internship>(res, count, internshipParameters.PageNumber, internshipParameters.PageSize);
 
 		}

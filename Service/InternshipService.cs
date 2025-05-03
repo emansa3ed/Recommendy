@@ -152,12 +152,14 @@ namespace Service
 
       
         public async Task<PagedList<InternshipDto>> GetAllInternships(InternshipParameters internshipParameters, bool trackChanges)
+
         {
-			if (!_memoryCache.Cache.TryGetValue(internshipParameters.ToString(), out PagedList<Internship> cacheValue))
+
+           if (!_memoryCache.Cache.TryGetValue(internshipParameters.ToString(), out PagedList<Internship> cacheValue))
 			{
 				cacheValue = await _repositoryManager.Intership.GetAllInternshipsAsync(internshipParameters, trackChanges);
 
-				var jsonSize = JsonSerializer.SerializeToUtf8Bytes(cacheValue).Length;
+                var jsonSize = JsonSerializer.SerializeToUtf8Bytes(cacheValue).Length;
 
 
 				var cacheEntryOptions = new MemoryCacheEntryOptions()

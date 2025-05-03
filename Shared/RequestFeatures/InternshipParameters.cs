@@ -9,7 +9,7 @@ namespace Shared.RequestFeatures
 {
     public class InternshipParameters :RequestParameters
     {
-		public bool Paid{ get; set; }
+		public bool ? Paid{ get; set; }
 
 		public override string ToString()
 		{
