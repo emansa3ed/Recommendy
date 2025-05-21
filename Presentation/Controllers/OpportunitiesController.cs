@@ -29,6 +29,33 @@ namespace Presentation.Controllers
 
 		}
 
+
+		[HttpGet]
+		public async Task<IActionResult> GetOpportunities([FromQuery] OpportunitiesParameters OpportunitiesParameters)
+		{
+			var username = User.Identity.Name;
+			var user = await _service.UserService.GetDetailsByUserName(username);
+			var UserSkills =  _service.StudentService.GetStudent(user.Id, trackChanges: false).Skills;
+
+			var scholarships = await _service.ScholarshipService.GetAllRecommendedScholarships(UserSkills, new ScholarshipsParameters
+			{
+				PageNumber= OpportunitiesParameters.PageNumber,
+				PageSize=OpportunitiesParameters.PageSize,
+			}
+			, trackChanges: false);
+
+			var internships = await _service.InternshipService.GetAllRecommendedInternships(UserSkills, new InternshipParameters
+			{
+				PageNumber = OpportunitiesParameters.PageNumber,
+				PageSize = OpportunitiesParameters.PageSize,
+			}, trackChanges: false);
+			Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(internships.MetaData));
+
+
+			return Ok(new ApiResponse<PagedList<GetScholarshipDto>> {});
+
+		}
+
 		[HttpGet("Scholarships/all")]
 		public async Task<IActionResult> GetScholarships([FromQuery] ScholarshipsParameters scholarshipsParameters)
 		{

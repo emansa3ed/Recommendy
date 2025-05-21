@@ -13,7 +13,7 @@ namespace Contracts
         Task<string> DeleteOpportunity(SavedPost savedPost);
 
         Task<SavedPost> GetSavedOpportunity(string StudentId, int PostId, char Type);
-        Task<IEnumerable<SavedPost>> GetSavedScholarshipsAsync(string studentId, bool trackChanges);
+		Task<IEnumerable<SavedPost>> GetSavedScholarshipsAsync(string studentId, bool trackChanges);
         Task<IEnumerable<SavedPost>> GetSavedInternshipsAsync(string studentId, bool trackChanges);
 
 

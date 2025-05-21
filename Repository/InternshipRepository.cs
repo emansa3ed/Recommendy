@@ -11,8 +11,8 @@ using Repository.Extensions;
 
 namespace Repository
 {
-    public  class InternshipRepository : RepositoryBase<Internship> , IInternshipRepository 
-    {
+	public class InternshipRepository : RepositoryBase<Internship>, IInternshipRepository
+	{
         public InternshipRepository(RepositoryContext repositoryContext) : base(repositoryContext) { 
         
        
@@ -46,10 +46,12 @@ namespace Repository
                  .Include(i => i.Company)
                  .ThenInclude(c => c.User)
                  .Paging(internshipParameters.PageNumber, internshipParameters.PageSize)
-                 .ToListAsync();
+                 .Search(internshipParameters.searchTerm)
+				 .ToListAsync();
 
             var count = await FindByCondition(i => i.CompanyId == companyId, trackChanges)
-                .Include(i => i.InternshipPositions)
+				 .Search(internshipParameters.searchTerm)
+				.Include(i => i.InternshipPositions)
                  .ThenInclude(ip => ip.Position)
                  .Include(i => i.Company)
                  .ThenInclude(c => c.User)
@@ -67,12 +69,12 @@ namespace Repository
         {
 		    var res = await FindByCondition((i => i.IsBanned != true), trackChanges).Include(i => i.InternshipPositions)
                     .ThenInclude(ip => ip.Position)
-                .Filter(internshipParameters.Paid).Paging(internshipParameters.PageNumber, internshipParameters.PageSize)
+                .Filter(internshipParameters.Paid).Paging(internshipParameters.PageNumber, internshipParameters.PageSize).Search(internshipParameters.searchTerm)
                 .Include(i => i.Company)
                 .ThenInclude(c => c.User)
                 .ToListAsync();
 
-            var count = await FindByCondition((i => i.IsBanned != true), trackChanges).CountAsync();
+            var count = await FindByCondition((i => i.IsBanned != true), trackChanges).Search(internshipParameters.searchTerm).CountAsync();
 			return new PagedList<Internship>(res, count, internshipParameters.PageNumber, internshipParameters.PageSize);
 
 		}
@@ -89,5 +91,18 @@ namespace Repository
                     .ThenInclude(c => c.User)
                 .FirstOrDefault();
         }
-    }
+
+		public async Task<PagedList<Internship>> GetAllRecommendedInternships(string UserSkills, InternshipParameters internshipParameters, bool trackChanges)
+		{
+			var res = await FindByCondition((i => i.IsBanned != true), trackChanges).Include(i => i.InternshipPositions)
+			.ThenInclude(ip => ip.Position)
+		.Filter(internshipParameters.Paid).Paging(internshipParameters.PageNumber, internshipParameters.PageSize).Recommendation(UserSkills)
+		.Include(i => i.Company)
+		.ThenInclude(c => c.User)
+		.ToListAsync();
+
+			var count = await FindByCondition((i => i.IsBanned != true), trackChanges).Recommendation(UserSkills).CountAsync();
+			return new PagedList<Internship>(res, count, internshipParameters.PageNumber, internshipParameters.PageSize);
+		}
+	}
 }

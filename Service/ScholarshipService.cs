@@ -98,7 +98,7 @@ namespace Service
             // Map scholarships to DTOs using AutoMapper
             var scholarshipDto = _mapper.Map<List<GetScholarshipDto>>(scholarships);
 
-			return new PagedList<GetScholarshipDto>(scholarshipDto, scholarships.MetaData.TotalCount, scholarshipsParameters.PageNumber, scholarshipsParameters.PageSize); ;
+			return new PagedList<GetScholarshipDto>(scholarshipDto, scholarships.MetaData.TotalCount, scholarshipsParameters.PageNumber, scholarshipsParameters.PageSize); 
 
 		}
 
@@ -165,5 +165,33 @@ namespace Service
             _repository.Scholarship.DeleteScholarship(scholarship);
 			await _repository.SaveAsync();
 		}
+
+		public async Task<PagedList<GetScholarshipDto>> GetAllRecommendedScholarships(string UserSkills, ScholarshipsParameters scholarshipsParameters, bool trackChanges)
+		{
+
+			if (!_memoryCache.Cache.TryGetValue(scholarshipsParameters.ToString(), out PagedList<Scholarship> cacheValue))
+			{
+				cacheValue = await _repository.Scholarship.GetAllRecommendedScholarships(UserSkills,scholarshipsParameters, trackChanges);
+
+				var jsonSize = JsonSerializer.SerializeToUtf8Bytes(cacheValue).Length;
+
+
+				var cacheEntryOptions = new MemoryCacheEntryOptions()
+					.SetSize(jsonSize)
+					.SetSlidingExpiration(TimeSpan.FromSeconds(5))
+					.SetAbsoluteExpiration(TimeSpan.FromSeconds(10));
+
+				_memoryCache.Cache.Set(scholarshipsParameters.ToString(), cacheValue, cacheEntryOptions);
+			}
+
+			// Retrieve scholarships from the repository
+			var scholarships = cacheValue;
+
+			// Map scholarships to DTOs using AutoMapper
+			var scholarshipDto = _mapper.Map<List<GetScholarshipDto>>(scholarships);
+
+			return new PagedList<GetScholarshipDto>(scholarshipDto, scholarships.MetaData.TotalCount, scholarshipsParameters.PageNumber, scholarshipsParameters.PageSize);
+		}
+
 	}
 }

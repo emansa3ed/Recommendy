@@ -7,14 +7,13 @@ using System.Threading.Tasks;
 
 namespace Shared.RequestFeatures
 {
-    public class InternshipParameters :RequestParameters
-    {
-		public bool ? Paid{ get; set; }
+    public class OpportunitiesParameters : RequestParameters
+	{
 		public string? searchTerm { get; set; }
 
 		public override string ToString()
 		{
-			return base.ToString() + Paid.ToString() + searchTerm;
+			return base.ToString() ;
 		}
 	}
 }
