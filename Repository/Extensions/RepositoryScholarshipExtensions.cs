@@ -34,7 +34,7 @@ namespace Repository.Extensions
 			if (string.IsNullOrWhiteSpace(Skills))
 				return Scholarship;
 
-			var apiKey = "AIzaSyCA5lcOwz0bJZ7rGAxqiFZ_rimauFsRst4";
+			var apiKey = Environment.GetEnvironmentVariable("GeminiKey");
 
 
 			var geminiAgent = new GeminiChatAgent(
