@@ -77,7 +77,7 @@ namespace Service
 
         public async Task<PagedList<GetScholarshipDto>> GetAllScholarships(ScholarshipsParameters scholarshipsParameters, bool trackChanges)
         {
-			if (!_memoryCache.Cache.TryGetValue(scholarshipsParameters.ToString(), out PagedList<Scholarship> cacheValue))
+			if (!_memoryCache.Cache.TryGetValue(scholarshipsParameters.ToString()+ "GetAllScholarships", out PagedList<Scholarship> cacheValue))
 			{
 				cacheValue = await _repository.Scholarship.GetAllScholarshipsAsync(scholarshipsParameters,trackChanges);
 
@@ -89,7 +89,7 @@ namespace Service
 					.SetSlidingExpiration(TimeSpan.FromSeconds(5))
 					.SetAbsoluteExpiration(TimeSpan.FromSeconds(10));
 
-				_memoryCache.Cache.Set(scholarshipsParameters.ToString(), cacheValue, cacheEntryOptions);
+				_memoryCache.Cache.Set(scholarshipsParameters.ToString() + "GetAllScholarships", cacheValue, cacheEntryOptions);
 			}
 
 			// Retrieve scholarships from the repository
@@ -169,19 +169,17 @@ namespace Service
 		public async Task<PagedList<GetScholarshipDto>> GetAllRecommendedScholarships(string UserSkills, ScholarshipsParameters scholarshipsParameters, bool trackChanges)
 		{
 
-			if (!_memoryCache.Cache.TryGetValue(scholarshipsParameters.ToString(), out PagedList<Scholarship> cacheValue))
+			if (!_memoryCache.Cache.TryGetValue(scholarshipsParameters.ToString() + UserSkills+ "GetAllRecommendedScholarships", out PagedList<Scholarship> cacheValue))
 			{
 				cacheValue = await _repository.Scholarship.GetAllRecommendedScholarships(UserSkills,scholarshipsParameters, trackChanges);
 
 				var jsonSize = JsonSerializer.SerializeToUtf8Bytes(cacheValue).Length;
 
-
 				var cacheEntryOptions = new MemoryCacheEntryOptions()
 					.SetSize(jsonSize)
-					.SetSlidingExpiration(TimeSpan.FromSeconds(5))
-					.SetAbsoluteExpiration(TimeSpan.FromSeconds(10));
-
-				_memoryCache.Cache.Set(scholarshipsParameters.ToString(), cacheValue, cacheEntryOptions);
+					.SetSlidingExpiration(TimeSpan.FromSeconds(30))
+					.SetAbsoluteExpiration(TimeSpan.FromSeconds(120));
+				_memoryCache.Cache.Set(scholarshipsParameters.ToString() + UserSkills + "GetAllRecommendedScholarships", cacheValue, cacheEntryOptions);
 			}
 
 			// Retrieve scholarships from the repository

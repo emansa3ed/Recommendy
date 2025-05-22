@@ -51,8 +51,12 @@ namespace Presentation.Controllers
 			}, trackChanges: false);
 			Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(internships.MetaData));
 
-
-			return Ok(new ApiResponse<PagedList<GetScholarshipDto>> {});
+			GetOpportunitiesDto opportunities = new GetOpportunitiesDto
+			{
+				Scholarships = scholarships,
+				Internships = internships
+			};
+			return Ok(new ApiResponse<GetOpportunitiesDto> {Data= opportunities,Success=true});
 
 		}
 

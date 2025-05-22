@@ -100,7 +100,7 @@ namespace Service
         public async Task<PagedList<ReportDto>> GetReportsAsync(ReportParameters reportParameters, bool trackChanges=false)
         {
 
-			if (!_memoryCache.Cache.TryGetValue(reportParameters.ToString(), out PagedList<Report> cacheValue))
+			if (!_memoryCache.Cache.TryGetValue(reportParameters.ToString()+ "GetReportsAsync", out PagedList<Report> cacheValue))
 			{
 				cacheValue = await _repository.ReportRepository.GetReportsAsync(reportParameters, trackChanges);
 
@@ -112,7 +112,7 @@ namespace Service
 					.SetSlidingExpiration(TimeSpan.FromSeconds(5))
 					.SetAbsoluteExpiration(TimeSpan.FromSeconds(10));
 
-				_memoryCache.Cache.Set(reportParameters.ToString(), cacheValue, cacheEntryOptions);
+				_memoryCache.Cache.Set(reportParameters.ToString() + "GetReportsAsync", cacheValue, cacheEntryOptions);
 			}
 
             var result = cacheValue;
