@@ -17,8 +17,9 @@ namespace Service.Contracts
 
 
         Task<GetScholarshipDto> GetScholarshipById(int id, bool trackChanges);
-
+         
         Task<PagedList<GetScholarshipDto>> GetAllScholarships(ScholarshipsParameters scholarshipsParameters,bool trackChanges);
+        Task<PagedList<GetScholarshipDto>> GetAllRecommendedScholarships(string UserSkills, ScholarshipsParameters scholarshipsParameters,bool trackChanges);
 
 
 

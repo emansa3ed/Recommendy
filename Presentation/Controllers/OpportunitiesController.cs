@@ -29,6 +29,45 @@ namespace Presentation.Controllers
 
 		}
 
+
+		[HttpGet]
+		public async Task<IActionResult> GetOpportunities([FromQuery] OpportunitiesParameters OpportunitiesParameters)
+		{
+			var username = User.Identity.Name;
+			var user = await _service.UserService.GetDetailsByUserName(username);
+			var UserSkills =  _service.StudentService.GetStudent(user.Id, trackChanges: false).Skills;
+
+			var scholarships = await _service.ScholarshipService.GetAllRecommendedScholarships(UserSkills, new ScholarshipsParameters
+			{
+				PageNumber= OpportunitiesParameters.PageNumber,
+				PageSize=OpportunitiesParameters.PageSize,
+			}
+			, trackChanges: false);
+
+			var internships = await _service.InternshipService.GetAllRecommendedInternships(UserSkills, new InternshipParameters
+			{
+				PageNumber = OpportunitiesParameters.PageNumber,
+				PageSize = OpportunitiesParameters.PageSize,
+			}, trackChanges: false);
+
+			MetaData metaData = new MetaData
+			{
+				PageSize = OpportunitiesParameters.PageSize,
+				CurrentPage = OpportunitiesParameters.PageNumber,
+				TotalCount = scholarships.MetaData.TotalCount+internships.MetaData.TotalCount,
+				TotalPages = (int)Math.Ceiling((double)(scholarships.MetaData.TotalCount + internships.MetaData.TotalCount) / OpportunitiesParameters.PageSize),
+			};
+			Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(metaData));
+
+			GetOpportunitiesDto opportunities = new GetOpportunitiesDto
+			{
+				Scholarships = scholarships,
+				Internships = internships
+			};
+			return Ok(new ApiResponse<GetOpportunitiesDto> {Data= opportunities,Success=true});
+
+		}
+
 		[HttpGet("Scholarships/all")]
 		public async Task<IActionResult> GetScholarships([FromQuery] ScholarshipsParameters scholarshipsParameters)
 		{

@@ -155,7 +155,7 @@ namespace Service
 
         {
 
-           if (!_memoryCache.Cache.TryGetValue(internshipParameters.ToString(), out PagedList<Internship> cacheValue))
+           if (!_memoryCache.Cache.TryGetValue(internshipParameters.ToString()+ "GetAllInternships", out PagedList<Internship> cacheValue))
 			{
 				cacheValue = await _repositoryManager.Intership.GetAllInternshipsAsync(internshipParameters, trackChanges);
 
@@ -167,17 +167,34 @@ namespace Service
 					.SetSlidingExpiration(TimeSpan.FromSeconds(5))
 					.SetAbsoluteExpiration(TimeSpan.FromSeconds(10));
 
-				_memoryCache.Cache.Set(internshipParameters.ToString(), cacheValue, cacheEntryOptions);
+				_memoryCache.Cache.Set(internshipParameters.ToString() + "GetAllInternships", cacheValue, cacheEntryOptions);
 			}
             var internships = cacheValue;
 
 			var internshipDto = _mapper.Map<List<InternshipDto>>(internships);
-			return new PagedList<InternshipDto>(internshipDto, internships.MetaData.TotalCount, internshipParameters.PageNumber, internshipParameters.PageSize); ;
+			return new PagedList<InternshipDto>(internshipDto, internships.MetaData.TotalCount, internshipParameters.PageNumber, internshipParameters.PageSize); 
         }
 
-       
+		public async Task<PagedList<InternshipDto>> GetAllRecommendedInternships(string UserSkills, InternshipParameters internshipParameters, bool trackChanges)
+		{
+			if (!_memoryCache.Cache.TryGetValue(internshipParameters.ToString()+UserSkills+ "GetAllRecommendedInternships", out PagedList<Internship> cacheValue))
+			{
+				cacheValue = await _repositoryManager.Intership.GetAllRecommendedInternships(UserSkills,internshipParameters, trackChanges);
+
+				var jsonSize = JsonSerializer.SerializeToUtf8Bytes(cacheValue).Length;
 
 
+				var cacheEntryOptions = new MemoryCacheEntryOptions()
+					.SetSize(jsonSize)
+					.SetSlidingExpiration(TimeSpan.FromSeconds(30))
+					.SetAbsoluteExpiration(TimeSpan.FromSeconds(120));
 
-    }
+				_memoryCache.Cache.Set(internshipParameters.ToString() + UserSkills+ "GetAllRecommendedInternships", cacheValue, cacheEntryOptions);
+			}
+			var internships = cacheValue;
+
+			var internshipDto = _mapper.Map<List<InternshipDto>>(internships);
+			return new PagedList<InternshipDto>(internshipDto, internships.MetaData.TotalCount, internshipParameters.PageNumber, internshipParameters.PageSize);
+		}
+	}
 }

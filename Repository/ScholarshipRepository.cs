@@ -53,14 +53,25 @@ namespace Repository
 				.ThenInclude(u => u.User)
 				.ToListAsync();
 
-			var count = await FindByCondition((s => !s.IsBanned), trackChanges).CountAsync();
+			var count = await FindByCondition((s => !s.IsBanned), trackChanges).Search(scholarshipsParameters.searchTerm).CountAsync();
 			return new PagedList<Scholarship>(res, count, scholarshipsParameters.PageNumber, scholarshipsParameters.PageSize);
 		}
 
         public Scholarship GetScholarshipById(int id, bool trackChanges) => FindByCondition(s => s.Id == id, trackChanges).Where(s => !s.IsBanned).Include(s => s.University)
                 .ThenInclude(u => u.User).SingleOrDefault();
 
+		public async Task<PagedList<Scholarship>> GetAllRecommendedScholarships(string UserSkills, ScholarshipsParameters scholarshipsParameters, bool trackChanges)
+		{
+			var res = await FindByCondition((s => !s.IsBanned), trackChanges)
+				.Paging(scholarshipsParameters.PageNumber, scholarshipsParameters.PageSize)
+				.Filter(scholarshipsParameters.fund, scholarshipsParameters.degree)
+				.Recommendation(UserSkills)
+				.Include(s => s.University)
+				.ThenInclude(u => u.User)
+				.ToListAsync();
 
-
-    }
+			var count = await FindByCondition((s => !s.IsBanned), trackChanges).Recommendation(UserSkills).CountAsync();
+			return new PagedList<Scholarship>(res, count, scholarshipsParameters.PageNumber, scholarshipsParameters.PageSize);
+		}
+	}
 }
