@@ -49,7 +49,15 @@ namespace Presentation.Controllers
 				PageNumber = OpportunitiesParameters.PageNumber,
 				PageSize = OpportunitiesParameters.PageSize,
 			}, trackChanges: false);
-			Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(internships.MetaData));
+
+			MetaData metaData = new MetaData
+			{
+				PageSize = OpportunitiesParameters.PageSize,
+				CurrentPage = OpportunitiesParameters.PageNumber,
+				TotalCount = scholarships.MetaData.TotalCount+internships.MetaData.TotalCount,
+				TotalPages = (int)Math.Ceiling((double)(scholarships.MetaData.TotalCount + internships.MetaData.TotalCount) / OpportunitiesParameters.PageSize),
+			};
+			Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(metaData));
 
 			GetOpportunitiesDto opportunities = new GetOpportunitiesDto
 			{
