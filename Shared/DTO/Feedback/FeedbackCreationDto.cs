@@ -11,8 +11,6 @@ namespace Shared.DTO.Feedback
 	public record FeedbackCreationDto
 	{
 
-        [Required(ErrorMessage = "StudentId type is required")]
-        public string StudentId { get; set; }
 
         [Required(ErrorMessage = "Feedback type is required")]
 		[EnumDataType(typeof(FeedbackType), ErrorMessage = "Invalid feedback type")]
