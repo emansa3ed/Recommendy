@@ -51,7 +51,7 @@ namespace Service
 
 		}
 
-		public async  Task DeleteFeedbackAsync(string CompanyID, int PostId, FeedbackDelationDto FeedbackId)
+		public async  Task DeleteFeedbackAsync(string CompanyID, string StudentId, int PostId, FeedbackDelationDto FeedbackId)
 		{
 			object post;
 			if (FeedbackId.Type == FeedbackType.Scholarship)
@@ -72,7 +72,7 @@ namespace Service
 			if (feedback == null)
 				throw new FeedbackNotFoundException(FeedbackId.Id);
 
-			if (feedback.PostId != PostId)
+			if (feedback.PostId != PostId || feedback.StudentId!= StudentId)
 				throw new BadRequestException("Invalid data");
 
 			_repository.FeedbackRepository.DeleteFeedback(feedback);
