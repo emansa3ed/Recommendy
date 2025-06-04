@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
+using Shared.DTO.Skills;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,12 +34,12 @@ namespace Presentation.Controllers
 		}
 
 		[HttpPost("UploadResume")]
-		public async Task<IActionResult> UploadResume([FromForm]IFormFile ResumeFile)
+		public async Task<IActionResult> UploadResume([FromForm] ResumeUploadDTO ResumeFile)
 		{
 			string UserName = User.Identity.Name;
 			var user = await _service.UserService.GetDetailsByUserName(UserName);
 
-			var Skills = await _service.ResumeParserService.UploadResume(ResumeFile);
+			var Skills = await _service.ResumeParserService.UploadResume(ResumeFile.ResumeFile);
 
 			if (Skills == null || !Skills.Any())
 				return Ok();
