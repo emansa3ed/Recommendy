@@ -30,8 +30,8 @@ namespace Service
 
 		public async Task SavedOpportunity(string StudentId, SavedOpportunityDto savedOpportunityDto)
 		{
-            object p;
-            var student = _repositoryManager.Student.GetStudent(StudentId, false);
+			string ReceiverID;
+			var student = _repositoryManager.Student.GetStudent(StudentId, false);
 			if (student is null)
 				throw new StudentNotFoundException(StudentId);
             if (savedOpportunityDto.Type == 'I')
@@ -39,15 +39,16 @@ namespace Service
                 var internship = _repositoryManager.Intership.GetInternshipById(savedOpportunityDto.PostId, false);
                 if (internship == null)
                     throw new InternshipNotFoundException(savedOpportunityDto.PostId);
-                p = internship;
+				ReceiverID = internship.CompanyId;
             }
             else if (savedOpportunityDto.Type == 'S')
             {
                 var scholarship = _repositoryManager.Scholarship.GetScholarshipById(savedOpportunityDto.PostId, false);
                 if (scholarship == null)
                     throw new ScholarshipNotFoundException(savedOpportunityDto.PostId);
-            }
-            else
+				ReceiverID = scholarship.UniversityId;
+			}
+			else
             {
                 throw new SavedPostNotFoundException();
 
@@ -68,7 +69,7 @@ namespace Service
 				await _repositoryManager.OpportunityRepository.SavedOpportunity(savedPost);
 				await _repositoryManager.SaveAsync();
 				
-				//  await _notificationService.CreateNotificationAsync(new NotificationCreationDto { ActorID = savedOpportunityDto.StudentId,ReceiverID = post.CompanyId, Content = "NOT"});
+				await _notificationService.CreateNotificationAsync(new NotificationCreationDto { ActorID = StudentId, ReceiverID = ReceiverID, Content = "NOT"});
 
 			}
 

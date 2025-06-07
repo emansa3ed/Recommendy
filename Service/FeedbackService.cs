@@ -5,6 +5,7 @@ using Entities.Models;
 using Service.Contracts;
 using Shared.DTO;
 using Shared.DTO.Feedback;
+using Shared.DTO.Notification;
 using Shared.RequestFeatures;
 
 namespace Service
@@ -13,10 +14,13 @@ namespace Service
     {
 		private readonly IRepositoryManager _repository;
 		private readonly IMapper _mapper;
-		public FeedbackService(IRepositoryManager repository, IMapper mapper)
+		private readonly INotificationService _notificationService;
+
+		public FeedbackService(IRepositoryManager repository, IMapper mapper, INotificationService notificationService)
 		{
 			_repository = repository;
 			_mapper = mapper;
+			_notificationService = notificationService;
 		}
 
 		public async Task CreateFeedbackAsync(string CompanyID, int PostId,string StudentId, FeedbackCreationDto feedback)
@@ -46,6 +50,9 @@ namespace Service
 			feedbackEntity.CreatedAt = DateTime.UtcNow;
 
 			_repository.FeedbackRepository.CreateFeedback(feedbackEntity);
+
+			await _notificationService.CreateNotificationAsync(new NotificationCreationDto { ActorID = StudentId, ReceiverID = CompanyID, Content = "NOT" });
+
 
 			await _repository.SaveAsync();
 
