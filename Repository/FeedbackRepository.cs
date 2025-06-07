@@ -23,7 +23,10 @@ namespace Repository
 		public void CreateFeedback(Feedback feedback) => Create(feedback);
 		public void DeleteFeedback(Feedback feedback) => Delete(feedback);
 		public async Task<Feedback> GetFeedbackById(int? FeedbackId,bool TrackChanges =false) => await FindByCondition(f => f.Id == FeedbackId, TrackChanges)
-			.Include(f=>f.Student).SingleOrDefaultAsync();
+			.Include(f=>f.Student)
+			.Include(f => f.Student)
+			.ThenInclude(s => s.User)
+			.SingleOrDefaultAsync();
 		public async Task<PagedList<Feedback>> GetAllFeedbackAsync(int PostId,FeedBackParameters feedBack, bool TrackChanges =false)
 		{
 			var res = await FindByCondition(f=>f.PostId == PostId && f.Type.Equals(feedBack.type) , TrackChanges)

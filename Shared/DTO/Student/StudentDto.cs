@@ -9,7 +9,8 @@ namespace Shared.DTO.Student
 {
     public record StudentDto
     {
-        public string? UrlPicture { get; init; }
+		public string StudentId { get; set; }
+		public string? UrlPicture { get; init; }
         public string? UserName { get; init; }
         public string? UrlResume { get; init; }
         public string? Bio { get; init; }
