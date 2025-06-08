@@ -34,14 +34,14 @@ namespace Service
 			var student = _repositoryManager.Student.GetStudent(StudentId, false);
 			if (student is null)
 				throw new StudentNotFoundException(StudentId);
-            if (savedOpportunityDto.Type == 'I')
+            if (savedOpportunityDto.Type == "I")
             {
                 var internship = _repositoryManager.Intership.GetInternshipById(savedOpportunityDto.PostId, false);
                 if (internship == null)
                     throw new InternshipNotFoundException(savedOpportunityDto.PostId);
 				ReceiverID = internship.CompanyId;
             }
-            else if (savedOpportunityDto.Type == 'S')
+            else if (savedOpportunityDto.Type == "S")
             {
                 var scholarship = _repositoryManager.Scholarship.GetScholarshipById(savedOpportunityDto.PostId, false);
                 if (scholarship == null)
@@ -57,7 +57,7 @@ namespace Service
 
 
 
-            var result = await _repositoryManager.OpportunityRepository.GetSavedOpportunity(StudentId, savedOpportunityDto.PostId, savedOpportunityDto.Type);
+            var result = await _repositoryManager.OpportunityRepository.GetSavedOpportunity(StudentId, savedOpportunityDto.PostId, savedOpportunityDto.Type[0]);
 
 			
 			if (result == null)
@@ -69,7 +69,7 @@ namespace Service
 				await _repositoryManager.OpportunityRepository.SavedOpportunity(savedPost);
 				await _repositoryManager.SaveAsync();
 				
-				await _notificationService.CreateNotificationAsync(new NotificationCreationDto { ActorID = StudentId, ReceiverID = ReceiverID, Content = "NOT"});
+				await _notificationService.CreateNotificationAsync(new NotificationCreationDto { ActorID = StudentId, ReceiverID = ReceiverID, Content = NotificationType.SaveOpportunity});
 
 			}
 
@@ -80,14 +80,14 @@ namespace Service
 			if (student is null)
 				throw new StudentNotFoundException(StudentId);
 
-            if (savedOpportunityDto.Type == 'I')
+            if (savedOpportunityDto.Type == "I")
             {
                 var internship = _repositoryManager.Intership.GetInternshipById(savedOpportunityDto.PostId, false);
                 if (internship == null)
                     throw new InternshipNotFoundException(savedOpportunityDto.PostId);
 
             }
-            else if(savedOpportunityDto.Type=='S')
+            else if(savedOpportunityDto.Type=="S")
             {
                 var scholarship = _repositoryManager.Scholarship.GetScholarshipById(savedOpportunityDto.PostId, false);
                 if (scholarship == null)
@@ -100,7 +100,7 @@ namespace Service
             }
 
 
-            var result = await _repositoryManager.OpportunityRepository.GetSavedOpportunity(StudentId, savedOpportunityDto.PostId, savedOpportunityDto.Type);
+            var result = await _repositoryManager.OpportunityRepository.GetSavedOpportunity(StudentId, savedOpportunityDto.PostId, savedOpportunityDto.Type[0]);
 			if (result != null)
 			{
 				

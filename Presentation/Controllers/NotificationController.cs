@@ -16,7 +16,6 @@ using System.Threading.Tasks;
 namespace Presentation.Controllers
 {
 	[Route("api/Receiver/{ReceiverID}/[controller]")]
-	[Authorize]
 	[ApiController]
 	public class NotificationController : ControllerBase
 	{

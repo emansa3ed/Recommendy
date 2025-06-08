@@ -12,8 +12,10 @@ namespace Shared.DTO.opportunity
 
         [Required(ErrorMessage = " PostId is  Required")]
         public int PostId { get; set; }
+
         [Required(ErrorMessage = " Type is  Required")]
-        public char Type
+        [Length(1,1,ErrorMessage ="type must be 1 char")]
+        public string Type
         {
             get; set;
         }

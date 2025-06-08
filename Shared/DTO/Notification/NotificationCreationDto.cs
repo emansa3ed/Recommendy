@@ -8,16 +8,19 @@ using System.Threading.Tasks;
 
 namespace Shared.DTO.Notification
 {
-    public record NotificationCreationDto
+	public enum NotificationType
+	{
+		SaveOpportunity,
+		CreateFeedBack
+	}
+
+	public record NotificationCreationDto
 	{
 		[Required(ErrorMessage = "ReceiverID Id is required")]
 		public string ReceiverID { get; set; }
 		
 		[Required(ErrorMessage = "ActorID Id is required")]
 		public string ActorID { get; set; }
-
-		[Required(ErrorMessage = "Content is required")]
-		[StringLength(200, ErrorMessage = "Content cannot be longer than 200 characters")]
-		public string Content { get; set; }
+		public NotificationType Content { get; set; }
 	}
 }
