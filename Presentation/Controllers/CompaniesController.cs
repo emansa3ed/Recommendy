@@ -16,7 +16,6 @@ namespace Presentation.Controllers
 {
     [Route("api/companies")]
     [ApiController]
-    [Authorize(Roles ="Company")]
     public class CompaniesController : ControllerBase
     {
         private readonly IServiceManager _service;
@@ -24,7 +23,8 @@ namespace Presentation.Controllers
 
 
         [HttpGet("profile/{id}")]
-        public IActionResult GetCompany(string id)
+		[Authorize]
+		public IActionResult GetCompany(string id)
         {
                 var company = _service.CompanyService.GetCompany(id, trackChanges: false);
                 return Ok(company);
@@ -33,8 +33,8 @@ namespace Presentation.Controllers
 
 
         [HttpPatch("edit-profile/{id}")]
-
-        public async Task<IActionResult> EditProfile(string id, [FromBody] CompanyDto companyDto)
+		[Authorize(Roles = "Company")]
+		public async Task<IActionResult> EditProfile(string id, [FromBody] CompanyDto companyDto)
         {
                    
             await _service.CompanyService.UpdateCompany(id, companyDto, trackChanges: true);
