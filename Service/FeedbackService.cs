@@ -51,7 +51,7 @@ namespace Service
 
 			_repository.FeedbackRepository.CreateFeedback(feedbackEntity);
 
-			await _notificationService.CreateNotificationAsync(new NotificationCreationDto { ActorID = StudentId, ReceiverID = CompanyID, Content = "NOT" });
+			await _notificationService.CreateNotificationAsync(new NotificationCreationDto { ActorID = StudentId, ReceiverID = CompanyID, Content = NotificationType.CreateFeedBack});
 
 
 			await _repository.SaveAsync();

@@ -35,6 +35,10 @@ namespace Service
 			if (actor == null)
 				throw new UserNotFoundException(notification.ActorID);
 			var notificationEntity = _mapper.Map<Notification>(notification);
+			if (notification.Content == NotificationType.CreateFeedBack)
+				notificationEntity.Content = $"User {actor.UserName} create feedback in your post";
+			else if (notification.Content == NotificationType.SaveOpportunity)
+				notificationEntity.Content = $"User {actor.UserName} save your post";
 			notificationEntity.CreatedAt = DateTime.UtcNow;
 			notificationEntity.IsRead = false;
 			_repository.NotificationRepository.CreateNotification(notificationEntity);
@@ -60,10 +64,11 @@ namespace Service
 			var receiver = await _repository.User.GetById(ReceiverID);
 			if (receiver == null)
 				throw new UserNotFoundException(ReceiverID);
-			var notification = await _repository.NotificationRepository.GetNotificationAsync(ReceiverID, NotificationId, TrackChanges);
+			var notification = await _repository.NotificationRepository.GetNotificationAsync(ReceiverID, NotificationId, true);
 			if (notification == null)
 				throw new NotificationNotFoundException(ReceiverID,NotificationId);
-
+			notification.IsRead = true;
+			await _repository.SaveAsync();
 			var res = _mapper.Map<NotificationDto>(notification);
 
 			return res;

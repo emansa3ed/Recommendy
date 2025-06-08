@@ -9,8 +9,8 @@ namespace Shared.DTO.Feedback
 {
 	public record FeedBackDto
 	{
-
-		public string Content { get; set; }
+        public int Id { get; set; }
+        public string Content { get; set; }
 		public DateTime CreatedAt { get; set; }
         public StudentDto Student { get; set; }
     }
