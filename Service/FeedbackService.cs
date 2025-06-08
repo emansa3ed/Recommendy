@@ -81,7 +81,7 @@ namespace Service
 
 			if (feedback.PostId != PostId || feedback.StudentId!= StudentId)
 				throw new BadRequestException("Invalid data");
-
+			feedback.Student = null;
 			_repository.FeedbackRepository.DeleteFeedback(feedback);
 
 			await _repository.SaveAsync();
