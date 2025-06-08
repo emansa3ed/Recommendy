@@ -18,7 +18,7 @@ namespace Presentation.Controllers
 {
     [Route("api/students/{StudentId}")]
     [ApiController]
-    [Authorize(Roles ="Student")]
+   
     public class StudentController : ControllerBase
     {
 
@@ -33,6 +33,7 @@ namespace Presentation.Controllers
    
 
         [HttpGet("profile")]
+        [Authorize]
         public IActionResult GetStudent( [FromRoute]string StudentId)
         {
           
@@ -50,6 +51,7 @@ namespace Presentation.Controllers
 
 
         [HttpPatch("edit-profile")]
+        [Authorize(Roles = "Student")]
         public async Task<IActionResult> UpdateStudentProfile( [FromRoute] string StudentId, [FromBody] StudentForUpdateDto studentForUpdate)
         {
 
@@ -62,6 +64,7 @@ namespace Presentation.Controllers
 
 
         [HttpGet("saved-scholarships")]
+        [Authorize(Roles = "Student")]
         public async Task<IActionResult> GetSavedScholarships([FromRoute] string StudentId)
         {
             
@@ -73,6 +76,7 @@ namespace Presentation.Controllers
         }
 
         [HttpGet("saved-internships")]
+        [Authorize(Roles = "Student")]
         public async Task<IActionResult> GetSavedInternships([FromRoute] string StudentId)
         {
             

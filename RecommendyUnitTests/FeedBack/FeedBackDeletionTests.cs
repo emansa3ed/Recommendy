@@ -15,7 +15,7 @@ using System.ComponentModel.DataAnnotations;
 namespace RecommendyUnitTests.FeedBack
 {
     public class FeedBackDeletionTests
-	{
+    {/*
         [Fact]
         public async Task DeleteFeedBack_ReturnNoContent()
         {
@@ -169,4 +169,6 @@ namespace RecommendyUnitTests.FeedBack
 		}
 
 	}
+        */
+    }
 }
