@@ -18,10 +18,9 @@ namespace Shared.DTO.Feedback
 
         [Required(ErrorMessage = "Content is required")]
         [StringLength(1000, ErrorMessage = "Content cannot be longer than 1000 characters")]
-
-       
-        public string StudentId { get; set; } // addet to solve solution build error
         public string Content { get; set; }
+
+      
 
     }
 }
