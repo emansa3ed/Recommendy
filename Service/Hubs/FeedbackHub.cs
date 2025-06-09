@@ -22,11 +22,16 @@ namespace Service.Hubs
 
 		public async Task SendFeedBack(string CompanyID, int PostId,string StudentId,FeedbackCreationDto feedback)
 		{
-			await _feedbackService.CreateFeedbackAsync(CompanyID,PostId, StudentId, feedback);
 			string jsonData = JsonSerializer.Serialize(new {CompanyID,PostId, StudentId, feedback});
 			await Clients.All.SendAsync("ReceiveFeedback", jsonData);
 		}
 
+		public async Task DeleteFeedback(string companyId, int postId, string studentId)
+		{
 
-    }
+			string jsonData = JsonSerializer.Serialize(new { companyId, postId, studentId });
+			await Clients.All.SendAsync("FeedbackDeleted", jsonData);
+		}
+
+	}
 }
