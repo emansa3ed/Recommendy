@@ -13,6 +13,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Entities.Models;
+using Microsoft.AspNetCore.Http;
+using Shared.DTO.Admin;
 
 namespace Presentation.Controllers
 {
@@ -112,6 +114,22 @@ namespace Presentation.Controllers
         {
             await _service.AdminService.DeleteUserAsync(id);
             return NoContent(); 
+        }
+
+
+
+        [HttpGet("dashboard/statistics")]
+        public async Task<IActionResult> GetDashboardStatistics()
+        {
+
+            var stats = await _service.AdminService.GetDashboardStatisticsAsync();
+
+            return Ok(new ApiResponse<AdminDashboardStatsDto>
+            {
+                Success = true,
+                Message = "Dashboard statistics retrieved successfully",
+                Data = stats,
+            });
         }
     }
 }
