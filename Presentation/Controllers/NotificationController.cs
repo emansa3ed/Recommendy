@@ -33,6 +33,12 @@ namespace Presentation.Controllers
 		{
 			if (!ModelState.IsValid)
 				return BadRequest(ModelState);
+
+			string UserName = User.Identity.Name;
+			var user = await _service.UserService.GetDetailsByUserName(UserName);
+			if (user.Id != ReceiverID)
+				return BadRequest("Invalid ReceiverID: does not match the authorized user.");
+
 			var res = await _service.NotificationService.GetNotificationAsync(ReceiverID, NotificationId);
 			return Ok(new ApiResponse<NotificationDto> { Success = true, Data = res });
 		}
@@ -42,6 +48,12 @@ namespace Presentation.Controllers
 		{
 			if (!ModelState.IsValid)
 				return BadRequest(ModelState);
+
+			string UserName = User.Identity.Name;
+			var user = await _service.UserService.GetDetailsByUserName(UserName);
+			if (user.Id != ReceiverID)
+				return BadRequest("Invalid ReceiverID: does not match the authorized user.");
+
 			var res = await _service.NotificationService.GetAllNotificationskAsync(ReceiverID, notification, false);
 
 			Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(res.MetaData));
