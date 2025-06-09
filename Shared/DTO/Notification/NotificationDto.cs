@@ -8,6 +8,7 @@ namespace Shared.DTO.Feedback
 {
 	public record NotificationDto
 	{
+		public int Id { get; set; }
 		public string ReceiverID { get; set; }
 		public string ActorID { get; set; }
 		public string Content { get; set; }
