@@ -13,7 +13,7 @@ namespace Shared.DTO.User
         public string Email { get; init; }
         public string FirstName { get; init; }
         public string LastName { get; init; }
-        public string Role { get; init; }
+        public string Discriminator { get; init; }
         public bool EmailConfirmed { get; init; }
         public string UrlPicture { get; init; }
         public string Bio { get; init; }

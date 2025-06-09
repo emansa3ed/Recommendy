@@ -25,7 +25,7 @@ namespace Recommendy
             CreateMap<UserForRegistrationDto, User>();
       
             CreateMap<User, UserDto>()
-                    .ForMember(dest => dest.Role, opt =>
+                    .ForMember(dest => dest.Discriminator, opt =>
                         opt.MapFrom(src => src.Discriminator))
                     .ForMember(dest => dest.UniversityUrl, opt =>
                         opt.MapFrom(src => src.University != null ? src.University.UniversityUrl : null))
