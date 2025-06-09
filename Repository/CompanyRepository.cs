@@ -56,7 +56,33 @@ namespace Repository
                 companyParameters.PageSize);
         }
 
+        public async Task<PagedList<Company>> GetAllCompaniesAsync(
+        CompanyParameters companyParameters,
+        bool trackChanges)
+        {
+            var companies = FindAll(trackChanges)
+                .Include(u => u.User)
+                .AsNoTracking();
 
+            if (!string.IsNullOrWhiteSpace(companyParameters.SearchTerm))
+            {
+                companies = companies.Where(u =>
+                    u.User.UserName.Contains(companyParameters.SearchTerm) ||
+                    u.CompanyUrl.Contains(companyParameters.SearchTerm));
+            }
+
+            var count = await companies.CountAsync();
+            var pagedCompanies = await companies
+                .Skip((companyParameters.PageNumber - 1) * companyParameters.PageSize)
+                .Take(companyParameters.PageSize)
+                .ToListAsync();
+
+            return new PagedList<Company>(
+                pagedCompanies,
+                count,
+                companyParameters.PageNumber,
+                companyParameters.PageSize);
+        }
         public void DeleteCompany(Company company) => Delete(company);
 
 

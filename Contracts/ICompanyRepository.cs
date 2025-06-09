@@ -14,6 +14,8 @@ namespace Contracts
         Company GetCompany(string companyId, bool trackChanges);
         public void UpdateCompany(Company company);
         Task<PagedList<Company>> GetUnverifiedCompaniesAsync(CompanyParameters companyParameters, bool trackChanges);
+        Task<PagedList<Company>> GetAllCompaniesAsync(CompanyParameters companyParameters, bool trackChanges);
+
         void DeleteCompany(Company company);
     }
 

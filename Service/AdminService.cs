@@ -11,6 +11,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Entities.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
+using Shared.DTO.Admin;
 
 namespace Service
 {
@@ -20,12 +23,17 @@ namespace Service
         private readonly IMapper _mapper;
         private readonly IEmailsService _emailsService;
         private readonly UserManager<User> _userManager;
-        public AdminService(IRepositoryManager repository, IMapper mapper, IEmailsService emailsService, UserManager<User> userManager)
+        private readonly MyMemoryCache _cache;
+        private const string DASHBOARD_STATS_CACHE_KEY = "AdminDashboard_Stats";
+        private const int CACHE_SIZE = 1024 * 1024; 
+        private readonly TimeSpan CACHE_DURATION = TimeSpan.FromMinutes(0.5);
+        public AdminService(IRepositoryManager repository, IMapper mapper, IEmailsService emailsService, UserManager<User> userManager, MyMemoryCache cache)
         {
             _repository = repository;
             _mapper = mapper;
             _emailsService = emailsService;
             _userManager = userManager;
+            _cache = cache;
         }
 
         public async Task<PagedList<UserDto>> GetUsersAsync(UsersParameters parameters, bool trackChanges)
@@ -145,5 +153,77 @@ namespace Service
 
 
 
+        
+    
+            public async Task<AdminDashboardStatsDto> GetDashboardStatisticsAsync()
+            {
+                if (_cache.Cache.TryGetValue(DASHBOARD_STATS_CACHE_KEY, out AdminDashboardStatsDto cachedStats))
+                {
+                    return cachedStats;
+                }
+                var stats = await CalculateDashboardStatisticsAsync();   
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .SetSize(CACHE_SIZE)
+                    .SetAbsoluteExpiration(CACHE_DURATION);
+
+                _cache.Cache.Set(DASHBOARD_STATS_CACHE_KEY, stats, cacheEntryOptions);
+
+                return stats;
+            }
+
+        private async Task<AdminDashboardStatsDto> CalculateDashboardStatisticsAsync()
+        {
+            var users = await _userManager.Users.ToListAsync();
+
+            var companyParams = new CompanyParameters { PageSize = int.MaxValue };
+            var companies = await _repository.Company
+                .GetAllCompaniesAsync(companyParams, false);
+
+            var universityParams = new UniversityParameters { PageSize = int.MaxValue };
+            var universities = await _repository.university
+                .GetAllUniversitiesAsync(universityParams, false);
+
+            var internshipParams = new InternshipParameters { PageSize = int.MaxValue };
+            var internships = await _repository.Intership
+                .GetAllInternshipsAsync(internshipParams, false);
+
+            var scholarshipParams = new ScholarshipsParameters { PageSize = int.MaxValue };
+            var scholarships = await _repository.Scholarship
+                .GetAllScholarshipsAsync(scholarshipParams, false);
+
+            return new AdminDashboardStatsDto
+            {
+              
+                Users = _mapper.Map<UserStatistics>(users),
+                Organizations = new OrganizationStatistics
+                {
+                    Companies = _mapper.Map<CompanyAnalytics>((Companies: companies, Internships: internships)),
+                    Universities = new UniversityAnalytics
+                    {
+                        TotalUniversities = universities.Count,
+                        VerifiedUniversities = universities.Count(u => u.IsVerified),
+                        UnverifiedUniversities = universities.Count(u => !u.IsVerified),
+                        ScholarshipMetrics = new ScholarshipMetrics
+                        {
+                            UniversitiesWithScholarships = scholarships
+                                .Select(s => s.UniversityId)
+                                .Distinct()
+                                .Count()
+                        }
+                    }
+                },
+                Opportunities = new OpportunityStatistics
+                {
+                    Internships = _mapper.Map<InternshipStatistics>(internships),
+                    Scholarships = _mapper.Map<ScholarshipStatistics>(scholarships)
+                }
+            };
+        }
+
+
     }
-}
+        }
+
+
+    
+
