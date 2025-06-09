@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Shared.DTO.Admin;
 
 namespace Service.Contracts
 {
@@ -15,5 +16,6 @@ namespace Service.Contracts
         Task BanUserAsync(string userId, UserBanDto banDto, bool trackChanges);
         Task UnbanUserAsync(string userId, bool trackChanges);
         Task DeleteUserAsync(string userId);
+        Task<AdminDashboardStatsDto> GetDashboardStatisticsAsync();
     }
 }

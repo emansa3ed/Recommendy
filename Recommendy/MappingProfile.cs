@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Entities.Models;
+using Shared.DTO.Admin;
 using Shared.DTO.Authentication;
 using Shared.DTO.Chat;
 using Shared.DTO.Company;
@@ -13,6 +14,7 @@ using Shared.DTO.Scholaship;
 using Shared.DTO.Student;
 using Shared.DTO.University;
 using Shared.DTO.User;
+using Shared.RequestFeatures;
 
 namespace Recommendy
 {
@@ -37,6 +39,7 @@ namespace Recommendy
                         opt.MapFrom(src =>
                             src.University != null ? src.University.IsVerified :
                             src.Company != null ? src.Company.IsVerified : false));
+
         
             CreateMap<InternshipCreationDto, Internship>();
             CreateMap<InternshipPositionDto, InternshipPosition>();
@@ -165,6 +168,148 @@ namespace Recommendy
 
 
 
+                // Admin Dashboard Statistics Mappings
+
+                CreateMap<IEnumerable<User>, UserStatistics>()
+                    .ForMember(dest => dest.TotalUsers, opt => opt.MapFrom(src => src.Count()))
+                    .ForMember(dest => dest.ActiveUsers, opt => opt.MapFrom(src => src.Count(u => !u.IsBanned)))
+                    .ForMember(dest => dest.BannedUsers, opt => opt.MapFrom(src => src.Count(u => u.IsBanned)))
+                    .ForMember(dest => dest.UserTypes, opt => opt.MapFrom(src => new UserTypeDistribution
+                    {
+                        Students = new UserTypeStats
+                        {
+                            Total = src.Count(u => u.Discriminator == "Student"),
+                            Active = src.Count(u => u.Discriminator == "Student" && !u.IsBanned),
+                            Banned = src.Count(u => u.Discriminator == "Student" && u.IsBanned)
+                        },
+                        Companies = new UserTypeStats
+                        {
+                            Total = src.Count(u => u.Discriminator == "Company"),
+                            Active = src.Count(u => u.Discriminator == "Company" && !u.IsBanned),
+                            Banned = src.Count(u => u.Discriminator == "Company" && u.IsBanned)
+                        },
+                        Universities = new UserTypeStats
+                        {
+                            Total = src.Count(u => u.Discriminator == "University"),
+                            Active = src.Count(u => u.Discriminator == "University" && !u.IsBanned),
+                            Banned = src.Count(u => u.Discriminator == "University" && u.IsBanned)
+                        },
+                        Admins = new UserTypeStats
+                        {
+                            Total = src.Count(u => u.Discriminator == "Admin"),
+                            Active = src.Count(u => u.Discriminator == "Admin" && !u.IsBanned),
+                            Banned = src.Count(u => u.Discriminator == "Admin" && u.IsBanned)
+                        }
+                    }));
+
+            CreateMap<(PagedList<Company> Companies, PagedList<Internship> Internships), CompanyAnalytics>()
+        .ForMember(dest => dest.TotalCompanies, opt =>
+            opt.MapFrom(src => src.Companies.Count))
+        .ForMember(dest => dest.VerifiedCompanies, opt =>
+            opt.MapFrom(src => src.Companies.Count(c => c.IsVerified)))
+        .ForMember(dest => dest.UnverifiedCompanies, opt =>
+            opt.MapFrom(src => src.Companies.Count(c => !c.IsVerified)))
+        .ForMember(dest => dest.InternshipMetrics, opt =>
+            opt.MapFrom(src => new InternshipMetrics
+            {
+                CompaniesWithInternships = src.Internships
+                    .Select(i => i.CompanyId)
+                    .Distinct()
+                    .Count()
+            }));
+            // University Analytics Mappings
+            CreateMap<(PagedList<University> Universities, PagedList<Scholarship> Scholarships), UniversityAnalytics>()
+           .ForMember(dest => dest.TotalUniversities, opt =>
+               opt.MapFrom(src => src.Universities.Count))
+           .ForMember(dest => dest.VerifiedUniversities, opt =>
+               opt.MapFrom(src => src.Universities.Count(u => u.IsVerified)))
+           .ForMember(dest => dest.UnverifiedUniversities, opt =>
+               opt.MapFrom(src => src.Universities.Count(u => !u.IsVerified)))
+           .ForMember(dest => dest.ScholarshipMetrics, opt =>
+               opt.MapFrom(src => new ScholarshipMetrics
+               {
+                   UniversitiesWithScholarships = src.Scholarships
+                       .Select(s => s.UniversityId)
+                       .Distinct()
+                       .Count()
+               }));
+
+            // Internship Statistics Mappings
+            CreateMap<IEnumerable<Internship>, InternshipStatistics>()
+       .ForMember(dest => dest.General, opt => opt.MapFrom(src => new GeneralMetrics
+       {
+           Total = src.Count(),
+           Active = src.Count(i => i.IsBanned == false),
+           Banned = src.Count(i => i.IsBanned == true)
+       }))
+       .ForMember(dest => dest.Timeline, opt => opt.MapFrom(src => new TimeBasedMetrics
+       {
+           OpenForApplications = src.Count(i => i.ApplicationDeadline > DateTime.UtcNow),
+           ClosedApplications = src.Count(i => i.ApplicationDeadline <= DateTime.UtcNow),
+           StartingThisMonth = src.Count(i => i.CreatedAt.HasValue && i.CreatedAt.Value.Month == DateTime.UtcNow.Month),
+           EndingThisMonth = src.Count(i => i.ApplicationDeadline.Month == DateTime.UtcNow.Month)
+       }))
+       .ForMember(dest => dest.Compensation, opt => opt.MapFrom(src => new CompensationMetrics
+       {
+           PaidOpportunities = src.Count(i => i.Paid),
+           UnpaidOpportunities = src.Count(i => !i.Paid),
+           PaidPercentage = src.Any() ? src.Count(i => i.Paid) * 100m / src.Count() : 0
+       }))
+       .ForMember(dest => dest.PopularPositions, opt => opt.MapFrom(src =>
+           src.Where(i => i.InternshipPositions != null && i.InternshipPositions.Any())
+              .SelectMany(i => i.InternshipPositions)
+              .GroupBy(p => p.Position.Name)
+              .ToDictionary(g => g.Key, g => g.Count())));
+
+            // Compensation Metrics Mapping (separate to handle the complex calculation)
+            CreateMap<IEnumerable<Internship>, CompensationMetrics>()
+                    .ForMember(dest => dest.PaidOpportunities, opt => opt.MapFrom(src => src.Count(i => i.Paid)))
+                    .ForMember(dest => dest.UnpaidOpportunities, opt => opt.MapFrom(src => src.Count(i => !i.Paid)))
+                    .ForMember(dest => dest.PaidPercentage, opt => opt.MapFrom(src =>
+                        src.Any() ? src.Count(i => i.Paid) * 100m / src.Count() : 0));
+
+                // Scholarship Statistics Mappings
+                CreateMap<IEnumerable<Scholarship>, ScholarshipStatistics>()
+                    .ForMember(dest => dest.General, opt => opt.MapFrom(src => new GeneralMetrics
+                    {
+                        Total = src.Count(),
+                        Active = src.Count(s => !s.IsBanned),
+                        Banned = src.Count(s => s.IsBanned)
+                    }))
+                    .ForMember(dest => dest.Timeline, opt => opt.MapFrom(src => new TimeBasedMetrics
+                    {
+                        OpenForApplications = src.Count(s => s.ApplicationDeadline > DateTime.UtcNow),
+                        ClosedApplications = src.Count(s => s.ApplicationDeadline <= DateTime.UtcNow),
+                        StartingThisMonth = src.Count(s => s.StartDate.Month == DateTime.UtcNow.Month),
+                        EndingThisMonth = src.Count(s => s.StartDate.AddMonths(s.Duration).Month == DateTime.UtcNow.Month)
+                    }))
+                    .ForMember(dest => dest.Funding, opt => opt.MapFrom(src => new FundingMetrics
+                    {
+                        FullyFunded = src.Count(s => s.Funded == Funded.FullyFunded),
+                        PartiallyFunded = src.Count(s => s.Funded == Funded.Partially),
+                        Unfunded = src.Count(s => s.Funded == Funded.Not),
+                        AverageCostByDegree = src.GroupBy(s => s.Degree.ToString())
+                            .ToDictionary(g => g.Key, g => g.Average(s => s.Cost))
+                    }))
+                    .ForMember(dest => dest.DegreeDistribution, opt => opt.MapFrom(src =>
+                        src.GroupBy(s => s.Degree.ToString())
+                           .ToDictionary(g => g.Key, g => g.Count())));
+
+                // Metrics Mappings
+                CreateMap<IEnumerable<Internship>, InternshipMetrics>()
+                    .ForMember(dest => dest.CompaniesWithInternships, opt => opt.MapFrom(src =>
+                        src.Select(i => i.CompanyId).Distinct().Count()));
+
+                CreateMap<IEnumerable<Scholarship>, ScholarshipMetrics>()
+                    .ForMember(dest => dest.UniversitiesWithScholarships, opt => opt.MapFrom(src =>
+                        src.Select(s => s.UniversityId).Distinct().Count()));
+         
+       
+
+        CreateMap<DateTime, string>()
+                    .ConvertUsing(dt => dt.ToString("yyyy-MM-dd HH:mm:ss"));
+            }
         }
+
     }
-}
+    

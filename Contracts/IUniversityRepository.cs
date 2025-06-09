@@ -14,6 +14,8 @@ namespace Contracts
         void CreateUniversity(University university);
         public void UpdateUniversity(University university);
         Task<PagedList<University>> GetUnverifiedUniversitiesAsync(UniversityParameters universityParameters, bool trackChanges);
+        Task<PagedList<University>> GetAllUniversitiesAsync(UniversityParameters universityParameters, bool trackChanges);
+
         void DeleteUniversity(University university);
     }
 }

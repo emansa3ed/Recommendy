@@ -54,7 +54,7 @@ namespace Service
         {
             _logger = logger;
 
-            _adminService = new Lazy<IAdminService>(() => new AdminService(repositoryManager, mapper, emailsService, userManager));
+            _adminService = new Lazy<IAdminService>(() => new AdminService(repositoryManager, mapper, emailsService, userManager, memoryCache));
             _countryService = new Lazy<ICountryService>(() => new  CountryService(repositoryManager, mapper, memoryCache));
             _authenticationService = new Lazy<IAuthenticationService>(() => new AuthenticationService(mapper, userManager, configuration, repositoryManager ,httpContextAccessor , userCodeService, resumeParserService,httpClient));
            _userService = new Lazy<IUserService>(()=>  new UserService(repositoryManager,userManager ,mapper , emailsService));
