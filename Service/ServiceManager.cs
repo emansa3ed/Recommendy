@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Service.Contracts;
+using Service.Hubs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,7 +50,7 @@ namespace Service
             UserManager<User> userManager,IConfiguration configuration, 
              ILogger<ServiceManager> logger, 
             ILoggerFactory loggerFactory, IHttpContextAccessor httpContextAccessor, IEmailsService emailsService,HttpClient httpClient,
-            IHubContext<NotificationHub> _hubContext, MyMemoryCache memoryCache,IResumeParserService resumeParserService)
+            IHubContext<NotificationHub> _hubContext, MyMemoryCache memoryCache,IResumeParserService resumeParserService, IHubContext<FeedbackHub> _FeedBackhubContext)
         {
             _logger = logger;
 
@@ -68,7 +69,7 @@ namespace Service
             _userCodeService = new Lazy<IUserCodeService>(() => new UserCodeService(repositoryManager, emailsService,userManager));
             _companyService = new Lazy<ICompanyService>(() => new CompanyService( repositoryManager  ,mapper ,this));
             _studentService = new Lazy<IStudentService>(() => new StudentService(repositoryManager ,mapper , userManager));
-			_feedbackService = new Lazy<IFeedbackService>(() => new FeedbackService(repositoryManager, mapper, _notificationservice.Value));
+			_feedbackService = new Lazy<IFeedbackService>(() => new FeedbackService(repositoryManager, mapper, _notificationservice.Value, _FeedBackhubContext));
             _reportService = new Lazy<IReportService>(() => new ReportService( repositoryManager , mapper, memoryCache));
 			_notificationservice = new Lazy<INotificationService>(() => new NotificationService( repositoryManager , mapper, _hubContext, userManager));
             _opportunityService = new Lazy<IOpportunityService>(() =>  new OpportunityService(repositoryManager , mapper,_notificationservice.Value));
@@ -78,7 +79,7 @@ namespace Service
 
 			_resumeParserService = new Lazy<IResumeParserService>(() => new ResumeParserService(repositoryManager));
 			_skillService = new Lazy<ISkillService>(() => new SkillService(repositoryManager));
-
+             
 
 		}
 

@@ -27,6 +27,13 @@ namespace Service.Hubs
 			await Clients.All.SendAsync("ReceiveFeedback", jsonData);
 		}
 
+		public async Task DeleteFeedback(string companyId, int postId, string studentId)
+		{
+			await _feedbackService.DeleteFeedbackAsync(companyId, postId, studentId);
 
-    }
+			string jsonData = JsonSerializer.Serialize(new { companyId, postId, studentId });
+			await Clients.All.SendAsync("FeedbackDeleted", jsonData);
+		}
+
+	}
 }

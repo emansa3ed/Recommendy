@@ -10,6 +10,10 @@ using Shared.RequestFeatures;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
+using Microsoft.AspNetCore.SignalR;
+using Service.Hubs;
+using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 
 namespace Service
 {
@@ -19,9 +23,11 @@ namespace Service
 		private readonly IRepositoryManager _repository;
 		private readonly IMapper _mapper;
 		private readonly INotificationService _notificationService;
+		private readonly IHubContext<FeedbackHub> _hubContext;
 
-		public FeedbackService(IRepositoryManager repository, IMapper mapper, INotificationService notificationService)
+		public FeedbackService(IRepositoryManager repository, IMapper mapper, INotificationService notificationService, IHubContext<FeedbackHub> hubContext)
 		{
+			_hubContext = hubContext;
 			_repository = repository;
 			_mapper = mapper;
 			_notificationService = notificationService;
@@ -59,7 +65,8 @@ namespace Service
 
 
 			await _repository.SaveAsync();
-
+			string jsonData = JsonSerializer.Serialize(feedbackEntity);
+			await _hubContext.Clients.All.SendAsync("ReceiveNotification", jsonData);
 		}
 
 		public async  Task DeleteFeedbackAsync(string CompanyID, string StudentId, int PostId, FeedbackDelationDto FeedbackId)
@@ -89,6 +96,8 @@ namespace Service
 			_repository.FeedbackRepository.DeleteFeedback(feedback);
 
 			await _repository.SaveAsync();
+			string jsonData = JsonSerializer.Serialize(feedback);
+			await _hubContext.Clients.All.SendAsync("FeedbackDeleted", jsonData);
 		}
 
 		public async Task<FeedBackDto> GetFeedbackAsync(int FeedbackId)

@@ -6,6 +6,8 @@ using Service.Contracts;
 using Service;
 using Microsoft.Extensions.Logging;
 using Stripe;
+using Entities.Models;
+using Service.Hubs;
 
 
 namespace Recommendy
@@ -67,8 +69,8 @@ namespace Recommendy
 
             app.MapControllers();
 			app.MapHub<NotificationHub>("/notificationHub"); 
-			app.MapHub<NotificationHub>("/feedbackHub");
-			app.MapHub<NotificationHub>("/messageHub");
+			app.MapHub<FeedbackHub>("/feedbackHub");
+			app.MapHub<MessageHub>("/messageHub");
 
 
 			app.Run();
