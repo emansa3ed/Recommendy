@@ -23,8 +23,8 @@ namespace Presentation.Controllers
 
 
         [HttpGet("profile/{id}")]
-		[Authorize]
-		public IActionResult GetCompany(string id)
+        [Authorize]
+        public IActionResult GetCompany(string id)
         {
                 var company = _service.CompanyService.GetCompany(id, trackChanges: false);
                 return Ok(company);
