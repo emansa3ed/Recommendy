@@ -25,7 +25,7 @@ namespace Repository
 
         public void UpdateStudent(Student student) => Update(student);
 
-
+        public void DeleteStudent(Student student) => Delete(student);
 
 
 

@@ -25,6 +25,7 @@ public static class ExceptionMiddlewareExtensions
                         UnauthorizedAccessException => StatusCodes.Status401Unauthorized,  
                         ValidationException => StatusCodes.Status422UnprocessableEntity,  
                         DbUpdateException => StatusCodes.Status500InternalServerError,
+                        UnverifiedOrganizationException => StatusCodes.Status403Forbidden,//new for verification task
                         ForbiddenException => StatusCodes.Status403Forbidden,
                         _ => StatusCodes.Status500InternalServerError   
                     };

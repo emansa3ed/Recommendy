@@ -11,7 +11,8 @@ namespace Entities.Models
         public string UniversityId { get; set; }
         [ForeignKey(nameof(CountryId))]
         public int? CountryId { get; set; }
-        public bool Revised { get; set; } = true;
+        public bool IsVerified { get; set; } = false;
+        public string? VerificationNotes { get; set; } // Admin can add notes
         public string UniversityUrl { get; set; }
         [JsonIgnore]
         public virtual User User { get; set; }

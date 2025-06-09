@@ -15,6 +15,8 @@ using System.IdentityModel.Tokens.Jwt;
 using Azure.Core;
 using System.Threading.RateLimiting;
 using Entities.GeneralResponse;
+using Microsoft.AspNetCore.Authorization;
+using Recommendy.Extensions.Authorization;
 
 namespace Recommendy.Extensions
 {
@@ -181,5 +183,16 @@ namespace Recommendy.Extensions
 				};
 			});
 		}
-	}
+
+        public static void ConfigureAuthorization(this IServiceCollection services)
+        {
+            services.AddScoped<IAuthorizationHandler, VerifiedOrganizationHandler>();
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("VerifiedOrganization", policy =>
+                    policy.Requirements.Add(new VerifiedOrganizationRequirement()));
+            });
+        }
+    }
 }

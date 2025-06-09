@@ -104,5 +104,14 @@ namespace Repository
 			var count = await FindByCondition((i => i.IsBanned != true), trackChanges).Recommendation(UserSkills).CountAsync();
 			return new PagedList<Internship>(res, count, internshipParameters.PageNumber, internshipParameters.PageSize);
 		}
-	}
+
+        public async Task DeleteInternshipsByCompanyId(string companyId)
+        {
+            var internships = await FindByCondition(i => i.CompanyId == companyId, false).ToListAsync();
+            foreach (var internship in internships)
+            {
+                Delete(internship);
+            }
+        }
+    }
 }

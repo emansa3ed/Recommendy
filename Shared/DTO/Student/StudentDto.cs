@@ -16,7 +16,7 @@ namespace Shared.DTO.Student
         public string? PhoneNumber { get; init; }
         public string? Skills { get; init; }
 
-	}
+    }
     public record StudentForUpdateDto
     {
 

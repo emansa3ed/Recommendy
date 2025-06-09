@@ -42,13 +42,14 @@ namespace Recommendy
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.ConfigureIdentity();
+            builder.Services.ConfigureAuthorization();  //new for verification task
             builder.Services.ConfigureJWT(builder.Configuration);
 			builder.Services.AddSingleton<MyMemoryCache>();
 
             builder.Services.ConfigureRateLimiter();
 
 			var app = builder.Build();
-			app.UseCors("CorsPolicy");
+            app.UseCors("CorsPolicy");
             app.ConfigureExceptionHandler();
 
             ///////// Configure the HTTP request pipeline.
@@ -62,7 +63,7 @@ namespace Recommendy
             app.UseRateLimiter();
             app.UseAuthentication();
             app.UseAuthorization();
-
+    
 
             app.MapControllers();
 			app.MapHub<NotificationHub>("/notificationHub"); 

@@ -34,13 +34,13 @@ namespace Service
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IUserCodeService _userCodeService;
         private readonly IResumeParserService _resumeParserService;
-		private readonly HttpClient _httpClient;
+        private readonly HttpClient _httpClient;
 
 
-		private User? _user;
+        private User? _user;
 
-        public AuthenticationService(IMapper mapper, UserManager<User> userManager, 
-            IConfiguration configuration ,IRepositoryManager repository  , IHttpContextAccessor httpContextAccessor , IUserCodeService userCodeService,IResumeParserService resumeParserService, HttpClient httpClient)
+        public AuthenticationService(IMapper mapper, UserManager<User> userManager,
+            IConfiguration configuration, IRepositoryManager repository, IHttpContextAccessor httpContextAccessor, IUserCodeService userCodeService, IResumeParserService resumeParserService, HttpClient httpClient)
         {
             _mapper = mapper;
             _userManager = userManager;
@@ -48,11 +48,11 @@ namespace Service
             _repository = repository;
             _httpContextAccessor = httpContextAccessor;
             _userCodeService = userCodeService;
-			_httpClient = httpClient;
-			_resumeParserService = resumeParserService;
-		}
+            _httpClient = httpClient;
+            _resumeParserService = resumeParserService;
+        }
 
-		public async Task<IdentityResult> RegisterUser(UserForRegistrationDto userForRegistration, HttpContext HttpContext)
+        public async Task<IdentityResult> RegisterUser(UserForRegistrationDto userForRegistration, HttpContext HttpContext)
         {
             using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
@@ -84,9 +84,9 @@ namespace Service
                 }
                 else if (userForRegistration.Roles.Any(role => role.Equals("Student", StringComparison.OrdinalIgnoreCase)))
                 {
-              
-				}
-                else 
+
+                }
+                else
                 {
 
                     return IdentityResult.Failed(new IdentityError
@@ -163,28 +163,28 @@ namespace Service
                     return result;
 
                 var result1 = await _userCodeService.GenerateUserCodeForConfirmtationAsync(user.Id);
-				if (!roleRes.Succeeded)
-					return roleRes;
+                if (!roleRes.Succeeded)
+                    return roleRes;
                 transaction.Complete();
-				return result;
+                return result;
 
-			}
+            }
         }
 
         private async Task<string> GetCounryName(HttpContext HttpContext)
         {
-			var ip = HttpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault() ?? HttpContext.Connection.RemoteIpAddress?.ToString();
-			//ip = "101.46.224.0"; //test with Germany ip
-			if (ip == "::1" || ip == "127.0.0.1") // Handle localhost
-				return "Egypt";
-			var url = $"http://ip-api.com/json/{ip}";
-			var response = await _httpClient.GetStringAsync(url);
-			var json = JsonDocument.Parse(response);
+            var ip = HttpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault() ?? HttpContext.Connection.RemoteIpAddress?.ToString();
+            //ip = "101.46.224.0"; //test with Germany ip
+            if (ip == "::1" || ip == "127.0.0.1") // Handle localhost
+                return "Egypt";
+            var url = $"http://ip-api.com/json/{ip}";
+            var response = await _httpClient.GetStringAsync(url);
+            var json = JsonDocument.Parse(response);
 
-			var country = json.RootElement.GetProperty("country").GetString();
-			var city = json.RootElement.GetProperty("city").GetString();
+            var country = json.RootElement.GetProperty("country").GetString();
+            var city = json.RootElement.GetProperty("city").GetString();
             return country;
-		}
+        }
 
         private string GenerateRandomNumericToken(int length = 8)
         {
@@ -193,7 +193,7 @@ namespace Service
 
             for (int i = 0; i < length; i++)
             {
-                token.Append(random.Next(0, 10)); 
+                token.Append(random.Next(0, 10));
             }
 
             return token.ToString();
@@ -204,7 +204,7 @@ namespace Service
             _user = await _userManager.FindByNameAsync(userForLogin.UserName);
 
             var result = (_user != null && await _userManager.CheckPasswordAsync(_user, userForLogin.Password));
-            
+
 
             return result;
         }
@@ -216,7 +216,7 @@ namespace Service
             var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
             var refreshToken = GenerateRefreshToken();
 
-           _user.RefreshToken = refreshToken;
+            _user.RefreshToken = refreshToken;
 
             if (populateExp)
                 _user.RefreshTokenExpiryTime = DateTime.Now.AddDays(30);
@@ -230,7 +230,7 @@ namespace Service
 
         private SigningCredentials GetSigningCredentials()
         {
-			var jwtSettings = _configuration.GetSection("JWT");
+            var jwtSettings = _configuration.GetSection("JWT");
             var key = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("SecretKey"));
             var secret = new SymmetricSecurityKey(key);
 
@@ -239,7 +239,7 @@ namespace Service
 
         private async Task<List<Claim>> GetClaims()
         {
-          var claims = new List<Claim>
+            var claims = new List<Claim>
            {
             new Claim(ClaimTypes.Name, _user.UserName),
             new Claim("Id", _user.Id) // Add the user ID as a claim
@@ -280,7 +280,7 @@ namespace Service
         {
             var principal = GetPrincipalFromExpiredToken(tokenDto.AccessToken);
             var user = await _userManager.FindByNameAsync(principal.Identity.Name);
-            if (user == null || user.RefreshToken != tokenDto.RefreshToken ||  user.RefreshTokenExpiryTime <= DateTime.Now)
+            if (user == null || user.RefreshToken != tokenDto.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
                 throw new RefreshTokenBadRequest();
             _user = user;
             return await CreateToken(populateExp: false);
@@ -304,7 +304,7 @@ namespace Service
 
             var tokenHandler = new JwtSecurityTokenHandler();
             SecurityToken securityToken;
-            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out   securityToken);
+            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out securityToken);
 
             var jwtSecurityToken = securityToken as JwtSecurityToken;
             if (jwtSecurityToken == null ||
@@ -317,8 +317,8 @@ namespace Service
         }
 
 
-		
-		public string ExtractUserIdFromToken(string token)
+
+        public string ExtractUserIdFromToken(string token)
         {
             var handler = new JwtSecurityTokenHandler();
 
@@ -329,7 +329,7 @@ namespace Service
 
             var jwtToken = handler.ReadJwtToken(token);
 
-           
+
             var userId = jwtToken?.Claims?.FirstOrDefault(c => c.Type == "Id")?.Value;
 
             if (string.IsNullOrEmpty(userId))

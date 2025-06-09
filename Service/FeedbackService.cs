@@ -6,116 +6,119 @@ using Service.Contracts;
 using Shared.DTO;
 using Shared.DTO.Feedback;
 using Shared.RequestFeatures;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System;
 
 namespace Service
 {
-	internal sealed class FeedbackService :IFeedbackService
+    internal sealed class FeedbackService : IFeedbackService
     {
-		private readonly IRepositoryManager _repository;
-		private readonly IMapper _mapper;
-		public FeedbackService(IRepositoryManager repository, IMapper mapper)
-		{
-			_repository = repository;
-			_mapper = mapper;
-		}
+        private readonly IRepositoryManager _repository;
+        private readonly IMapper _mapper;
+        public FeedbackService(IRepositoryManager repository, IMapper mapper)
+        {
+            _repository = repository;
+            _mapper = mapper;
+        }
 
-		public async Task CreateFeedbackAsync(string CompanyID, int PostId,string StudentId, FeedbackCreationDto feedback)
-		{
-			var student = _repository.Student.GetStudent(StudentId, false);
-			if (student == null)
-				throw new StudentNotFoundException(StudentId);
+        public async Task CreateFeedbackAsync(string CompanyID, int PostId, string StudentId, FeedbackCreationDto feedback)
+        {
+            var student = _repository.Student.GetStudent(StudentId, false);
+            if (student == null)
+                throw new StudentNotFoundException(StudentId);
 
-			object post;
-			if (feedback.Type == FeedbackType.Scholarship)
-			{
-				post = _repository.Scholarship.GetScholarship(CompanyID,PostId, false);
-				if (post == null)
-					throw new ScholarshipNotFoundException(PostId);
-			}
-			else
-			{
-				post = _repository.Intership.GetInternshipById(PostId, false);
-				if (post == null)
-					throw new   InternshipNotFoundException(PostId);
-			}
+            object post;
+            if (feedback.Type == FeedbackType.Scholarship)
+            {
+                post = _repository.Scholarship.GetScholarship(CompanyID, PostId, false);
+                if (post == null)
+                    throw new ScholarshipNotFoundException(PostId);
+            }
+            else
+            {
+                post = _repository.Intership.GetInternshipById(PostId, false);
+                if (post == null)
+                    throw new InternshipNotFoundException(PostId);
+            }
 
-			var feedbackEntity = _mapper.Map<Feedback>(feedback);
+            var feedbackEntity = _mapper.Map<Feedback>(feedback);
 
-			feedbackEntity.StudentId = StudentId;
-			feedbackEntity.PostId = PostId;
-			feedbackEntity.CreatedAt = DateTime.UtcNow;
+            feedbackEntity.StudentId = StudentId;
+            feedbackEntity.PostId = PostId;
+            feedbackEntity.CreatedAt = DateTime.UtcNow;
 
-			_repository.FeedbackRepository.CreateFeedback(feedbackEntity);
+            _repository.FeedbackRepository.CreateFeedback(feedbackEntity);
 
-			await _repository.SaveAsync();
+            await _repository.SaveAsync();
 
-		}
+        }
 
-		public async  Task DeleteFeedbackAsync(string CompanyID, int PostId, FeedbackDelationDto FeedbackId)
-		{
-			object post;
-			if (FeedbackId.Type == FeedbackType.Scholarship)
-			{
-				post = _repository.Scholarship.GetScholarship(CompanyID, PostId, false);
-				if (post == null)
-					throw new ScholarshipNotFoundException(PostId);
-			}
-			else
-			{
-				post = _repository.Intership.GetInternshipById(PostId, false);
-				if (post == null)
-					throw new InternshipNotFoundException(PostId);
-			}
+        public async Task DeleteFeedbackAsync(string CompanyID, string StudentId, int PostId, FeedbackDelationDto FeedbackId)
+        {
+            object post;
+            if (FeedbackId.Type == FeedbackType.Scholarship)
+            {
+                post = _repository.Scholarship.GetScholarship(CompanyID, PostId, false);
+                if (post == null)
+                    throw new ScholarshipNotFoundException(PostId);
+            }
+            else
+            {
+                post = _repository.Intership.GetInternshipById(PostId, false);
+                if (post == null)
+                    throw new InternshipNotFoundException(PostId);
+            }
 
-			var feedback = await _repository.FeedbackRepository.GetFeedbackById(FeedbackId.Id, false);
+            var feedback = await _repository.FeedbackRepository.GetFeedbackById(FeedbackId.Id, false);
 
-			if (feedback == null)
-				throw new FeedbackNotFoundException(FeedbackId.Id);
+            if (feedback == null)
+                throw new FeedbackNotFoundException(FeedbackId.Id);
 
-			if (feedback.PostId != PostId)
-				throw new BadRequestException("Invalid data");
+            if (feedback.PostId != PostId || feedback.StudentId != StudentId)
+                throw new BadRequestException("Invalid data");
 
-			_repository.FeedbackRepository.DeleteFeedback(feedback);
+            _repository.FeedbackRepository.DeleteFeedback(feedback);
 
-			await _repository.SaveAsync();
-		}
+            await _repository.SaveAsync();
+        }
 
-		public async Task<FeedBackDto> GetFeedbackAsync(int FeedbackId)
-		{
+        public async Task<FeedBackDto> GetFeedbackAsync(int FeedbackId)
+        {
 
-			var feedback = await _repository.FeedbackRepository.GetFeedbackById(FeedbackId, false);
-
-
-			if (feedback == null)
-				throw new FeedbackNotFoundException(FeedbackId);
-
-			var res =_mapper.Map<FeedBackDto>(feedback);
-			return res;
-		}
+            var feedback = await _repository.FeedbackRepository.GetFeedbackById(FeedbackId, false);
 
 
-		public async Task<PagedList<FeedBackDto>> GetAllFeedbackAsync(string CompanyID, int PostId, FeedBackParameters Feedback)
-		{
+            if (feedback == null)
+                throw new FeedbackNotFoundException(FeedbackId);
 
-			object post;
-			if (Feedback.type == FeedbackType.Scholarship)
-			{
-				post = _repository.Scholarship.GetScholarship(CompanyID, PostId, false);
-				if (post == null)
-					throw new ScholarshipNotFoundException(PostId);
-			}
-			else
-			{
-				post = _repository.Intership.GetInternshipById(PostId, false);
-				if (post == null)
-					throw new InternshipNotFoundException(PostId);
-			}
+            var res = _mapper.Map<FeedBackDto>(feedback);
+            return res;
+        }
 
-			var feedbacks = await _repository.FeedbackRepository.GetAllFeedbackAsync(PostId,Feedback, false);
 
-			var res = _mapper.Map<List<FeedBackDto>>(feedbacks);
+        public async Task<PagedList<FeedBackDto>> GetAllFeedbackAsync(string CompanyID, int PostId, FeedBackParameters Feedback)
+        {
 
-			return new PagedList<FeedBackDto>(res, feedbacks.MetaData.TotalCount, Feedback.PageNumber, Feedback.PageSize);
-		}
-	}
+            object post;
+            if (Feedback.type == FeedbackType.Scholarship)
+            {
+                post = _repository.Scholarship.GetScholarship(CompanyID, PostId, false);
+                if (post == null)
+                    throw new ScholarshipNotFoundException(PostId);
+            }
+            else
+            {
+                post = _repository.Intership.GetInternshipById(PostId, false);
+                if (post == null)
+                    throw new InternshipNotFoundException(PostId);
+            }
+
+            var feedbacks = await _repository.FeedbackRepository.GetAllFeedbackAsync(PostId, Feedback, false);
+
+            var res = _mapper.Map<List<FeedBackDto>>(feedbacks);
+
+            return new PagedList<FeedBackDto>(res, feedbacks.MetaData.TotalCount, Feedback.PageNumber, Feedback.PageSize);
+        }
+    }
 }

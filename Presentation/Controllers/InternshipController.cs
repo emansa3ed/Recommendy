@@ -36,6 +36,7 @@ namespace Presentation.Controllers
 
 
         [HttpPost]
+        [Authorize(Policy = "VerifiedOrganization")]
         public async Task<ActionResult<ApiResponse<Internship>>> CreateInternship( [FromRoute] string CompanyID ,[FromForm] InternshipCreationDto internshipCreation)
         {
             if (!ModelState.IsValid)
@@ -56,6 +57,7 @@ namespace Presentation.Controllers
         
 
         [HttpPost("{InternshipId}/Positions")]
+        [Authorize(Policy = "VerifiedOrganization")]
         public async Task<IActionResult> CreatePosition([FromRoute] string CompanyID, [FromRoute] int InternshipId, [FromBody]InternshipPositionDto internshipPositionDto)
         {
             if (!ModelState.IsValid)
@@ -107,7 +109,7 @@ namespace Presentation.Controllers
 
 
         [HttpDelete("{InternshipId}")]
-
+        [Authorize(Policy = "VerifiedOrganization")]
         public async Task<IActionResult> DeleteInternship([FromRoute] string CompanyID, [FromRoute] int InternshipId)
         {
 
@@ -122,6 +124,7 @@ namespace Presentation.Controllers
         }
 
         [HttpDelete("{InternshipId}/positions/{PositionId}")]
+        [Authorize(Policy = "VerifiedOrganization")]
         public  async Task<IActionResult> DeletePosition([FromRoute] string CompanyID, [FromRoute] int InternshipId, [FromRoute] int PositionId)
         {
 
@@ -133,6 +136,7 @@ namespace Presentation.Controllers
 
 
         [HttpPatch("{InternshipId}")]
+        [Authorize(Policy = "VerifiedOrganization")]
 
         public async Task<IActionResult> UpdateInternship([FromRoute] string CompanyID, [FromRoute]int InternshipId, [FromForm] InternshipUpdateDto internshipUpdateDto) 
         {
@@ -144,6 +148,7 @@ namespace Presentation.Controllers
         }
 
         [HttpPatch("{InternshipId}/positions{PositionId}")]
+        [Authorize(Policy = "VerifiedOrganization")]
 
         public async Task<IActionResult> UpdateInternshipPosition([FromRoute] string CompanyID, [FromRoute] int InternshipId, [FromRoute] int PositionId, [FromBody] InternshipPositionUpdateDto internshipPositionUpdate)
         {

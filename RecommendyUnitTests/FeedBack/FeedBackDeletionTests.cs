@@ -21,7 +21,7 @@ namespace RecommendyUnitTests.FeedBack
         {
             //Arrange
             var mockServiceManager = new Mock<IServiceManager>();
-            mockServiceManager.Setup(x => x.FeedbackService.DeleteFeedbackAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<FeedbackDelationDto>())).Returns(Task.CompletedTask);
+            mockServiceManager.Setup(x => x.FeedbackService.DeleteFeedbackAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<FeedbackDelationDto>())).Returns(Task.CompletedTask);  //another attribute is added to solve solution build error
             var controller = new FeedBackController(mockServiceManager.Object);
             var dto = new FeedbackDelationDto() { Type = FeedbackType.Scholarship,Id=1  };
 
@@ -46,7 +46,7 @@ namespace RecommendyUnitTests.FeedBack
         {
             //Arrange
             var mockServiceManager = new Mock<IServiceManager>();
-            mockServiceManager.Setup(x => x.FeedbackService.DeleteFeedbackAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<FeedbackDelationDto>())).Returns(Task.CompletedTask);
+            mockServiceManager.Setup(x => x.FeedbackService.DeleteFeedbackAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<FeedbackDelationDto>())).Returns(Task.CompletedTask);
             var controller = new FeedBackController(mockServiceManager.Object);
 			var dto = new FeedbackDelationDto() { Type = FeedbackType.Scholarship };
 
@@ -74,7 +74,7 @@ namespace RecommendyUnitTests.FeedBack
         {
             //Arrange
             var mockServiceManager = new Mock<IServiceManager>();
-            mockServiceManager.Setup(x => x.FeedbackService.DeleteFeedbackAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<FeedbackDelationDto>())).Throws(new ScholarshipNotFoundException(1));
+            mockServiceManager.Setup(x => x.FeedbackService.DeleteFeedbackAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<FeedbackDelationDto>())).Throws(new ScholarshipNotFoundException(1));
             var controller = new FeedBackController(mockServiceManager.Object);
 			var dto = new FeedbackDelationDto() { Type = FeedbackType.Scholarship, Id = 1 };
 
@@ -107,7 +107,7 @@ namespace RecommendyUnitTests.FeedBack
         {
             //Arrange
             var mockServiceManager = new Mock<IServiceManager>();
-            mockServiceManager.Setup(x => x.FeedbackService.DeleteFeedbackAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<FeedbackDelationDto>())).Throws(new StudentNotFoundException("ID"));
+            mockServiceManager.Setup(x => x.FeedbackService.DeleteFeedbackAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<FeedbackDelationDto>())).Throws(new StudentNotFoundException("ID"));
             var controller = new FeedBackController(mockServiceManager.Object);
             var dto = new FeedbackDelationDto() { Type = FeedbackType.Scholarship,Id=1 };
 
@@ -140,7 +140,7 @@ namespace RecommendyUnitTests.FeedBack
 		{
 			//Arrange
 			var mockServiceManager = new Mock<IServiceManager>();
-			mockServiceManager.Setup(x => x.FeedbackService.DeleteFeedbackAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<FeedbackDelationDto>())).Throws(new FeedbackNotFoundException(1));
+			mockServiceManager.Setup(x => x.FeedbackService.DeleteFeedbackAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<FeedbackDelationDto>())).Throws(new FeedbackNotFoundException(1));
 			var controller = new FeedBackController(mockServiceManager.Object);
 			var dto = new FeedbackDelationDto() { Type = FeedbackType.Scholarship, Id = 1 };
 

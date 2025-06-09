@@ -8,19 +8,20 @@ using System.Threading.Tasks;
 
 namespace Shared.DTO.Feedback
 {
-	public record FeedbackCreationDto
-	{
+    public record FeedbackCreationDto
+    {
 
-        [Required(ErrorMessage = "StudentId type is required")]
-        public string StudentId { get; set; }
 
         [Required(ErrorMessage = "Feedback type is required")]
-		[EnumDataType(typeof(FeedbackType), ErrorMessage = "Invalid feedback type")]
-		public FeedbackType Type { get; set; }
+        [EnumDataType(typeof(FeedbackType), ErrorMessage = "Invalid feedback type")]
+        public FeedbackType Type { get; set; }
 
-		[Required(ErrorMessage = "Content is required")]
-		[StringLength(1000, ErrorMessage = "Content cannot be longer than 1000 characters")]
-		public string Content { get; set; }
+        [Required(ErrorMessage = "Content is required")]
+        [StringLength(1000, ErrorMessage = "Content cannot be longer than 1000 characters")]
 
-	}
+       
+        public string StudentId { get; set; } // addet to solve solution build error
+        public string Content { get; set; }
+
+    }
 }

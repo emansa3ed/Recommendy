@@ -10,7 +10,7 @@ namespace Contracts
 {
     public interface IRepositoryManager
     {
-
+        IAdminRepository Admin { get; }
         ICountryRepository Country { get; }
         IStudentRepository Student { get; }
         IUserRepository User { get; }

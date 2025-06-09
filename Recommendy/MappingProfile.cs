@@ -23,6 +23,21 @@ namespace Recommendy
 
             CreateMap<Country, CountryDto>();
             CreateMap<UserForRegistrationDto, User>();
+      
+            CreateMap<User, UserDto>()
+                    .ForMember(dest => dest.Role, opt =>
+                        opt.MapFrom(src => src.Discriminator))
+                    .ForMember(dest => dest.UniversityUrl, opt =>
+                        opt.MapFrom(src => src.University != null ? src.University.UniversityUrl : null))
+                    .ForMember(dest => dest.CompanyUrl, opt =>
+                        opt.MapFrom(src => src.Company != null ? src.Company.CompanyUrl : null))
+                    .ForMember(dest => dest.CountryName, opt =>
+                        opt.MapFrom(src => src.University != null ? src.University.Country.Name : null))
+                    .ForMember(dest => dest.IsVerified, opt =>
+                        opt.MapFrom(src =>
+                            src.University != null ? src.University.IsVerified :
+                            src.Company != null ? src.Company.IsVerified : false));
+        
             CreateMap<InternshipCreationDto, Internship>();
             CreateMap<InternshipPositionDto, InternshipPosition>();
             CreateMap<ChatMessage, ChatMessageDto>();
@@ -96,6 +111,15 @@ namespace Recommendy
                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.User.PhoneNumber));
 
 
+            CreateMap<Company, CompanyVerificationDto>()
+           .ForMember(dest => dest.IsVerified, opt => opt.MapFrom(src => src.IsVerified))
+           .ForMember(dest => dest.VerificationNotes, opt => opt.MapFrom(src => src.VerificationNotes)); 
+
+            CreateMap<University, UniversityVerificationDto>()
+                .ForMember(dest => dest.IsVerified, opt => opt.MapFrom(src => src.IsVerified))
+                .ForMember(dest => dest.VerificationNotes, opt => opt.MapFrom(src => src.VerificationNotes));
+               
+
 
 
             CreateMap<User, UserDto>()
@@ -122,12 +146,14 @@ namespace Recommendy
                  .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
                  .ForMember(dest => dest.Bio, opt => opt.MapFrom(src => src.User.Bio))
                  .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.User.PhoneNumber))
-                 .ForMember(dest => dest.UrlPicture, opt => opt.MapFrom(src => src.User.UrlPicture));
+                 .ForMember(dest => dest.UrlPicture, opt => opt.MapFrom(src => src.User.UrlPicture))
+                 .ForMember(dest => dest.IsVerified, opt => opt.MapFrom(src => src.IsVerified));
             CreateMap<Company, CompanyViewDto>()
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
                 .ForMember(dest => dest.Bio, opt => opt.MapFrom(src => src.User.Bio))
                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.User.PhoneNumber))
-                .ForMember(dest => dest.UrlPicture, opt => opt.MapFrom(src => src.User.UrlPicture));
+                .ForMember(dest => dest.UrlPicture, opt => opt.MapFrom(src => src.User.UrlPicture))
+                .ForMember(dest => dest.IsVerified, opt => opt.MapFrom(src => src.IsVerified)); 
 
 
             CreateMap<Company, CompanyDto>()

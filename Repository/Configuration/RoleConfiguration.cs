@@ -20,12 +20,13 @@ namespace Repository.Configuration
             Name = "Student",
             NormalizedName = "STUDENT"
             },
-             new IdentityRole
-           {
-             Name = "Admin",
-            NormalizedName = "ADMIN"
-           },
-               new IdentityRole
+                    new IdentityRole
+                    {
+                       // Id = IdentityConstants.Roles.AdminRoleId,
+                        Name = "Admin",
+                        NormalizedName = "ADMIN"
+                    },
+                     new IdentityRole
                {
                    Name = "Company",
                    NormalizedName = "COMPANY"

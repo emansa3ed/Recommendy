@@ -12,28 +12,32 @@ using System.Threading.Tasks;
 
 namespace Repository
 {
-	public class FeedbackRepository : RepositoryBase<Feedback>,IFeedbackRepository
-	{
-		public FeedbackRepository(RepositoryContext repositoryContext)
-		: base(repositoryContext)
-		{
+    public class FeedbackRepository : RepositoryBase<Feedback>, IFeedbackRepository
+    {
+        public FeedbackRepository(RepositoryContext repositoryContext)
+        : base(repositoryContext)
+        {
 
 
-		}
-		public void CreateFeedback(Feedback feedback) => Create(feedback);
-		public void DeleteFeedback(Feedback feedback) => Delete(feedback);
-		public async Task<Feedback> GetFeedbackById(int? FeedbackId,bool TrackChanges =false) => await FindByCondition(f => f.Id == FeedbackId, TrackChanges).SingleOrDefaultAsync();
-		public async Task<PagedList<Feedback>> GetAllFeedbackAsync(int PostId,FeedBackParameters feedBack, bool TrackChanges =false)
-		{
-			var res = await FindByCondition(f=>f.PostId == PostId && f.Type.Equals(feedBack.type) , TrackChanges)
-				.Paging(feedBack.PageNumber,feedBack.PageSize)
-				.ToListAsync();
+        }
+        public void CreateFeedback(Feedback feedback) => Create(feedback);
+        public void DeleteFeedback(Feedback feedback) => Delete(feedback);
+        public async Task<Feedback> GetFeedbackById(int? FeedbackId, bool TrackChanges = false) => await FindByCondition(f => f.Id == FeedbackId, TrackChanges)
+            .Include(f => f.Student).SingleOrDefaultAsync();
+        public async Task<PagedList<Feedback>> GetAllFeedbackAsync(int PostId, FeedBackParameters feedBack, bool TrackChanges = false)
+        {
+            var res = await FindByCondition(f => f.PostId == PostId && f.Type.Equals(feedBack.type), TrackChanges)
+                .Include(f => f.Student)
+                .ThenInclude(s => s.User)
+                .AsSplitQuery()
+                .Paging(feedBack.PageNumber, feedBack.PageSize)
+                .ToListAsync();
 
-			var count = await FindByCondition(f => f.PostId == PostId && f.Type.Equals(feedBack.type), TrackChanges).CountAsync();
+            var count = await FindByCondition(f => f.PostId == PostId && f.Type.Equals(feedBack.type), TrackChanges).CountAsync();
 
-			return new PagedList<Feedback>(res, count, feedBack.PageNumber, feedBack.PageSize);
+            return new PagedList<Feedback>(res, count, feedBack.PageNumber, feedBack.PageSize);
 
-		}
+        }
 
-	}
+    }
 }

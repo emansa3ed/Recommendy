@@ -30,6 +30,12 @@ namespace Recommendy.Migrations
                     b.HasKey("AdminId");
 
                     b.ToTable("Admins");
+
+                    b.HasData(
+                        new
+                        {
+                            AdminId = "8e445865-a24d-4543-a6c6-9443d048cdb9"
+                        });
                 });
 
             modelBuilder.Entity("Entities.Models.ChatMessage", b =>
@@ -93,6 +99,12 @@ namespace Recommendy.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CompanyUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsVerified")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("VerificationNotes")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CompanyId");
@@ -276,133 +288,6 @@ namespace Recommendy.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Position");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Software Engineer"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Data Scientist"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Product Manager"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "DevOps Engineer"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "UI/UX Designer"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Name = "Quality Assurance Engineer"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Name = "Systems Administrator"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Name = "Network Engineer"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            Name = "Database Administrator"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            Name = "Business Analyst"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            Name = "Technical Support Specialist"
-                        },
-                        new
-                        {
-                            Id = 12,
-                            Name = "Cybersecurity Analyst"
-                        },
-                        new
-                        {
-                            Id = 13,
-                            Name = "Cloud Architect"
-                        },
-                        new
-                        {
-                            Id = 14,
-                            Name = "Machine Learning Engineer"
-                        },
-                        new
-                        {
-                            Id = 15,
-                            Name = "Mobile Application Developer"
-                        },
-                        new
-                        {
-                            Id = 16,
-                            Name = "Web Developer"
-                        },
-                        new
-                        {
-                            Id = 17,
-                            Name = "Scrum Master"
-                        },
-                        new
-                        {
-                            Id = 18,
-                            Name = "IT Project Manager"
-                        },
-                        new
-                        {
-                            Id = 19,
-                            Name = "Technical Writer"
-                        },
-                        new
-                        {
-                            Id = 20,
-                            Name = "Chief Technology Officer (CTO)"
-                        },
-                        new
-                        {
-                            Id = 21,
-                            Name = "Frontend Developer"
-                        },
-                        new
-                        {
-                            Id = 22,
-                            Name = "Backend Developer"
-                        },
-                        new
-                        {
-                            Id = 23,
-                            Name = "Full Stack Developer"
-                        },
-                        new
-                        {
-                            Id = 24,
-                            Name = "Data Engineer"
-                        },
-                        new
-                        {
-                            Id = 25,
-                            Name = "AI Researcher"
-                        });
                 });
 
             modelBuilder.Entity("Entities.Models.Report", b =>
@@ -552,11 +437,14 @@ namespace Recommendy.Migrations
                     b.Property<int?>("CountryId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("Revised")
+                    b.Property<bool>("IsVerified")
                         .HasColumnType("bit");
 
                     b.Property<string>("UniversityUrl")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VerificationNotes")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UniversityId");
@@ -661,6 +549,31 @@ namespace Recommendy.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
+                            AccessFailedCount = 0,
+                            Bio = "System Administrator - Recommendy Platform",
+                            ConcurrencyStamp = "64d84hg4-863b-44ce-9cac-75ec544afg45",
+                            CreatedAt = new DateTime(2025, 6, 8, 12, 2, 36, 0, DateTimeKind.Utc),
+                            Discriminator = "Admin",
+                            Email = "admin@recommendy.com",
+                            EmailConfirmed = true,
+                            FirstName = "Recommendy",
+                            IsBanned = false,
+                            LastName = "Team",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ADMIN@RECOMMENDY.COM",
+                            NormalizedUserName = "RECOMMENDYADMIN",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDRY0i6L7HhjxGLB+Q6swKwxQvA/lvTfnAKW2gBk4kG2aCfncz1/kDcwqGkqixvswQ==",
+                            PhoneNumberConfirmed = true,
+                            RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            SecurityStamp = "54GFNHD4564HNFG34FG",
+                            TwoFactorEnabled = false,
+                            UserName = "RecommendyAdmin"
+                        });
                 });
 
             modelBuilder.Entity("Entities.Models.UserCode", b =>

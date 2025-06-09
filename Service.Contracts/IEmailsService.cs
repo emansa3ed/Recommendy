@@ -15,6 +15,8 @@ namespace Service.Contracts
 
         Task<IActionResult> ConfirmEmailAsync(string userId, string token);
         Task<string> ConfirmationForResetPasswordAsync(string userId, string token, string NewPassword);
-
+        Task SendVerificationEmail(string email, bool isApproved, string notes);
+        Task SendBanEmail(string email, string reason);
+        Task SendUnbanEmail(string email);
     }
 }
