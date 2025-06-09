@@ -35,7 +35,7 @@ namespace Presentation.Controllers
 
 
         [HttpPost("send")]
-        public async Task<IActionResult> SendEmail([FromBody] EmailRequestDto request)
+        private async Task<IActionResult> SendEmail([FromBody] EmailRequestDto request)
         {
             var result = await _service.EmailsService.Sendemail(request.Email, request.Message, request.Reason);
             return Ok(result);

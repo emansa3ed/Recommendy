@@ -37,6 +37,7 @@ namespace Recommendy
                         opt.MapFrom(src =>
                             src.University != null ? src.University.IsVerified :
                             src.Company != null ? src.Company.IsVerified : false));
+
         
             CreateMap<InternshipCreationDto, Internship>();
             CreateMap<InternshipPositionDto, InternshipPosition>();

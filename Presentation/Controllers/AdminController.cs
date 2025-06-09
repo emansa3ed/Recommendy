@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Entities.Models;
 
 namespace Presentation.Controllers
 {
@@ -96,6 +97,7 @@ namespace Presentation.Controllers
             [FromBody] UserBanDto banDto)
         {
             await _service.AdminService.BanUserAsync(id, banDto, trackChanges: true);
+
             return NoContent();
         }
 
