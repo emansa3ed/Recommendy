@@ -3,6 +3,7 @@ namespace Service.Contracts
 {
     public interface IServiceManager
     {
+        IAdminService AdminService { get; }
         ICountryService CountryService { get; }
         IAuthenticationService AuthenticationService { get; }
         IUserService UserService { get; }

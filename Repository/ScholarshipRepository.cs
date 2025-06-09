@@ -73,5 +73,14 @@ namespace Repository
 			var count = await FindByCondition((s => !s.IsBanned), trackChanges).Recommendation(UserSkills).CountAsync();
 			return new PagedList<Scholarship>(res, count, scholarshipsParameters.PageNumber, scholarshipsParameters.PageSize);
 		}
-	}
+
+        public async Task DeleteScholarshipsByUniversityId(string universityId)
+        {
+            var scholarships = await FindByCondition(s => s.UniversityId == universityId, false).ToListAsync();
+            foreach (var scholarship in scholarships)
+            {
+                Delete(scholarship);
+            }
+        }
+    }
 }

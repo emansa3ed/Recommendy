@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Shared.DTO.Company;
+using Shared.RequestFeatures;
 
 namespace Service.Contracts
 {
@@ -13,6 +14,7 @@ namespace Service.Contracts
     {
         CompanyViewDto GetCompany(string companyId, bool trackChanges);
         Task UpdateCompany(string companyId, CompanyDto companyDto, bool trackChanges);
-       
+        Task<PagedList<CompanyViewDto>> GetUnverifiedCompaniesAsync(CompanyParameters companyParameters, bool trackChanges);
+        Task VerifyCompany(string companyId, CompanyVerificationDto verificationDto, bool trackChanges);
     }
 }

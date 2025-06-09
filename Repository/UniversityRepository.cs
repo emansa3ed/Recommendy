@@ -1,11 +1,14 @@
 using Contracts;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
+using Shared.RequestFeatures;
+using Shared.RequestFeatures.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Google.Cloud.AIPlatform.V1.NearestNeighborQuery.Types;
 
 namespace Repository
 {
@@ -24,5 +27,34 @@ namespace Repository
          .SingleOrDefaultAsync();
 
         public void UpdateUniversity(University university) => Update(university);
+        public async Task<PagedList<University>> GetUnverifiedUniversitiesAsync( UniversityParameters universityParameters, bool trackChanges)
+        {
+            var universities = FindAll(trackChanges)
+                .Include(u => u.User)
+                .Include(u => u.Country)
+                .Where(u => !u.IsVerified)  
+                .AsNoTracking();
+
+            // Apply search if provided
+            if (!string.IsNullOrWhiteSpace(universityParameters.SearchTerm))
+            {
+                universities = universities.Where(u =>
+                    u.User.UserName.Contains(universityParameters.SearchTerm) ||
+                    u.UniversityUrl.Contains(universityParameters.SearchTerm));
+            }
+
+            var count = await universities.CountAsync();
+            var pagedUniversities = await universities
+                .Skip((universityParameters.PageNumber - 1) * universityParameters.PageSize)
+                .Take(universityParameters.PageSize)
+                .ToListAsync();
+
+            return new PagedList<University>(
+                pagedUniversities,
+                count,
+                universityParameters.PageNumber,
+                universityParameters.PageSize);
+        }
+        public void DeleteUniversity(University university) => Delete(university);
     }
 }

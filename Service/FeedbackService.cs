@@ -7,11 +7,15 @@ using Shared.DTO;
 using Shared.DTO.Feedback;
 using Shared.DTO.Notification;
 using Shared.RequestFeatures;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System;
 
 namespace Service
 {
-	internal sealed class FeedbackService :IFeedbackService
+    internal sealed class FeedbackService : IFeedbackService
     {
+
 		private readonly IRepositoryManager _repository;
 		private readonly IMapper _mapper;
 		private readonly INotificationService _notificationService;
@@ -126,3 +130,4 @@ namespace Service
 		}
 	}
 }
+

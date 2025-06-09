@@ -48,6 +48,7 @@ namespace Presentation.Controllers
 
 
 		[HttpPost]
+        [Authorize(Policy = "VerifiedOrganization")]
         public async Task<ActionResult<ApiResponse<EditedScholarshipDto>>> CreateScholarshipForUniversity(
         [FromRoute] string universityId,
         [FromForm] ScholarshipForCreationDto scholarshipForCreation)
@@ -102,6 +103,7 @@ namespace Presentation.Controllers
         }
 
         [HttpPut("{id:int}")]
+        [Authorize(Policy = "VerifiedOrganization")]
         public async Task<IActionResult> UpdateScholarshipForUniversity(string universityId, int id, [FromForm] ScholarshipDto scholarshipDto)
         {
             if (!ModelState.IsValid)
@@ -115,7 +117,8 @@ namespace Presentation.Controllers
 
 
        [HttpDelete("{id:int}")]
-       public async Task<IActionResult> DeleteScholarshipForUniversity(string universityId, int id)
+        [Authorize(Policy = "VerifiedOrganization")]
+        public async Task<IActionResult> DeleteScholarshipForUniversity(string universityId, int id)
        {
             await _service.ScholarshipService.DeleteScholarshipForUniversityAsync(universityId, id, trackChanges: false);
             return NoContent();

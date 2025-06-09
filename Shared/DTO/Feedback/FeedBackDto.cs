@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Shared.DTO.Feedback
 {
+
 	public record FeedBackDto
 	{
         public int Id { get; set; }
@@ -15,3 +16,4 @@ namespace Shared.DTO.Feedback
         public StudentDto Student { get; set; }
     }
 }
+

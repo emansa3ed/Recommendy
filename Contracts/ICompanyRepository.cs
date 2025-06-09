@@ -1,4 +1,5 @@
 ﻿using Entities.Models;
+using Shared.RequestFeatures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,8 @@ namespace Contracts
         void CreateCompany(Company company);
         Company GetCompany(string companyId, bool trackChanges);
         public void UpdateCompany(Company company);
+        Task<PagedList<Company>> GetUnverifiedCompaniesAsync(CompanyParameters companyParameters, bool trackChanges);
+        void DeleteCompany(Company company);
     }
 
 }

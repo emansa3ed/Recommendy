@@ -11,19 +11,23 @@ using Entities.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
 using Shared.DTO.Company;
+using Stripe;
+using Microsoft.Extensions.Logging;
+using Shared.RequestFeatures;
 
 namespace Service
 {
     internal sealed class CompanyService : ICompanyService
     {
         private readonly IRepositoryManager _repository;
+        private readonly IServiceManager _service;
         private readonly IMapper _mapper;
-        private readonly UserManager<User> _userManager;
-        public CompanyService(IRepositoryManager repository, IMapper mapper, UserManager<User> userManager)
+
+        public CompanyService(IRepositoryManager repository, IMapper mapper,  IServiceManager service)
         {
             _repository = repository;
             _mapper = mapper;
-            _userManager = userManager;
+            _service = service;
         }
         public CompanyViewDto GetCompany(string id, bool trackChanges)
         {
@@ -63,8 +67,43 @@ namespace Service
             _repository.Company.UpdateCompany(company);
             _repository.Save();
         }
+        public async Task<PagedList<CompanyViewDto>> GetUnverifiedCompaniesAsync(
+     CompanyParameters companyParameters, bool trackChanges)
+        {
 
-       
+
+            var companies = await _repository.Company.GetUnverifiedCompaniesAsync(companyParameters, trackChanges);
+
+            var companyDtos = _mapper.Map<List<CompanyViewDto>>(companies);
+
+            return new PagedList<CompanyViewDto>(
+                companyDtos,
+                companies.MetaData.TotalCount,
+                companies.MetaData.CurrentPage,
+                companies.MetaData.PageSize);
+        }
+
+        public async Task VerifyCompany(string companyId, CompanyVerificationDto verificationDto, bool trackChanges)
+        {
+            var company =  _repository.Company.GetCompany(companyId, trackChanges);
+            if (company == null)
+                throw new CompanyNotFoundException(companyId);
+
+            company.IsVerified = verificationDto.IsVerified;
+            company.VerificationNotes = verificationDto.VerificationNotes;
+
+            _repository.Company.UpdateCompany(company);
+            await _repository.SaveAsync();
+
+            await _service.EmailsService.SendVerificationEmail(
+                company.User.Email,
+                company.IsVerified,
+                company.VerificationNotes);
+        }
+
+
+
+
 
     }
 }

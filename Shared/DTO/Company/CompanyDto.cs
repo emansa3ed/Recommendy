@@ -22,5 +22,11 @@ namespace Shared.DTO.Company
         public string? UserName { get; init; }
         public string? Bio { get; init; }
         public string? PhoneNumber { get; init; }
+        public bool IsVerified { get; init; }
+    }
+    public record CompanyVerificationDto
+    {
+        public bool IsVerified { get; init; }
+        public string? VerificationNotes { get; init; }
     }
 }

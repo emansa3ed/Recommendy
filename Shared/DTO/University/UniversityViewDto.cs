@@ -15,5 +15,6 @@ namespace Shared.DTO.University
         public string? CountryName { get; init; }
         public string? Bio { get; init; }
         public string? PhoneNumber { get; init; }
+        public bool IsVerified { get; init; }
     }
 }
