@@ -1,3 +1,4 @@
+
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -8,10 +9,12 @@ using System.Threading.Tasks;
 
 namespace Shared.DTO.Skills
 {
-    public record ResumeUploadDTO
-    {
-        [Required]
-        public IFormFile ResumeFile { get; set; }
 
-    }
+	public record ResumeUploadDTO
+	{
+		[Required]
+		public IFormFile ResumeFile { get; set; }
+
+	}
 }
+

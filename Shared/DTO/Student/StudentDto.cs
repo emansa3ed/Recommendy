@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading.Tasks; 
 
 namespace Shared.DTO.Student
 {
     public record StudentDto
     {
-        public string? UrlPicture { get; init; }
+		public string Email { get; set; }
+		public string StudentId { get; set; }
+		public string? UrlPicture { get; init; }
         public string? UserName { get; init; }
         public string? UrlResume { get; init; }
         public string? Bio { get; init; }

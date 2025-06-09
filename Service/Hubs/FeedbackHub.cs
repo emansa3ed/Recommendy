@@ -19,12 +19,14 @@ namespace Service.Hubs
             _feedbackService = feedbackService;
         }
 
-        public async Task SendFeedBack(string CompanyID, int PostId, string StudentId, FeedbackCreationDto feedback)
-        {
-            await _feedbackService.CreateFeedbackAsync(CompanyID, PostId, StudentId, feedback);
-            string jsonData = JsonSerializer.Serialize(new { CompanyID, PostId, StudentId, feedback });
-            await Clients.All.SendAsync("ReceiveFeedback", jsonData);
-        }
+
+		public async Task SendFeedBack(string CompanyID, int PostId,string StudentId,FeedbackCreationDto feedback)
+		{
+			await _feedbackService.CreateFeedbackAsync(CompanyID,PostId, StudentId, feedback);
+			string jsonData = JsonSerializer.Serialize(new {CompanyID,PostId, StudentId, feedback});
+			await Clients.All.SendAsync("ReceiveFeedback", jsonData);
+		}
+
 
     }
 }

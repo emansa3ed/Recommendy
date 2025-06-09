@@ -135,10 +135,11 @@ namespace Recommendy
       .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
       .ForMember(dest => dest.Bio, opt => opt.MapFrom(src => src.User.Bio))
       .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.User.PhoneNumber))
-      .ForMember(dest => dest.UrlPicture, opt => opt.MapFrom(src => src.User.UrlPicture));
+      .ForMember(dest => dest.UrlPicture, opt => opt.MapFrom(src => src.User.UrlPicture))
+      .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User.Email));
 
 
-            CreateMap<Student, StudentForUpdateDto>()
+			CreateMap<Student, StudentForUpdateDto>()
                  .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
                  .ForMember(dest => dest.Bio, opt => opt.MapFrom(src => src.User.Bio))
                  .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.User.PhoneNumber));

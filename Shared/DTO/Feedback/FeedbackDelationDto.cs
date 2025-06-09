@@ -15,7 +15,9 @@ namespace Shared.DTO.Feedback
 
 
         [Required(ErrorMessage = "Feedback type is required")]
-        [EnumDataType(typeof(FeedbackType), ErrorMessage = "Invalid feedback type")]
-        public FeedbackType? Type { get; set; }
-    }
+
+		[EnumDataType(typeof(FeedbackType), ErrorMessage = "Invalid feedback type")]
+		public FeedbackType? Type { get; set; }
+	}
+
 }

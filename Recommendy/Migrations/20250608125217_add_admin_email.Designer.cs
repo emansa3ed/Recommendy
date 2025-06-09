@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Repository;
 
@@ -11,9 +12,11 @@ using Repository;
 namespace Recommendy.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20250608125217_add_admin_email")]
+    partial class add_admin_email
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -99,12 +102,6 @@ namespace Recommendy.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CompanyUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsVerified")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("VerificationNotes")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CompanyId");
@@ -437,14 +434,11 @@ namespace Recommendy.Migrations
                     b.Property<int?>("CountryId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsVerified")
+                    b.Property<bool>("Revised")
                         .HasColumnType("bit");
 
                     b.Property<string>("UniversityUrl")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("VerificationNotes")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UniversityId");
@@ -567,7 +561,7 @@ namespace Recommendy.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@RECOMMENDY.COM",
                             NormalizedUserName = "RECOMMENDYADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEDRY0i6L7HhjxGLB+Q6swKwxQvA/lvTfnAKW2gBk4kG2aCfncz1/kDcwqGkqixvswQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAED5EMl1JrRjJZ6FYXLiT0q7FN47V0/GDJUH9THBaYFchiD65t+YAp/DcIIsIAu2/xA==",
                             PhoneNumberConfirmed = true,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             SecurityStamp = "54GFNHD4564HNFG34FG",
@@ -778,13 +772,6 @@ namespace Recommendy.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = "8e445865-a24d-4543-a6c6-9443d048cdb9",
-                            RoleId = "711ed7a1-df38-4447-bd87-dd0acbcf5735"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>

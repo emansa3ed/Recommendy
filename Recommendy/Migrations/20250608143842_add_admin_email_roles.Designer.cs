@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Repository;
 
@@ -11,9 +12,11 @@ using Repository;
 namespace Recommendy.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20250608143842_add_admin_email_roles")]
+    partial class add_admin_email_roles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,12 +33,6 @@ namespace Recommendy.Migrations
                     b.HasKey("AdminId");
 
                     b.ToTable("Admins");
-
-                    b.HasData(
-                        new
-                        {
-                            AdminId = "8e445865-a24d-4543-a6c6-9443d048cdb9"
-                        });
                 });
 
             modelBuilder.Entity("Entities.Models.ChatMessage", b =>
@@ -99,12 +96,6 @@ namespace Recommendy.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CompanyUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsVerified")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("VerificationNotes")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CompanyId");
@@ -437,14 +428,11 @@ namespace Recommendy.Migrations
                     b.Property<int?>("CountryId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsVerified")
+                    b.Property<bool>("Revised")
                         .HasColumnType("bit");
 
                     b.Property<string>("UniversityUrl")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("VerificationNotes")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UniversityId");
@@ -549,31 +537,6 @@ namespace Recommendy.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
-                            AccessFailedCount = 0,
-                            Bio = "System Administrator - Recommendy Platform",
-                            ConcurrencyStamp = "64d84hg4-863b-44ce-9cac-75ec544afg45",
-                            CreatedAt = new DateTime(2025, 6, 8, 12, 2, 36, 0, DateTimeKind.Utc),
-                            Discriminator = "Admin",
-                            Email = "admin@recommendy.com",
-                            EmailConfirmed = true,
-                            FirstName = "Recommendy",
-                            IsBanned = false,
-                            LastName = "Team",
-                            LockoutEnabled = false,
-                            NormalizedEmail = "ADMIN@RECOMMENDY.COM",
-                            NormalizedUserName = "RECOMMENDYADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEDRY0i6L7HhjxGLB+Q6swKwxQvA/lvTfnAKW2gBk4kG2aCfncz1/kDcwqGkqixvswQ==",
-                            PhoneNumberConfirmed = true,
-                            RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "54GFNHD4564HNFG34FG",
-                            TwoFactorEnabled = false,
-                            UserName = "RecommendyAdmin"
-                        });
                 });
 
             modelBuilder.Entity("Entities.Models.UserCode", b =>

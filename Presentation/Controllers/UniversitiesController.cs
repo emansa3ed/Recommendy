@@ -17,13 +17,13 @@ namespace Presentation.Controllers
 {
     [Route("api/universities")]
     [ApiController]
-    [Authorize(Roles ="University")]
     public class UniversitiesController : ControllerBase
     {
         private readonly IServiceManager _service;
         public UniversitiesController(IServiceManager service) => _service = service;
         [HttpGet("profile/{id}")]
-        public async Task<ActionResult<ApiResponse<UniversityViewDto>>> GetUniversity(string id)
+		[Authorize]
+		public async Task<ActionResult<ApiResponse<UniversityViewDto>>> GetUniversity(string id)
         {
             var university = await _service.UniversityService.GetUniversityAsync(id, trackChanges: false);
             return Ok(new ApiResponse<UniversityViewDto> { Success=true,Data=university});
@@ -31,8 +31,8 @@ namespace Presentation.Controllers
 
 
         [HttpPut("edit-profile/{id}")]
-
-        public async Task<IActionResult> EditProfile(string id, [FromBody] UniversityDto universityDto)
+		[Authorize(Roles = "University")]
+		public async Task<IActionResult> EditProfile(string id, [FromBody] UniversityDto universityDto)
         {
             var username = User.Identity.Name;
             var user = await _service.UserService.GetDetailsByUserName(username);
@@ -42,7 +42,8 @@ namespace Presentation.Controllers
 
 
         [HttpGet("edit-profile/{id}")]
-        public async Task<ActionResult<ApiResponse<EditUniversityProfileDto>>> GetEditProfile(string id)
+		[Authorize(Roles = "University")]
+		public async Task<ActionResult<ApiResponse<EditUniversityProfileDto>>> GetEditProfile(string id)
         {
             var university =await _service.UniversityService.GetUniversityAsync(id, trackChanges: false);
 

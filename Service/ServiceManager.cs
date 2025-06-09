@@ -68,7 +68,7 @@ namespace Service
             _userCodeService = new Lazy<IUserCodeService>(() => new UserCodeService(repositoryManager, emailsService,userManager));
             _companyService = new Lazy<ICompanyService>(() => new CompanyService( repositoryManager  ,mapper ,this));
             _studentService = new Lazy<IStudentService>(() => new StudentService(repositoryManager ,mapper , userManager));
-			_feedbackService = new Lazy<IFeedbackService>(() => new FeedbackService(repositoryManager, mapper));
+			_feedbackService = new Lazy<IFeedbackService>(() => new FeedbackService(repositoryManager, mapper, _notificationservice.Value));
             _reportService = new Lazy<IReportService>(() => new ReportService( repositoryManager , mapper, memoryCache));
 			_notificationservice = new Lazy<INotificationService>(() => new NotificationService( repositoryManager , mapper, _hubContext, userManager));
             _opportunityService = new Lazy<IOpportunityService>(() =>  new OpportunityService(repositoryManager , mapper,_notificationservice.Value));

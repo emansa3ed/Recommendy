@@ -120,22 +120,29 @@ namespace Presentation.Controllers
 
 		}
 
-		[HttpPost("SavedOpportunity/Student/{StudentId}")]
+		[HttpPost("SaveOpportunity")]
 
-		public async Task<IActionResult> SavedOpportunity([FromRoute] string StudentId, [FromBody] SavedOpportunityDto savedOpportunityDto)
+		public async Task<IActionResult> SavedOpportunity([FromBody] SavedOpportunityDto savedOpportunityDto)
 		{
+			if (savedOpportunityDto == null)
+				return BadRequest("SavedOpportunityDto is required");
+			string UserName = User.Identity.Name;
+			var user = await _service.UserService.GetDetailsByUserName(UserName); 
 
-			await _service.OpportunityService.SavedOpportunity(StudentId, savedOpportunityDto);
+			await _service.OpportunityService.SavedOpportunity(user.Id, savedOpportunityDto);
 
 			return Ok();
 
 		}
 
-		[HttpDelete("UnSavedOpportunity/Student/{StudentId}")]
-		public async Task<IActionResult> UnSavedOpportunity([FromRoute] string StudentId, [FromBody] SavedOpportunityDto savedOpportunityDto)
+		[HttpDelete("UnSaveOpportunity")]
+		public async Task<IActionResult> UnSavedOpportunity([FromBody] SavedOpportunityDto savedOpportunityDto)
 		{
-
-			await _service.OpportunityService.DeleteOpportunity(StudentId, savedOpportunityDto);
+			if (savedOpportunityDto == null)
+				return BadRequest("SavedOpportunityDto is required");
+			string UserName = User.Identity.Name;
+			var user = await _service.UserService.GetDetailsByUserName(UserName);
+			await _service.OpportunityService.DeleteOpportunity(user.Id, savedOpportunityDto);
 
 			return Ok();
 
