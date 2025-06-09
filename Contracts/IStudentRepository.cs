@@ -12,7 +12,8 @@ namespace Contracts
         void CreateStudent(Student student);
         Student GetStudent(string studentId, bool trackChanges);
         public void UpdateStudent(Student student);
-      
+        void DeleteStudent(Student student);
+
 
     }
 }

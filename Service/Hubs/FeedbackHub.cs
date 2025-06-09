@@ -11,13 +11,14 @@ using System.Threading.Tasks;
 
 namespace Service.Hubs
 {
-	public class FeedbackHub : Hub
-	{
-		private readonly IFeedbackService _feedbackService;
-		public FeedbackHub(IFeedbackService feedbackService)
-		{
-			_feedbackService = feedbackService;
-		}
+    public class FeedbackHub : Hub
+    {
+        private readonly IFeedbackService _feedbackService;
+        public FeedbackHub(IFeedbackService feedbackService)
+        {
+            _feedbackService = feedbackService;
+        }
+
 
 		public async Task SendFeedBack(string CompanyID, int PostId,string StudentId,FeedbackCreationDto feedback)
 		{
@@ -26,5 +27,6 @@ namespace Service.Hubs
 			await Clients.All.SendAsync("ReceiveFeedback", jsonData);
 		}
 
-	}
+
+    }
 }

@@ -54,10 +54,18 @@ namespace Repository
          //   builder.ApplyConfiguration(new UserRoleConfiguration()); 
 
 
+          
+             
+           // 
+          
 
 
             base.OnModelCreating(builder);
 
+            //seed an admin
+            builder.ApplyConfiguration(new UserConfiguration());
+            builder.ApplyConfiguration(new AdminConfiguration());
+            builder.ApplyConfiguration(new UserRoleConfiguration());
             ///// Composite keys
             builder.Entity<SavedPost>()
                 .HasKey(sp => new { sp.StudentId, sp.PostId, sp.Type });

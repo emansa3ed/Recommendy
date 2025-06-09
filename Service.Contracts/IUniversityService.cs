@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Shared.DTO.Company;
 using Shared.DTO.University;
+using Shared.RequestFeatures;
 
 namespace Service.Contracts
 {
@@ -12,7 +14,8 @@ namespace Service.Contracts
     {
         Task<UniversityViewDto> GetUniversityAsync(string universityId, bool trackChanges);
         Task UpdateUniversity(string universityId, UniversityDto universityDto, bool trackChanges);
-
+        Task<PagedList<UniversityViewDto>> GetUnverifiedUniversitiesAsync(UniversityParameters universityParameters, bool trackChanges);
+        Task VerifyUniversity(string universityId, UniversityVerificationDto verificationDto, bool trackChanges);
 
     }
 }

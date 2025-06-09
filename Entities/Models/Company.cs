@@ -9,6 +9,8 @@ namespace Entities.Models
         public string CompanyId { get; set; }
         
         public string? CompanyUrl { get; set; }
+        public bool IsVerified { get; set; } = false;
+        public string? VerificationNotes { get; set; }
         [JsonIgnore]
         public virtual User User { get; set; }
 

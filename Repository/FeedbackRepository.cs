@@ -12,11 +12,12 @@ using System.Threading.Tasks;
 
 namespace Repository
 {
-	public class FeedbackRepository : RepositoryBase<Feedback>,IFeedbackRepository
-	{
-		public FeedbackRepository(RepositoryContext repositoryContext)
-		: base(repositoryContext)
-		{
+    public class FeedbackRepository : RepositoryBase<Feedback>, IFeedbackRepository
+    {
+        public FeedbackRepository(RepositoryContext repositoryContext)
+        : base(repositoryContext)
+        {
+
 
 
 		}
@@ -36,11 +37,12 @@ namespace Repository
 				.Paging(feedBack.PageNumber,feedBack.PageSize)
 				.ToListAsync();
 
-			var count = await FindByCondition(f => f.PostId == PostId && f.Type.Equals(feedBack.type), TrackChanges).CountAsync();
 
-			return new PagedList<Feedback>(res, count, feedBack.PageNumber, feedBack.PageSize);
+            var count = await FindByCondition(f => f.PostId == PostId && f.Type.Equals(feedBack.type), TrackChanges).CountAsync();
 
-		}
+            return new PagedList<Feedback>(res, count, feedBack.PageNumber, feedBack.PageSize);
 
-	}
+        }
+
+    }
 }

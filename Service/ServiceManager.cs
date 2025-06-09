@@ -19,6 +19,7 @@ namespace Service
 {
     public sealed class ServiceManager : IServiceManager
     {
+        private readonly Lazy<IAdminService> _adminService;
         private readonly Lazy<ICountryService> _countryService;
         private readonly Lazy<IAuthenticationService> _authenticationService;
         private readonly Lazy<IUserService> _userService;
@@ -52,6 +53,7 @@ namespace Service
         {
             _logger = logger;
 
+            _adminService = new Lazy<IAdminService>(() => new AdminService(repositoryManager, mapper, emailsService, userManager));
             _countryService = new Lazy<ICountryService>(() => new  CountryService(repositoryManager, mapper, memoryCache));
             _authenticationService = new Lazy<IAuthenticationService>(() => new AuthenticationService(mapper, userManager, configuration, repositoryManager ,httpContextAccessor , userCodeService, resumeParserService,httpClient));
            _userService = new Lazy<IUserService>(()=>  new UserService(repositoryManager,userManager ,mapper , emailsService));
@@ -61,10 +63,10 @@ namespace Service
 
             var scholarshipServiceLogger = loggerFactory.CreateLogger<ScholarshipService>();
             _scholarshipService = new Lazy<IScholarshipService>(() => new ScholarshipService(repositoryManager, mapper,  scholarshipServiceLogger, memoryCache));
-           _universityService  = new Lazy<IUniversityService>(() => new UniversityService(repositoryManager, mapper , userManager));
-            _emailsService = new Lazy<IEmailsService>(() => new EmailsService(configuration , repositoryManager , userManager));
+           _universityService  = new Lazy<IUniversityService>(() => new UniversityService(repositoryManager, this ,mapper , userManager));
+            _emailsService = new Lazy<IEmailsService>(() => new EmailsService(configuration , loggerFactory.CreateLogger<EmailsService>(), repositoryManager , userManager));
             _userCodeService = new Lazy<IUserCodeService>(() => new UserCodeService(repositoryManager, emailsService,userManager));
-            _companyService = new Lazy<ICompanyService>(() => new CompanyService( repositoryManager ,mapper ,userManager));
+            _companyService = new Lazy<ICompanyService>(() => new CompanyService( repositoryManager  ,mapper ,this));
             _studentService = new Lazy<IStudentService>(() => new StudentService(repositoryManager ,mapper , userManager));
 			_feedbackService = new Lazy<IFeedbackService>(() => new FeedbackService(repositoryManager, mapper, _notificationservice.Value));
             _reportService = new Lazy<IReportService>(() => new ReportService( repositoryManager , mapper, memoryCache));
@@ -81,7 +83,7 @@ namespace Service
 		}
 
 
-
+        public IAdminService AdminService => _adminService.Value;
 		public ICountryService CountryService => _countryService.Value;
         public IAuthenticationService AuthenticationService => _authenticationService.Value;
         public IUserService UserService => _userService.Value;

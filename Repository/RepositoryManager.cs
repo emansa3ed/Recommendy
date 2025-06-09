@@ -15,6 +15,7 @@ namespace Repository
     public sealed class RepositoryManager : IRepositoryManager
     {
         private readonly RepositoryContext _repositoryContext;
+        private readonly Lazy<IAdminRepository> _adminRepository;
         private readonly Lazy<ICountryRepository> _countryRepository;
         private readonly Lazy<IStudentRepository> _studentRepository;
         private readonly Lazy<IUserRepository> _userRepository;
@@ -36,7 +37,7 @@ namespace Repository
 		public RepositoryManager(RepositoryContext repositoryContext , UserManager<User> userManager , IWebHostEnvironment webHostEnvironment)
         {
             _repositoryContext = repositoryContext;
-
+            _adminRepository = new Lazy<IAdminRepository>(() => new AdminRepository(repositoryContext, userManager));
             _countryRepository = new Lazy<ICountryRepository>(() => new CountryRepository(repositoryContext));
             _studentRepository = new Lazy<IStudentRepository>(() => new StudentRepository(repositoryContext));
             _userRepository = new Lazy<IUserRepository>(() => new UserRepository(repositoryContext,userManager));
@@ -60,7 +61,7 @@ namespace Repository
 			_skillsRepository = new Lazy<ISkillsRepository>(() => new SkillsRepository());
 
 		}
-
+        public IAdminRepository Admin=> _adminRepository.Value;
         public ICountryRepository Country => _countryRepository.Value;
         public IStudentRepository Student => _studentRepository.Value;  
          public IUserRepository User => _userRepository.Value;
