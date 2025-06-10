@@ -1,6 +1,7 @@
 using Contracts;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
+using Repository.Extensions;
 using Shared.RequestFeatures;
 using Shared.RequestFeatures.Extensions;
 using System;
@@ -27,65 +28,35 @@ namespace Repository
          .SingleOrDefaultAsync();
 
         public void UpdateUniversity(University university) => Update(university);
-        public async Task<PagedList<University>> GetUnverifiedUniversitiesAsync( UniversityParameters universityParameters, bool trackChanges)
+        public async Task<PagedList<University>> GetUnverifiedUniversitiesAsync(
+     UniversityParameters parameters,
+     bool trackChanges)
         {
             var universities = FindAll(trackChanges)
                 .Include(u => u.User)
                 .Include(u => u.Country)
-                .Where(u => !u.IsVerified)  
+                .ApplyUnverifiedFilter()
+                .ApplyUniversitySearch(parameters.SearchTerm)
                 .AsNoTracking();
 
-            // Apply search if provided
-            if (!string.IsNullOrWhiteSpace(universityParameters.SearchTerm))
-            {
-                universities = universities.Where(u =>
-                    u.User.UserName.Contains(universityParameters.SearchTerm) ||
-                    u.UniversityUrl.Contains(universityParameters.SearchTerm));
-            }
-
-            var count = await universities.CountAsync();
-            var pagedUniversities = await universities
-                .Skip((universityParameters.PageNumber - 1) * universityParameters.PageSize)
-                .Take(universityParameters.PageSize)
-                .ToListAsync();
-
-            return new PagedList<University>(
-                pagedUniversities,
-                count,
-                universityParameters.PageNumber,
-                universityParameters.PageSize);
+            return await universities.ToPagedListAsync(parameters);
         }
-   
-            public async Task<PagedList<University>> GetAllUniversitiesAsync(
-                UniversityParameters universityParameters,
-                bool trackChanges)
-            {
-                var universities = FindAll(trackChanges)
-                    .Include(u => u.User)
-                    .Include(u => u.Country)
-                    .AsNoTracking();
 
-                // Apply search if provided
-                if (!string.IsNullOrWhiteSpace(universityParameters.SearchTerm))
-                {
-                    universities = universities.Where(u =>
-                        u.User.UserName.Contains(universityParameters.SearchTerm) ||
-                        u.UniversityUrl.Contains(universityParameters.SearchTerm));
-                }
+        public async Task<PagedList<University>> GetAllUniversitiesAsync(
+            UniversityParameters parameters,
+            bool trackChanges)
+        {
+            var universities = FindAll(trackChanges)
+                .Include(u => u.User)
+                .Include(u => u.Country)
+                .ApplyUniversitySearch(parameters.SearchTerm)
+                .AsNoTracking();
 
-                var count = await universities.CountAsync();
-                var pagedUniversities = await universities
-                    .Skip((universityParameters.PageNumber - 1) * universityParameters.PageSize)
-                    .Take(universityParameters.PageSize)
-                    .ToListAsync();
+            return await universities.ToPagedListAsync(parameters);
+        }
 
-                return new PagedList<University>(
-                    pagedUniversities,
-                    count,
-                    universityParameters.PageNumber,
-                    universityParameters.PageSize);
-            }
-        
+
+
         public void DeleteUniversity(University university) => Delete(university);
     }
 }

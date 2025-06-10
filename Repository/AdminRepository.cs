@@ -44,13 +44,18 @@ namespace Repository
                     (u.Company != null && u.Company.IsVerified == parameters.IsVerified.Value));
             }
 
+            //  Search functionality
             if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
             {
+                var searchTerm = parameters.SearchTerm.Trim().ToLower();
                 users = users.Where(u =>
-                    u.UserName.Contains(parameters.SearchTerm) ||
-                    u.Email.Contains(parameters.SearchTerm) ||
-                    u.FirstName.Contains(parameters.SearchTerm) ||
-                    u.LastName.Contains(parameters.SearchTerm));
+                    u.UserName.ToLower().Contains(searchTerm) ||
+                    u.Email.ToLower().Contains(searchTerm) ||
+                    (u.FirstName != null && u.FirstName.ToLower().Contains(searchTerm)) ||
+                    (u.LastName != null && u.LastName.ToLower().Contains(searchTerm)) ||
+                    (u.University != null && u.University.UniversityUrl.ToLower().Contains(searchTerm)) ||
+                    (u.Company != null && u.Company.CompanyUrl.ToLower().Contains(searchTerm))
+                );
             }
 
             // Apply ordering
@@ -58,10 +63,12 @@ namespace Repository
             {
                 "createdat" => users.OrderByDescending(u => u.CreatedAt),
                 "username" => users.OrderBy(u => u.UserName),
+                "name" => users.OrderBy(u => u.FirstName).ThenBy(u => u.LastName),
                 _ => users.OrderByDescending(u => u.CreatedAt)
             };
 
-            return await PagedList<User>.CreateAsync(users,
+            return await PagedList<User>.CreateAsync(
+                users,
                 parameters.PageNumber,
                 parameters.PageSize);
         }

@@ -93,10 +93,10 @@ namespace Service
             _repository.university.UpdateUniversity(university);
             await _repository.SaveAsync();
 
-            await _service.EmailsService.SendVerificationEmail(
-                university.User.Email,
-                university.IsVerified,
-                university.VerificationNotes);
+            var (subject, message) = EmailTemplates.Organization.GetVerificationTemplate(
+                verificationDto.IsVerified,
+                verificationDto.VerificationNotes);
+            await _service.EmailsService.Sendemail(university.User.Email, message, subject);
         }
 
 

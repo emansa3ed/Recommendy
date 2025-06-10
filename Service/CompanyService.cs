@@ -85,7 +85,7 @@ namespace Service
 
         public async Task VerifyCompany(string companyId, CompanyVerificationDto verificationDto, bool trackChanges)
         {
-            var company =  _repository.Company.GetCompany(companyId, trackChanges);
+            var company = _repository.Company.GetCompany(companyId, trackChanges);
             if (company == null)
                 throw new CompanyNotFoundException(companyId);
 
@@ -95,10 +95,10 @@ namespace Service
             _repository.Company.UpdateCompany(company);
             await _repository.SaveAsync();
 
-            await _service.EmailsService.SendVerificationEmail(
-                company.User.Email,
-                company.IsVerified,
-                company.VerificationNotes);
+            var (subject, message) = EmailTemplates.Organization.GetVerificationTemplate(
+                verificationDto.IsVerified,
+                verificationDto.VerificationNotes);
+            await _service.EmailsService.Sendemail(company.User.Email, message, subject);
         }
 
 

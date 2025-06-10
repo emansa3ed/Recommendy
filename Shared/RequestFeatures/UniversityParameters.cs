@@ -9,7 +9,7 @@ namespace Shared.RequestFeatures
     public class UniversityParameters : RequestParameters
     {
 
-        public string SearchTerm { get; set; } 
+        public string? SearchTerm { get; set; } 
 
     }
 
