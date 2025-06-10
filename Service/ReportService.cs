@@ -160,7 +160,7 @@ namespace Service
             var report = await _repository.ReportRepository.GetReportAsync(reportId, trackChanges: true);
             if (report == null) throw new ReportNotFoundException(reportId);
 
-            report.Status = dto.Status;
+            report.Status = "Reviewed";
 
             if (dto.BanPost.HasValue || dto.DeletePost == true)
             {
