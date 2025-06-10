@@ -91,8 +91,6 @@ namespace Presentation.Controllers
             
             
                 var report = await _service.ReportService.GetReport(ReportId);
-                if (report == null) throw new ReportNotFoundException(ReportId);
-
 
                 await _service.ReportService.UpdateReportStatus(ReportId, dto);
 
