@@ -1,5 +1,4 @@
-﻿
-namespace Service.Contracts
+﻿namespace Service.Contracts
 {
     public interface IServiceManager
     {
@@ -27,6 +26,7 @@ namespace Service.Contracts
         IChatMessageService ChatMessageService { get; }
 		IResumeParserService ResumeParserService { get; }
 		ISkillService  SkillService { get; }
-
+        IProfileSuggestionService ProfileSuggestionService { get; }
+        IOrganizationProfileService OrganizationProfileService { get; }
 	}
 }

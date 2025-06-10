@@ -47,7 +47,7 @@ namespace Repository
             // add data to test 
             //  builder.ApplyConfiguration(new CountryConfiguration());
             // builder.ApplyConfiguration(new RoleConfiguration());
-            //  builder.ApplyConfiguration(new PositionConfiguration());
+            // builder.ApplyConfiguration(new PositionConfiguration());
 
             // builder.ApplyConfiguration(new AdminConfiguration());
             // builder.ApplyConfiguration(new UserConfiguration());

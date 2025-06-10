@@ -40,6 +40,9 @@ namespace Recommendy.Extensions
         public static void ConfigureRepositoryManager(this IServiceCollection services) =>
          services.AddScoped<IRepositoryManager, RepositoryManager>();
 
+        public static void ConfigureOrganizationProfileService(this IServiceCollection services) =>
+         services.AddScoped<IOrganizationProfileService, OrganizationProfileService>();
+
         public static void ConfigureServiceManager(this IServiceCollection services) =>
          services.AddScoped<IServiceManager, ServiceManager>();
 

@@ -44,6 +44,8 @@ namespace Service
         private readonly Lazy<IChatMessageService> _chatMessageService;
         private readonly Lazy<IResumeParserService> _resumeParserService;
         private readonly Lazy<ISkillService> _skillService;
+        private readonly Lazy<IProfileSuggestionService> _profileSuggestionService;
+        private readonly Lazy<IOrganizationProfileService> _organizationProfileService;
 
 
 		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper,
@@ -79,9 +81,9 @@ namespace Service
 
 			_resumeParserService = new Lazy<IResumeParserService>(() => new ResumeParserService(repositoryManager));
 			_skillService = new Lazy<ISkillService>(() => new SkillService(repositoryManager));
-             
-
-		}
+            _profileSuggestionService = new Lazy<IProfileSuggestionService>(() => new ProfileSuggestionService(repositoryManager, mapper, memoryCache));
+            _organizationProfileService = new Lazy<IOrganizationProfileService>(() => new OrganizationProfileService(repositoryManager));
+        }
 
 
         public IAdminService AdminService => _adminService.Value;
@@ -116,5 +118,9 @@ namespace Service
 		public IResumeParserService ResumeParserService => _resumeParserService.Value;
 
 		public ISkillService SkillService => _skillService.Value;
+
+        public IProfileSuggestionService ProfileSuggestionService => _profileSuggestionService.Value;
+
+        public IOrganizationProfileService OrganizationProfileService => _organizationProfileService.Value;
 	}
 }

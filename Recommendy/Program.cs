@@ -22,6 +22,7 @@ namespace Recommendy
 
 
 			builder.Services.ConfigureRepositoryManager(); ///manager//////////////
+            builder.Services.ConfigureOrganizationProfileService();
             builder.Services.ConfigureServiceManager();   /// service manager
             builder.Services.ConfigureSqlContext(builder.Configuration);
             builder.Services.ConfigureCors();
