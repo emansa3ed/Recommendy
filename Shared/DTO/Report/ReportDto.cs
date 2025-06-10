@@ -25,8 +25,6 @@ namespace Shared.DTO.Report
     }
     public record UpdateReportStatusDto
     {
-        [DefaultValue("Reviewed")]
-        public string Status { get; set; } = "Reviewed"; 
 
         [DefaultValue(true)]
         public bool? BanPost { get; set; } = true; 
