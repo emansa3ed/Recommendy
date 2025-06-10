@@ -9,8 +9,7 @@ namespace Shared.RequestFeatures
 	public class RequestParameters
 	{
 		const int maxPageSize = 50;
-		public int PageNumber { get; set; } = 1;
-        public string? OrderBy { get; set; } = string.Empty; //for sorting
+		public int PageNumber { get; set; } = 1;       
         private int _pageSize = 10;
 		public int PageSize
 		{

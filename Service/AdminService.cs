@@ -67,8 +67,9 @@ namespace Service
             user.IsBanned = true;
             await _repository.SaveAsync();
 
-            // Send ban notification using the Reason property
-            await _emailsService.SendBanEmail(user.Email, banDto.Reason);
+
+            var (subject, message) = EmailTemplates.Account.GetBanTemplate(banDto.Reason);
+            await _emailsService.Sendemail(user.Email, message, subject);
         }
 
         public async Task UnbanUserAsync(string userId, bool trackChanges)
@@ -80,9 +81,10 @@ namespace Service
             user.IsBanned = false;
             await _repository.SaveAsync();
 
-            // Send unban notification with simplified method
-            await _emailsService.SendUnbanEmail(user.Email);
+            var (subject, message) = EmailTemplates.Account.GetUnbanTemplate();
+            await _emailsService.Sendemail(user.Email, message, subject);
         }
+
 
         public async Task DeleteUserAsync(string userId)
         {

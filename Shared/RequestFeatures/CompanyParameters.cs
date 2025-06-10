@@ -8,7 +8,7 @@ namespace Shared.RequestFeatures
 {
         public class CompanyParameters : RequestParameters
         {
-        public string SearchTerm { get; set; } // For searching company names
+        public string? SearchTerm { get; set; } // For searching company names
 
     }
     

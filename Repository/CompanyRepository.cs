@@ -3,6 +3,7 @@ using Entities.Models;
 using Google.Cloud.AIPlatform.V1;
 using Humanizer;
 using Microsoft.EntityFrameworkCore;
+using Repository.Extensions;
 using Shared.RequestFeatures;
 using Shared.RequestFeatures.Extensions;
 using System;
@@ -27,62 +28,33 @@ namespace Repository
        .SingleOrDefault();
 
         public void UpdateCompany(Company company) => Update(company);
+
         public async Task<PagedList<Company>> GetUnverifiedCompaniesAsync(
-    CompanyParameters companyParameters,
+    CompanyParameters parameters,
     bool trackChanges)
         {
             var companies = FindAll(trackChanges)
-                .Include(u => u.User)               
-                .Where(u => !u.IsVerified) 
+                .Include(u => u.User)
+                .ApplyUnverifiedFilter()
+                .ApplyCompanySearch(parameters.SearchTerm)
                 .AsNoTracking();
 
-            if (!string.IsNullOrWhiteSpace(companyParameters.SearchTerm))
-            {
-                companies = companies.Where(u =>
-                    u.User.UserName.Contains(companyParameters.SearchTerm) ||
-                    u.CompanyUrl.Contains(companyParameters.SearchTerm));
-            }
-
-            var count = await companies.CountAsync();
-            var pagedCompanies = await companies
-                .Skip((companyParameters.PageNumber - 1) * companyParameters.PageSize)
-                .Take(companyParameters.PageSize)
-                .ToListAsync();
-
-            return new PagedList<Company>(
-                pagedCompanies,
-                count,
-                companyParameters.PageNumber,
-                companyParameters.PageSize);
+            return await companies.ToPagedListAsync(parameters);
         }
 
         public async Task<PagedList<Company>> GetAllCompaniesAsync(
-        CompanyParameters companyParameters,
-        bool trackChanges)
+            CompanyParameters parameters,
+            bool trackChanges)
         {
             var companies = FindAll(trackChanges)
                 .Include(u => u.User)
+                .ApplyCompanySearch(parameters.SearchTerm)
                 .AsNoTracking();
 
-            if (!string.IsNullOrWhiteSpace(companyParameters.SearchTerm))
-            {
-                companies = companies.Where(u =>
-                    u.User.UserName.Contains(companyParameters.SearchTerm) ||
-                    u.CompanyUrl.Contains(companyParameters.SearchTerm));
-            }
-
-            var count = await companies.CountAsync();
-            var pagedCompanies = await companies
-                .Skip((companyParameters.PageNumber - 1) * companyParameters.PageSize)
-                .Take(companyParameters.PageSize)
-                .ToListAsync();
-
-            return new PagedList<Company>(
-                pagedCompanies,
-                count,
-                companyParameters.PageNumber,
-                companyParameters.PageSize);
+            return await companies.ToPagedListAsync(parameters);
         }
+
+
         public void DeleteCompany(Company company) => Delete(company);
 
 
