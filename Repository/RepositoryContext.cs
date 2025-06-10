@@ -80,15 +80,7 @@ namespace Repository
             
                 
 
-            // Configure Dictionary as JSON
-
-            builder.Entity<Scholarship>()
-                .Property(s => s.Requirements)
-                .HasConversion(
-                    v => JsonSerializer.Serialize(v, new JsonSerializerOptions()),
-                    v => JsonSerializer.Deserialize<Dictionary<string, string>>(v, new JsonSerializerOptions())
-                );
-
+            
 
             ////relations 
             builder.Entity<User>()

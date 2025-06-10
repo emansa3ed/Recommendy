@@ -23,7 +23,7 @@ namespace Shared.DTO.Scholaship
         string Funded,
         string UniversityId,
         DateTime CreatedAt,
-        Dictionary<string, string> Requirements
+        string Requirements
     );
 }
 

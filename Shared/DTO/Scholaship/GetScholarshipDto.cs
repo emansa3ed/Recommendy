@@ -25,7 +25,7 @@ namespace Shared.DTO.Scholaship
         public string Funded { get; set; }
         public string UniversityId { get; set; }
         public DateTime CreatedAt { get; set; }
-        public Dictionary<string, string> Requirements { get; set; }
+        public string Requirements { get; set; }
 
         public UniversityViewDto University { get; set; }
     }

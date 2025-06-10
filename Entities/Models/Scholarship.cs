@@ -40,6 +40,6 @@ namespace Entities.Models
 
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public Dictionary<string, string> Requirements { get; set; }
+        public string Requirements { get; set; }
     }
 }

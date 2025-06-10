@@ -12,6 +12,8 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Service.Ontology;
+using System.Text;
+using Shared.RequestFeatures;
 
 namespace Service
 {
@@ -51,38 +53,84 @@ namespace Service
 
                 var expandedSkills = SkillOntology.ExpandSkills(studentSkills);
 
-                Console.WriteLine(expandedSkills);
 
                 var companies = await _repository.Company.GetAllCompaniesAsync(new CompanyParameters { PageSize = int.MaxValue }, false);
                 var companySuggestions = companies
-                    .Select(company => new CompanySuggestionDto
-                    {
-                        CompanyId = company.CompanyId,
-                        Name = company.User.UserName,
-                        Bio = company.User.Bio,
-                        UrlPicture = company.User.UrlPicture,
-                        CompanyUrl = company.CompanyUrl,
-                        IsVerified = company.IsVerified,
-                        MatchingSkills = GetMatchingSkills(company.User.Bio, expandedSkills),
-                        MatchScore = CalculateMatchScore(company.User.Bio, expandedSkills)
+                    .Select(company => {
+
+                        var internships = _repository.Intership.GetInternshipsByCompanyId(company.CompanyId, new InternshipParameters { PageSize = int.MaxValue }, false).Result;
+                        
+                       
+                        var combinedText = new StringBuilder();
+                        combinedText.AppendLine(company.User.Bio);
+                        
+                        foreach (var internship in internships)
+                        {
+                            combinedText.AppendLine($"Internship: {internship.Name}");
+                            combinedText.AppendLine($"Description: {internship.Description}");
+                            
+                            if (internship.InternshipPositions != null)
+                            {
+                                foreach (var position in internship.InternshipPositions)
+                                {
+                                    combinedText.AppendLine($"Position Requirements: {position.Requirements}");
+                                }
+                            }
+                        }
+
+                        var matchingSkills = GetMatchingSkills(combinedText.ToString(), expandedSkills);
+                        var matchScore = CalculateMatchScore(matchingSkills, expandedSkills);
+
+                        return new CompanySuggestionDto
+                        {
+                            CompanyId = company.CompanyId,
+                            Name = company.User.UserName,
+                            Bio = company.User.Bio,
+                            UrlPicture = company.User.UrlPicture,
+                            CompanyUrl = company.CompanyUrl,
+                            IsVerified = company.IsVerified,
+                            MatchingSkills = matchingSkills,
+                            MatchScore = matchScore
+                        };
                     })
                     .Where(c => c.MatchingSkills.Any())
                     .OrderByDescending(c => c.MatchScore)
                     .Take(5)
                     .ToList();
 
+
                 var universities = await _repository.university.GetAllUniversitiesAsync(new UniversityParameters { PageSize = int.MaxValue }, false);
                 var universitySuggestions = universities
-                    .Select(university => new UniversitySuggestionDto
-                    {
-                        UniversityId = university.UniversityId,
-                        Name = university.User.UserName,
-                        Bio = university.User.Bio,
-                        UrlPicture = university.User.UrlPicture,
-                        UniversityUrl = university.UniversityUrl,
-                        IsVerified = university.IsVerified,
-                        MatchingSkills = GetMatchingSkills(university.User.Bio, expandedSkills),
-                        MatchScore = CalculateMatchScore(university.User.Bio, expandedSkills)
+                    .Select(university => {
+
+                     
+                        var scholarships = _repository.Scholarship.GetAllScholarshipsAsync(university.UniversityId, new ScholarshipsParameters { PageSize = int.MaxValue }, false).Result;
+                        
+                        var combinedText = new StringBuilder();
+
+                        combinedText.AppendLine(university.User.Bio);
+                        
+                        foreach (var scholarship in scholarships)
+                        {
+                            combinedText.AppendLine($"Scholarship: {scholarship.Name}");
+                            combinedText.AppendLine($"Description: {scholarship.Description}");
+                            combinedText.AppendLine($"Requirements: {scholarship.Requirements}");
+                        }
+
+                        var matchingSkills = GetMatchingSkills(combinedText.ToString(), expandedSkills);
+                        var matchScore = CalculateMatchScore(matchingSkills, expandedSkills);
+
+                        return new UniversitySuggestionDto
+                        {
+                            UniversityId = university.UniversityId,
+                            Name = university.User.UserName,
+                            Bio = university.User.Bio,
+                            UrlPicture = university.User.UrlPicture,
+                            UniversityUrl = university.UniversityUrl,
+                            IsVerified = university.IsVerified,
+                            MatchingSkills = matchingSkills,
+                            MatchScore = matchScore
+                        };
                     })
                     .Where(u => u.MatchingSkills.Any())
                     .OrderByDescending(u => u.MatchScore)
@@ -106,23 +154,22 @@ namespace Service
             return suggestions;
         }
 
-        private List<string> GetMatchingSkills(string bio, IEnumerable<string> expandedSkills)
+        private List<string> GetMatchingSkills(string text, IEnumerable<string> expandedSkills)
         {
-            if (string.IsNullOrWhiteSpace(bio))
+            if (string.IsNullOrWhiteSpace(text))
                 return new List<string>();
 
-            var bioLower = bio.ToLower();
+            var textLower = text.ToLower();
             return expandedSkills
-                .Where(skill => bioLower.Contains(skill))
+                .Where(skill => textLower.Contains(skill))
                 .ToList();
         }
 
-        private double CalculateMatchScore(string bio, IEnumerable<string> expandedSkills)
+        private double CalculateMatchScore(List<string> matchingSkills, IEnumerable<string> expandedSkills)
         {
-            if (string.IsNullOrWhiteSpace(bio) || !expandedSkills.Any())
+            if (!matchingSkills.Any() || !expandedSkills.Any())
                 return 0;
 
-            var matchingSkills = GetMatchingSkills(bio, expandedSkills);
             return (double)matchingSkills.Count / expandedSkills.Count();
         }
     }

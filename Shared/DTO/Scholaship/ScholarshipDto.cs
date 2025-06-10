@@ -43,7 +43,7 @@ namespace Shared.DTO.Scholaship
         public string? UrlApplicationForm { get; set; }
 
         public string? EligibleGrade { get; set; }
-        public Dictionary<string, string>? Requirements { get; set; } = new Dictionary<string, string>();
+        public string? Requirements { get; set; }
         public IFormFile? ImageFile { get; set; }
     }
 

@@ -50,7 +50,7 @@ namespace Shared.DTO.Scholaship
 
         [Required(ErrorMessage = "Eligible grade is required")]
         public string EligibleGrade { get; set; }
-        public Dictionary<string, string> Requirements { get; set; } = new Dictionary<string, string>();
+        public string Requirements { get; set; }
         [Required(ErrorMessage = "Image file is required")]
         public IFormFile? ImageFile { get; set; }
     }
