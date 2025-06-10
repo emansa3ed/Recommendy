@@ -7,7 +7,7 @@ namespace Presentation.Controllers
 {
     [Route("api/profile")]
     [ApiController]
-   // [Authorize]
+    [Authorize]
     public class OrganizationProfileController : ControllerBase
     {
         private readonly IOrganizationProfileService _organizationProfileService;
