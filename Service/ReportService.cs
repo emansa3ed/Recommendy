@@ -14,6 +14,8 @@ using Shared.DTO.Feedback;
 using Org.BouncyCastle.Utilities;
 using Microsoft.Extensions.Caching.Memory;
 using System.Text.Json;
+using Shared.DTO.Scholaship;
+using Shared.DTO.Internship;
 
 
 namespace Service
@@ -82,19 +84,46 @@ namespace Service
 
 
         }
-        public async Task<ReportDto> GetReport(int ReportId)
+        public async Task<ReportDto> GetReport(int reportId)
         {
-            var report = await _repository.ReportRepository.GetReportAsync(ReportId, false);
+            var report = await _repository.ReportRepository.GetReportAsync(reportId, false);
+            if (report == null) throw new ReportNotFoundException(reportId);
 
-            if (report == null)
-                throw new ReportNotFoundException(ReportId);
+            var reportDto = _mapper.Map<ReportDto>(report);
 
-            var result=  _mapper.Map<ReportDto>(report);
+            reportDto.ReportedItem = await GetReportedItem(report.Type, report.TypeId);
 
-
-            return result;
-
+            return reportDto;
         }
+
+        private async Task<object> GetReportedItem(ReportType type, int typeId)
+        {
+            try
+            {
+                switch (type)
+                {
+                    case ReportType.Scholarship:
+                        var scholarship =  _repository.Scholarship.ScholarshipById(typeId, trackChanges: false);
+                        if (scholarship == null) return new { Error = "Scholarship not found" };
+                        var scholarshipDto = _mapper.Map<GetScholarshipDto>(scholarship);
+                        return scholarshipDto;
+
+                    case ReportType.Internship:
+                        var internship =  _repository.Intership.InternshipById(typeId, trackChanges: false);
+                        if (internship == null) return new { Error = "Internship not found" };
+                        var internshipDto = _mapper.Map<InternshipDto>(internship);
+                        return internshipDto;
+
+                    default:
+                        return null;
+                }
+            }
+            catch (Exception)
+            {
+                return new { Error = "Failed to load reported item details" };
+            }
+        }
+
 
 
         public async Task<PagedList<ReportDto>> GetReportsAsync(ReportParameters reportParameters, bool trackChanges=false)
@@ -124,5 +153,51 @@ namespace Service
 
         }
 
+
+
+        public async Task UpdateReportStatus(int reportId, UpdateReportStatusDto dto)
+        {
+            var report = await _repository.ReportRepository.GetReportAsync(reportId, trackChanges: true);
+            if (report == null) throw new ReportNotFoundException(reportId);
+
+            report.Status = dto.Status;
+
+            if (dto.BanPost.HasValue || dto.DeletePost == true)
+            {
+                if (report.Type == ReportType.Scholarship)
+                {
+                    var scholarship =  _repository.Scholarship.ScholarshipById(report.TypeId, true);
+                    if (scholarship == null) throw new ScholarshipNotFoundException(report.TypeId);
+
+                    if (dto.DeletePost == true)
+                    {
+                        _repository.Scholarship.DeleteScholarship(scholarship);
+                    }
+                    else if (dto.BanPost.HasValue)
+                    {
+                        scholarship.IsBanned = dto.BanPost.Value;
+                        _repository.Scholarship.UpdateScholarship(scholarship);
+                    }
+                }
+                else if (report.Type == ReportType.Internship)
+                {
+                    var internship =  _repository.Intership.InternshipById(report.TypeId, true);
+                    if (internship == null) throw new InternshipNotFoundException(report.TypeId);
+
+                    if (dto.DeletePost == true)
+                    {
+                        _repository.Intership.DeleteIntership(internship.Id , true);
+                    }
+                    else if (dto.BanPost.HasValue)
+                    {
+                        internship.IsBanned = dto.BanPost.Value;
+                        _repository.Intership.UpdateIntership(internship);
+                    }
+                }
+            }
+
+            _repository.ReportRepository.UpdateReport(report);
+            await _repository.SaveAsync();
+        }
     }
 }

@@ -92,7 +92,18 @@ namespace Repository
                 .FirstOrDefault();
         }
 
-		public async Task<PagedList<Internship>> GetAllRecommendedInternships(string UserSkills, InternshipParameters internshipParameters, bool trackChanges)
+        public Internship InternshipById(int id, bool trackChanges)
+        {
+            return FindByCondition(i => i.Id == id, trackChanges)
+                .Include(i => i.InternshipPositions)
+                    .ThenInclude(ip => ip.Position)
+                .Include(i => i.Company)
+                    .ThenInclude(c => c.User)
+                .FirstOrDefault();
+        }
+
+
+        public async Task<PagedList<Internship>> GetAllRecommendedInternships(string UserSkills, InternshipParameters internshipParameters, bool trackChanges)
 		{
 			var res = await FindByCondition((i => i.IsBanned != true), trackChanges).Include(i => i.InternshipPositions)
 			.ThenInclude(ip => ip.Position)

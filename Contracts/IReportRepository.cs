@@ -14,6 +14,6 @@ namespace Contracts
         void DeleteReport(Report report);
         Task<Report> GetReportAsync(int ReportId, bool trackChanges);
         Task<PagedList<Report>> GetReportsAsync( ReportParameters reportParameters, bool trackChanges);
-
+        void UpdateReport(Report report);
     }
 }

@@ -12,11 +12,12 @@ using Entities.GeneralResponse;
 using Shared.DTO.Feedback;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Entities.Exceptions;
+using Entities.Models;
 namespace Presentation.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-  //  [Authorize(Roles = "Student")]
     public class ReportController : ControllerBase
     {
         private readonly IServiceManager _service;
@@ -40,6 +41,7 @@ namespace Presentation.Controllers
 
             return Ok();
         }
+
         [Authorize(Roles = "Admin")]
         [HttpGet("all")]
         public async Task<ActionResult<ApiResponse<PagedList<ReportDto>>>> GetReports([FromQuery] ReportParameters reportParameters)
@@ -64,10 +66,10 @@ namespace Presentation.Controllers
 
             return Ok(new ApiResponse<ReportDto> { Success = true, Message = "Fetch success", Data = report }); 
 
-
         }
-        [Authorize(Roles = "Admin")]
 
+
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{ReportId}")]
         public async Task<ActionResult> DeleteReport( [FromRoute]  int ReportId)
         {
@@ -77,5 +79,34 @@ namespace Presentation.Controllers
 
         }
 
+
+
+        // Admin endpoint to Review report status and optionally delete the post
+        [Authorize(Roles = "Admin")]
+        [HttpPatch("{ReportId}")]
+
+
+        public async Task<IActionResult> UpdateReportStatus(int ReportId, [FromBody] UpdateReportStatusDto dto)
+        {
+            
+            
+                var report = await _service.ReportService.GetReport(ReportId);
+                if (report == null) throw new ReportNotFoundException(ReportId);
+
+
+                await _service.ReportService.UpdateReportStatus(ReportId, dto);
+
+                return Ok(new ApiResponse<string>
+                {
+                    Success = true,
+                    Message = "Report status updated successfully.",
+                    Data = null
+                });
+            
+            
+        }
+    
     }
+
 }
+

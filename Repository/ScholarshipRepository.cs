@@ -60,7 +60,10 @@ namespace Repository
         public Scholarship GetScholarshipById(int id, bool trackChanges) => FindByCondition(s => s.Id == id, trackChanges).Where(s => !s.IsBanned).Include(s => s.University)
                 .ThenInclude(u => u.User).SingleOrDefault();
 
-		public async Task<PagedList<Scholarship>> GetAllRecommendedScholarships(string UserSkills, ScholarshipsParameters scholarshipsParameters, bool trackChanges)
+        public Scholarship ScholarshipById(int id, bool trackChanges) => FindByCondition(s => s.Id == id, trackChanges).Include(s => s.University)
+              .ThenInclude(u => u.User).SingleOrDefault();
+
+        public async Task<PagedList<Scholarship>> GetAllRecommendedScholarships(string UserSkills, ScholarshipsParameters scholarshipsParameters, bool trackChanges)
 		{
 			var res = await FindByCondition((s => !s.IsBanned), trackChanges)
 				.Paging(scholarshipsParameters.PageNumber, scholarshipsParameters.PageSize)

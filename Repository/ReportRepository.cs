@@ -19,8 +19,8 @@ namespace Repository
         public ReportRepository( RepositoryContext repositoryContext  )  : base(repositoryContext){ }
 
 
-      public  void CreateReport( Report report ) =>Create(report);
-      public void DeleteReport( Report report ) => Delete(report);
+        public  void CreateReport( Report report ) =>Create(report);
+        public void DeleteReport( Report report ) => Delete(report);
 
         public async Task<Report> GetReportAsync(int ReportId, bool trackChanges)
         {
@@ -39,5 +39,8 @@ namespace Repository
 
            
         }
+
+
+        public void UpdateReport(Report report) => Update(report);
     }
 }

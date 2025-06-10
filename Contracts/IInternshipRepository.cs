@@ -22,6 +22,7 @@ namespace Contracts
         Task<PagedList<Internship>> GetAllInternshipsAsync(InternshipParameters internshipParameters,bool trackChanges);
         Task<PagedList<Internship>> GetAllRecommendedInternships(string UserSkills,InternshipParameters internshipParameters,bool trackChanges);
         Internship GetInternshipById(int id, bool trackChanges);
+        Internship InternshipById(int id, bool trackChanges);
         Task DeleteInternshipsByCompanyId(string companyId);
 
 

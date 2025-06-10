@@ -11,12 +11,11 @@ namespace Service.Contracts
 {
     public interface IReportService
     {
-         Task CreateReport(string StudentID, int PostID, ReportDtoCreation reportDtoCreation);
-
+        Task CreateReport(string StudentID, int PostID, ReportDtoCreation reportDtoCreation);
         Task DeleteReport(int ReportId);
         Task<ReportDto> GetReport(int ReportId);
         Task<PagedList<ReportDto>> GetReportsAsync(ReportParameters reportParameters, bool trackChanges);
-
+        Task UpdateReportStatus(int reportId, UpdateReportStatusDto dto);
 
     }
 }
