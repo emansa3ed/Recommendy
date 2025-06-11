@@ -53,6 +53,10 @@ namespace Service
 					throw new   InternshipNotFoundException(PostId);
 			}
 
+			var res = await _repository.FeedbackRepository.GetFeedbackByUserId(PostId, StudentId, feedback.Type, false);
+			if (res != null)
+				throw new BadRequestException("You have already submitted feedback for this post.");
+
 			var feedbackEntity = _mapper.Map<Feedback>(feedback);
 
 			feedbackEntity.StudentId = StudentId;
@@ -136,6 +140,12 @@ namespace Service
 			var res = _mapper.Map<List<FeedBackDto>>(feedbacks);
 
 			return new PagedList<FeedBackDto>(res, feedbacks.MetaData.TotalCount, Feedback.PageNumber, Feedback.PageSize);
+		}
+
+		public async Task EditFeedBack(string CompanyID, string StudentId, int PostId, FeedbackEditDto feedbackEditDto)
+		{
+			await _repository.FeedbackRepository.EditFeedBack(CompanyID, StudentId, PostId, feedbackEditDto);
+			await _repository.SaveAsync();
 		}
 	}
 }

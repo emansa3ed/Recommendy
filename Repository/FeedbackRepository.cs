@@ -1,4 +1,5 @@
 ﻿using Contracts;
+using Entities.Exceptions;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
 using Repository.Extensions;
@@ -44,5 +45,20 @@ namespace Repository
 
         }
 
-    }
+		public async Task<Feedback> GetFeedbackByUserId(int PostId,string UserId, FeedbackType feedbackType, bool TrackChanges = false) =>
+			await FindByCondition(f => f.PostId == PostId && f.Type.Equals(feedbackType) && f.StudentId.Equals(UserId), TrackChanges)
+			.FirstOrDefaultAsync();
+
+		public async Task EditFeedBack(string CompanyID, string StudentId, int PostId, FeedbackEditDto feedbackEditDto)
+		{
+			var feedback = await FindByCondition(f => f.PostId == PostId && f.StudentId.Equals(StudentId) && f.Type.Equals(feedbackEditDto.Type), true)
+				.FirstOrDefaultAsync();
+
+			if (feedback == null)
+				throw new FeedbackNotFoundException(null);
+
+			feedback.Content = feedbackEditDto.Content;
+			Update(feedback);
+		}
+	}
 }

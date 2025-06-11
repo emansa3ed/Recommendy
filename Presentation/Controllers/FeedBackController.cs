@@ -56,34 +56,46 @@ namespace Presentation.Controllers
 
         }
 
-			[HttpPost]
-			[Authorize(Roles = "Student")]
-			public async Task<ActionResult> CreateFeedBack([FromRoute] string OrganizationID, [FromRoute] int PostId, FeedbackCreationDto feedback)
-			{
-				if (!ModelState.IsValid)
-					return BadRequest(ModelState);
-				var user = await _service.UserService.GetDetailsByUserName(User.Identity.Name);
-				await _service.FeedbackService.CreateFeedbackAsync(OrganizationID, PostId, user.Id, feedback);
-				return Ok();
-			}
+		[HttpPost]
+		[Authorize(Roles = "Student")]
+		public async Task<ActionResult> CreateFeedBack([FromRoute] string OrganizationID, [FromRoute] int PostId, FeedbackCreationDto feedback)
+		{
+			if (!ModelState.IsValid)
+				return BadRequest(ModelState);
+			var user = await _service.UserService.GetDetailsByUserName(User.Identity.Name);
+			await _service.FeedbackService.CreateFeedbackAsync(OrganizationID, PostId, user.Id, feedback);
+			return Ok();
+		}
 
-			[HttpDelete]
-			[Authorize(Roles = "Student")]
-			public async Task<ActionResult> DeleteFeedBack([FromRoute] string OrganizationID, [FromRoute] int PostId, FeedbackDelationDto feedback)
-			{
+		[HttpDelete]
+		[Authorize(Roles = "Student")]
+		public async Task<ActionResult> DeleteFeedBack([FromRoute] string OrganizationID, [FromRoute] int PostId, FeedbackDelationDto feedback)
+		{
 
-				if (!ModelState.IsValid)
-					return BadRequest(ModelState);
+			if (!ModelState.IsValid)
+				return BadRequest(ModelState);
 
-				var user = await _service.UserService.GetDetailsByUserName(User.Identity.Name);
+			var user = await _service.UserService.GetDetailsByUserName(User.Identity.Name);
 
-				await _service.FeedbackService.DeleteFeedbackAsync(OrganizationID, user.Id, PostId, feedback);
-				return NoContent();
-			}
+			await _service.FeedbackService.DeleteFeedbackAsync(OrganizationID, user.Id, PostId, feedback);
+			return NoContent();
+		}
+
+		[HttpPatch("{feedbackId}")]
+		[Authorize(Roles = "Student")]
+		public async Task<ActionResult> EditFeedBack([FromRoute] string OrganizationID, [FromRoute] int PostId, FeedbackEditDto feedbackEditDto)
+		{
+
+			if (!ModelState.IsValid)
+				return BadRequest(ModelState);
+
+			var user = await _service.UserService.GetDetailsByUserName(User.Identity.Name);
+
+			await _service.FeedbackService.EditFeedBack(OrganizationID, user.Id, PostId, feedbackEditDto);
+			return NoContent();
+		}
 
 
-			
 
-		
 	}
 }
