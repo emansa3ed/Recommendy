@@ -8,6 +8,7 @@ namespace Shared.DTO.Company
 {
     public record CompanyDto
     {
+        public string Id { get; init; }
 
         public string? CompanyUrl { get; init; }
         public string? UserName { get; init; }
@@ -17,6 +18,8 @@ namespace Shared.DTO.Company
     }
     public record CompanyViewDto
     {
+        public string Id { get; init; }
+
         public string? CompanyUrl { get; init; }
         public string? UrlPicture { get; init; }
         public string? UserName { get; init; }

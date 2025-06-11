@@ -8,6 +8,7 @@ namespace Shared.DTO.University
 {
     public record UniversityViewDto
     {
+        public string Id { get; set; }
         public string? UniversityUrl { get; init; }
         public string? UrlPicture { get; init; }
         public string? UserName { get; init; }
