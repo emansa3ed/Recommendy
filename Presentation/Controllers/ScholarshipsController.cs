@@ -21,7 +21,7 @@ namespace Presentation.Controllers
     //[Route("api/[controller]")]
     [Route("api/universities/{universityId}/scholarships")]
     [ApiController]
-    [Authorize(Roles ="University")]
+  
     public class ScholarshipsController : ControllerBase
     {
         private readonly IServiceManager _service;
@@ -36,6 +36,7 @@ namespace Presentation.Controllers
 
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<ApiResponse<PagedList<EditedScholarshipDto>>>> GetScholarshipsForUniversity([FromRoute] string universityId, [FromQuery] ScholarshipsParameters scholarshipsParameters)
         {
             var scholarships = await _service.ScholarshipService
@@ -48,6 +49,7 @@ namespace Presentation.Controllers
 
 
 		[HttpPost]
+        [Authorize(Roles = "University")]
         [Authorize(Policy = "VerifiedOrganization")]
         public async Task<ActionResult<ApiResponse<EditedScholarshipDto>>> CreateScholarshipForUniversity(
         [FromRoute] string universityId,
@@ -86,6 +88,7 @@ namespace Presentation.Controllers
 
         
         [HttpGet("{id:int}")]
+        [Authorize(Roles = "University")]
         public async Task<ActionResult<ApiResponse<GetScholarshipDto>>> GetScholarshipForEdit(string universityId, int id)
         {
             var scholarship = await _service.ScholarshipService.GetScholarshipById(id, trackChanges: false);
@@ -103,6 +106,7 @@ namespace Presentation.Controllers
         }
 
         [HttpPut("{id:int}")]
+        [Authorize(Roles = "University")]
         [Authorize(Policy = "VerifiedOrganization")]
         public async Task<IActionResult> UpdateScholarshipForUniversity(string universityId, int id, [FromForm] ScholarshipDto scholarshipDto)
         {
@@ -117,6 +121,7 @@ namespace Presentation.Controllers
 
 
        [HttpDelete("{id:int}")]
+        [Authorize(Roles = "University")]
         [Authorize(Policy = "VerifiedOrganization")]
         public async Task<IActionResult> DeleteScholarshipForUniversity(string universityId, int id)
        {

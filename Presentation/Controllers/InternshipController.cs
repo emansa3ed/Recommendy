@@ -20,7 +20,7 @@ namespace Presentation.Controllers
 {
     [Route("api/Companies/{CompanyID}/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Company")]
+   
 
     public class InternshipController : ControllerBase
     {
@@ -36,6 +36,7 @@ namespace Presentation.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Company")]
         [Authorize(Policy = "VerifiedOrganization")]
         public async Task<ActionResult<ApiResponse<Internship>>> CreateInternship( [FromRoute] string CompanyID ,[FromForm] InternshipCreationDto internshipCreation)
         {
@@ -57,6 +58,7 @@ namespace Presentation.Controllers
         
 
         [HttpPost("{InternshipId}/Positions")]
+        [Authorize(Roles = "Company")]
         [Authorize(Policy = "VerifiedOrganization")]
         public async Task<IActionResult> CreatePosition([FromRoute] string CompanyID, [FromRoute] int InternshipId, [FromBody]InternshipPositionDto internshipPositionDto)
         {
@@ -76,6 +78,7 @@ namespace Presentation.Controllers
 
         }
         [HttpGet("StoredPositions")]
+        [Authorize(Roles = "Company")]
         public async Task<IActionResult> GetPosition([FromRoute] string CompanyID)
         {
             
@@ -93,6 +96,7 @@ namespace Presentation.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<ApiResponse<PagedList<InternshipDto>>>> GetInternshipsByCompanyId([FromRoute] string CompanyID, [FromQuery] InternshipParameters internshipParameters)
         {
             if (!ModelState.IsValid)
@@ -109,6 +113,7 @@ namespace Presentation.Controllers
 
 
         [HttpDelete("{InternshipId}")]
+        [Authorize(Roles = "Company")]
         [Authorize(Policy = "VerifiedOrganization")]
         public async Task<IActionResult> DeleteInternship([FromRoute] string CompanyID, [FromRoute] int InternshipId)
         {
@@ -124,6 +129,7 @@ namespace Presentation.Controllers
         }
 
         [HttpDelete("{InternshipId}/positions/{PositionId}")]
+        [Authorize(Roles = "Company")]
         [Authorize(Policy = "VerifiedOrganization")]
         public  async Task<IActionResult> DeletePosition([FromRoute] string CompanyID, [FromRoute] int InternshipId, [FromRoute] int PositionId)
         {
@@ -136,6 +142,7 @@ namespace Presentation.Controllers
 
 
         [HttpPatch("{InternshipId}")]
+        [Authorize(Roles = "Company")]
         [Authorize(Policy = "VerifiedOrganization")]
 
         public async Task<IActionResult> UpdateInternship([FromRoute] string CompanyID, [FromRoute]int InternshipId, [FromForm] InternshipUpdateDto internshipUpdateDto) 
@@ -148,6 +155,7 @@ namespace Presentation.Controllers
         }
 
         [HttpPatch("{InternshipId}/positions{PositionId}")]
+        [Authorize(Roles = "Company")]
         [Authorize(Policy = "VerifiedOrganization")]
 
         public async Task<IActionResult> UpdateInternshipPosition([FromRoute] string CompanyID, [FromRoute] int InternshipId, [FromRoute] int PositionId, [FromBody] InternshipPositionUpdateDto internshipPositionUpdate)
