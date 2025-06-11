@@ -30,7 +30,7 @@ namespace Recommendy.Extensions
        {
 
          options.AddPolicy("CorsPolicy", builder =>
-         builder.WithOrigins("http://localhost:3000")
+		 builder.WithOrigins(new string[] { "http://localhost:3000", "http://127.0.0.1:5500" })
 		.AllowAnyMethod()
         .AllowAnyHeader()
 		.WithExposedHeaders("X-Pagination").AllowCredentials()); 
@@ -102,7 +102,7 @@ namespace Recommendy.Extensions
 
 
 						if (!string.IsNullOrEmpty(accessToken) &&
-							( path.StartsWithSegments("/notificationHub") || path.StartsWithSegments("/feedbackHub") ))
+							( path.StartsWithSegments("/notificationHub") || path.StartsWithSegments("/feedbackHub") || path.StartsWithSegments("/messageHub")))
 						{
 
 							context.Token = accessToken;
@@ -119,7 +119,7 @@ namespace Recommendy.Extensions
                                var accessToken = context.Request.Cookies["authToken"];
 
 						   if (!string.IsNullOrEmpty(accessToken) &&
-							   (path.StartsWithSegments("/notificationHub") || path.StartsWithSegments("/feedbackHub")))
+							   (path.StartsWithSegments("/notificationHub") || path.StartsWithSegments("/feedbackHub") || path.StartsWithSegments("/messageHub")))
 						   {
                                var handler = new JwtSecurityTokenHandler();
                                var jwtToken = handler.ReadJwtToken(accessToken);

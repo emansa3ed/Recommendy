@@ -13,10 +13,8 @@ namespace Service.Hubs
 {
     public class FeedbackHub : Hub
     {
-        private readonly IFeedbackService _feedbackService;
-        public FeedbackHub(IFeedbackService feedbackService)
+        public FeedbackHub()
         {
-            _feedbackService = feedbackService;
         }
 
 

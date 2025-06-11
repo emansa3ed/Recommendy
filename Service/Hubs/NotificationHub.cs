@@ -10,15 +10,12 @@ using System.Text.Json;
 
 public class NotificationHub : Hub
 {
-	private readonly INotificationService _notificationService;
-	public NotificationHub(INotificationService notificationService)
+	public NotificationHub()
 	{
-		_notificationService = notificationService;
 	}
 
 	public async Task SendNotification(NotificationCreationDto notification)
 	{
-		await _notificationService.CreateNotificationAsync(notification);
 		string jsonData = JsonSerializer.Serialize(notification);
 		await Clients.User(notification.ReceiverID).SendAsync("ReceiveNotification", jsonData);
 	}
