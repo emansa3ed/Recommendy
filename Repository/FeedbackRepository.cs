@@ -44,5 +44,9 @@ namespace Repository
 
         }
 
-    }
+		public async Task<Feedback> GetFeedbackByUserId(int PostId,string UserId, FeedbackType feedbackType, bool TrackChanges = false) =>
+			await FindByCondition(f => f.PostId == PostId && f.Type.Equals(feedbackType) && f.StudentId.Equals(UserId), TrackChanges)
+			.FirstOrDefaultAsync();
+
+	}
 }

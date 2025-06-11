@@ -53,6 +53,10 @@ namespace Service
 					throw new   InternshipNotFoundException(PostId);
 			}
 
+			var res = await _repository.FeedbackRepository.GetFeedbackByUserId(PostId, StudentId, feedback.Type, false);
+			if (res != null)
+				throw new BadRequestException("You have already submitted feedback for this post.");
+
 			var feedbackEntity = _mapper.Map<Feedback>(feedback);
 
 			feedbackEntity.StudentId = StudentId;
