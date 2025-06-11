@@ -1,4 +1,4 @@
-using Shared.DTO;
+using Shared.DTO.Organization;
 using System.Threading.Tasks;
 
 namespace Service.Contracts

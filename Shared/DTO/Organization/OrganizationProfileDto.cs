@@ -1,4 +1,4 @@
-namespace Shared.DTO
+namespace Shared.DTO.Organization
 {
     public class OrganizationProfileDto
     {
@@ -11,4 +11,4 @@ namespace Shared.DTO
         public bool IsVerified { get; set; }
         public string Type { get; set; } // "Company" or "University"
     }
-} 
+}

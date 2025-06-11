@@ -1,8 +1,8 @@
 using Contracts;
-using Shared.DTO;
 using System.Threading.Tasks;
 using Entities.Exceptions;
 using Service.Contracts;
+using Shared.DTO.Organization;
 
 namespace Service
 {
