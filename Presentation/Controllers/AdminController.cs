@@ -33,6 +33,8 @@ namespace Presentation.Controllers
             var companies = await _service.CompanyService
                 .GetUnverifiedCompaniesAsync(companyParameters, trackChanges: false);
 
+            Response.Headers.Add("X-Pagination",
+    JsonSerializer.Serialize(companies.MetaData));
 
             return Ok(companies);
         }
@@ -51,6 +53,9 @@ namespace Presentation.Controllers
         {
             var universities = await _service.UniversityService
                 .GetUnverifiedUniversitiesAsync(universityParameters, trackChanges: false);
+
+            Response.Headers.Add("X-Pagination",
+                JsonSerializer.Serialize(universities.MetaData));
 
 
             return Ok(universities);
