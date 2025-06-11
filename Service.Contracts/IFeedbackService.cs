@@ -9,8 +9,9 @@ namespace Service.Contracts
         Task CreateFeedbackAsync(string CompanyID, int PostId, string StudentId, FeedbackCreationDto feedback);
 
         Task DeleteFeedbackAsync(string CompanyID,string StudentId, int PostId,  FeedbackDelationDto FeedbackId);
+        Task EditFeedBack(string CompanyID,string StudentId, int PostId,  FeedbackEditDto feedbackEditDto);
 
-        Task<FeedBackDto> GetFeedbackAsync(int FeedbackId);
+		Task<FeedBackDto> GetFeedbackAsync(int FeedbackId);
         Task<PagedList<FeedBackDto>> GetAllFeedbackAsync(string CompanyID, int PostId, FeedBackParameters Feedback);
 
     }

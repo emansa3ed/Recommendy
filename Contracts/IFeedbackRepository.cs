@@ -1,4 +1,5 @@
 ﻿using Entities.Models;
+using Shared.DTO.Feedback;
 using Shared.RequestFeatures;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace Contracts
 	{
 		void CreateFeedback(Feedback feedback);
 		void DeleteFeedback(Feedback feedback);
+		Task EditFeedBack(string CompanyID, string StudentId, int PostId, FeedbackEditDto feedbackEditDto);
 
 		Task<Feedback> GetFeedbackById(int? FeedbackId, bool TrackChanges = false);
 		Task<Feedback> GetFeedbackByUserId(int PostId, string UserId,FeedbackType feedbackType, bool TrackChanges = false);

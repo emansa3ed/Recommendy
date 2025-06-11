@@ -141,6 +141,12 @@ namespace Service
 
 			return new PagedList<FeedBackDto>(res, feedbacks.MetaData.TotalCount, Feedback.PageNumber, Feedback.PageSize);
 		}
+
+		public async Task EditFeedBack(string CompanyID, string StudentId, int PostId, FeedbackEditDto feedbackEditDto)
+		{
+			await _repository.FeedbackRepository.EditFeedBack(CompanyID, StudentId, PostId, feedbackEditDto);
+			await _repository.SaveAsync();
+		}
 	}
 }
 
