@@ -35,7 +35,7 @@ namespace Service
             if (company == null)
                 throw new CompanyNotFoundException(CompanyId);
 
-            var Internship = _repositoryManager.Intership.GetInternshipById(InternshipId, false);
+            var Internship = _repositoryManager.Intership.GetInternshipById(CompanyId,InternshipId, false);
             if (Internship == null)
                 throw new InternshipNotFoundException(InternshipId);
 
@@ -61,7 +61,7 @@ namespace Service
             if (company == null)
                 throw new CompanyNotFoundException(CompanyId);
 
-            var Internship = _repositoryManager.Intership.GetInternshipById(InternshipId, false);
+            var Internship = _repositoryManager.Intership.GetInternshipById(CompanyId, InternshipId, false);
             if (Internship == null)
                 throw new InternshipNotFoundException(InternshipId);
 
@@ -83,7 +83,7 @@ namespace Service
             if (company == null)
                 throw new CompanyNotFoundException(CompanyId);
 
-            var Internship = _repositoryManager.Intership.GetInternshipById(InternshipId, false);
+            var Internship = _repositoryManager.Intership.GetInternshipById(CompanyId, InternshipId, false);
             if (Internship == null)
                 throw new InternshipNotFoundException(InternshipId);
 

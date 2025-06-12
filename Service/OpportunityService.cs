@@ -36,7 +36,7 @@ namespace Service
 				throw new StudentNotFoundException(StudentId);
             if (savedOpportunityDto.Type == "I")
             {
-                var internship = _repositoryManager.Intership.GetInternshipById(savedOpportunityDto.PostId, false);
+                var internship = _repositoryManager.Intership.InternshipById(savedOpportunityDto.PostId, false);
                 if (internship == null)
                     throw new InternshipNotFoundException(savedOpportunityDto.PostId);
 				ReceiverID = internship.CompanyId;
@@ -69,7 +69,10 @@ namespace Service
 				await _repositoryManager.OpportunityRepository.SavedOpportunity(savedPost);
 				await _repositoryManager.SaveAsync();
 				
-				await _notificationService.CreateNotificationAsync(new NotificationCreationDto { ActorID = StudentId, ReceiverID = ReceiverID, Content = NotificationType.SaveOpportunity});
+				await _notificationService.CreateNotificationAsync(new NotificationCreationDto { ActorID = StudentId,
+					ReceiverID = ReceiverID,
+					Content = NotificationType.SaveOpportunity,
+				PostID=savedOpportunityDto.PostId});
 
 			}
 
@@ -82,7 +85,7 @@ namespace Service
 
             if (savedOpportunityDto.Type == "I")
             {
-                var internship = _repositoryManager.Intership.GetInternshipById(savedOpportunityDto.PostId, false);
+                var internship = _repositoryManager.Intership.InternshipById(savedOpportunityDto.PostId, false);
                 if (internship == null)
                     throw new InternshipNotFoundException(savedOpportunityDto.PostId);
 
@@ -158,7 +161,7 @@ namespace Service
 
 			foreach (var savedPost in savedPosts)///بدل الفور دي كنت علمت  ليست جوه ال ماب
 			{
-				var internship = _repositoryManager.Intership.GetInternshipById(savedPost.PostId, trackChanges: false);
+				var internship = _repositoryManager.Intership.InternshipById(savedPost.PostId, trackChanges: false);
 				if (internship != null)
 				{
 					var internshipDto = _mapper.Map<InternshipDto>(internship);
