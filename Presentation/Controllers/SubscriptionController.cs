@@ -58,6 +58,18 @@ public class SubscriptionController : ControllerBase
 		return BadRequest(new ApiResponse<SubscriptionResponse> { Success = false, Message="Faliled to get server url"});
 	}
 
+	[HttpGet("is-premium")]
+	[Authorize]
+	public async Task<ActionResult<ApiResponse<bool>>> IsPremiumUser()
+	{
+		var user = await _service.UserService.GetDetailsByUserName(User.Identity.Name);
+
+		if (await _service.UserService.IsInRoleAsync(user.UserName, "PremiumUser"))
+			return Ok(new ApiResponse<bool> { Success = true, Message = "User has a subscription",Data=true });
+
+		return Ok(new ApiResponse<bool> { Success = true, Message = "User doesn't have a subscription", Data = false });
+	}
+
 	[NonAction]
 	public async Task<string> CreateSubscriptionSession(string thisApiUrl,UserDto user)
 	{
