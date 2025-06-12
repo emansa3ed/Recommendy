@@ -60,7 +60,7 @@ public class SubscriptionController : ControllerBase
 
 	[HttpGet("is-premium")]
 	[Authorize]
-	public async Task<ActionResult<ApiResponse<bool>>> IsPremiumUser([FromServices] IServiceProvider sp)
+	public async Task<ActionResult<ApiResponse<bool>>> IsPremiumUser()
 	{
 		var user = await _service.UserService.GetDetailsByUserName(User.Identity.Name);
 
