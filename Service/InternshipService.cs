@@ -64,7 +64,7 @@ namespace Service
             if (company == null)
                 throw new CompanyNotFoundException(CompanyId);
 
-            var Internship = _repositoryManager.Intership.GetInternshipById(Id, false);
+            var Internship = _repositoryManager.Intership.GetInternshipById(CompanyId, Id, false);
             if (Internship == null)
                 throw new InternshipNotFoundException(Id);
 
@@ -77,7 +77,7 @@ namespace Service
         public async Task UpdateInternship( string CompanyId,  int id, InternshipUpdateDto internshipDto)
         {
           
-            var existingInternship =  _repositoryManager.Intership.GetInternshipById(id, true);
+            var existingInternship =  _repositoryManager.Intership.GetInternshipById(CompanyId,id, true);
             if (existingInternship == null)
               throw new InternshipNotFoundException(id);
             
@@ -139,7 +139,7 @@ namespace Service
         public async Task<InternshipDto> GetInternshipById(int id, bool trackChanges)
         {
             
-               var internship =  _repositoryManager.Intership.GetInternshipById(id, trackChanges);
+               var internship =  _repositoryManager.Intership.InternshipById(id, trackChanges);
             if (internship == null)
                 throw new InternshipNotFoundException(id);
 

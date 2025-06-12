@@ -21,6 +21,8 @@ namespace Shared.DTO.Notification
 		
 		[Required(ErrorMessage = "ActorID Id is required")]
 		public string ActorID { get; set; }
+		[Required(ErrorMessage = "ActorID Id is required")]
+		public int PostID { get; set; }
 		public NotificationType Content { get; set; }
 	}
 }

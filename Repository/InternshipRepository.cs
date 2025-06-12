@@ -81,9 +81,9 @@ namespace Repository
 
 
 
-		public Internship GetInternshipById(int id, bool trackChanges)
+		public Internship GetInternshipById(string CompanyID, int id, bool trackChanges)
         {
-            return FindByCondition(i => i.Id == id, trackChanges)
+            return FindByCondition(i => i.Id == id && i.CompanyId.Equals(CompanyID), trackChanges)
                 .Where(i => i.IsBanned != true)
                 .Include(i => i.InternshipPositions)
                     .ThenInclude(ip => ip.Position)

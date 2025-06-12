@@ -48,7 +48,7 @@ namespace Service
 			}
 			else
 			{
-				post = _repository.Intership.GetInternshipById(PostId, false);
+				post = _repository.Intership.GetInternshipById(CompanyID, PostId, false);
 				if (post == null)
 					throw new   InternshipNotFoundException(PostId);
 			}
@@ -65,7 +65,10 @@ namespace Service
 
 			_repository.FeedbackRepository.CreateFeedback(feedbackEntity);
 
-			await _notificationService.CreateNotificationAsync(new NotificationCreationDto { ActorID = StudentId, ReceiverID = CompanyID, Content = NotificationType.CreateFeedBack});
+			await _notificationService.CreateNotificationAsync(new NotificationCreationDto { ActorID = StudentId,
+				ReceiverID = CompanyID,
+				Content = NotificationType.CreateFeedBack,
+			PostID=PostId});
 
 
 			await _repository.SaveAsync();
@@ -84,7 +87,7 @@ namespace Service
 			}
 			else
 			{
-				post = _repository.Intership.GetInternshipById(PostId, false);
+				post = _repository.Intership.GetInternshipById(CompanyID, PostId, false);
 				if (post == null)
 					throw new InternshipNotFoundException(PostId);
 			}
@@ -130,7 +133,7 @@ namespace Service
 			}
 			else
 			{
-				post = _repository.Intership.GetInternshipById(PostId, false);
+				post = _repository.Intership.GetInternshipById(CompanyID,PostId, false);
 				if (post == null)
 					throw new InternshipNotFoundException(PostId);
 			}

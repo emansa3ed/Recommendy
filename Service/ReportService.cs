@@ -44,7 +44,7 @@ namespace Service
 
             if (reportDtoCreation.Type == ReportType.Internship)
             {
-                var internship = _repository.Intership.GetInternshipById(PostId,false);
+                var internship = _repository.Intership.InternshipById(PostId,false);
                 Console.WriteLine(internship);
 
                 if (internship == null )
