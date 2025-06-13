@@ -46,6 +46,7 @@ namespace Service
         private readonly Lazy<ISkillService> _skillService;
         private readonly Lazy<IProfileSuggestionService> _profileSuggestionService;
         private readonly Lazy<IOrganizationProfileService> _organizationProfileService;
+        private readonly Lazy<IGeminiService> _geminiservice;
 
 
 		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper,
@@ -83,7 +84,9 @@ namespace Service
 			_skillService = new Lazy<ISkillService>(() => new SkillService(repositoryManager));
             _profileSuggestionService = new Lazy<IProfileSuggestionService>(() => new ProfileSuggestionService(repositoryManager, mapper, memoryCache));
             _organizationProfileService = new Lazy<IOrganizationProfileService>(() => new OrganizationProfileService(repositoryManager));
-        }
+			_geminiservice = new Lazy<IGeminiService>(() => new GeminiService());
+
+		}
 
 
         public IAdminService AdminService => _adminService.Value;
@@ -122,5 +125,7 @@ namespace Service
         public IProfileSuggestionService ProfileSuggestionService => _profileSuggestionService.Value;
 
         public IOrganizationProfileService OrganizationProfileService => _organizationProfileService.Value;
+
+        public IGeminiService GeminiService => _geminiservice.Value;
 	}
 }

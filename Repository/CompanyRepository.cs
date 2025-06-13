@@ -1,7 +1,5 @@
 ﻿using Contracts;
 using Entities.Models;
-using Google.Cloud.AIPlatform.V1;
-using Humanizer;
 using Microsoft.EntityFrameworkCore;
 using Repository.Extensions;
 using Shared.RequestFeatures;
@@ -11,7 +9,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static Google.Cloud.AIPlatform.V1.NearestNeighborQuery.Types;
 
 namespace Repository
 {

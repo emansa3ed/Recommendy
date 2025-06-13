@@ -167,18 +167,12 @@ namespace Service
 			await _repository.SaveAsync();
 		}
 
-		public async Task<PagedList<GetScholarshipDto>> GetAllRecommendedScholarships(string UserSkills, ScholarshipsParameters scholarshipsParameters, bool trackChanges)
+		public async Task<PagedList<GetScholarshipDto>> GetAllRecommendedScholarships(string UserSkills, string Titles, ScholarshipsParameters scholarshipsParameters, bool trackChanges)
 		{
 
 			if (!_memoryCache.Cache.TryGetValue(scholarshipsParameters.ToString() + UserSkills+ "GetAllRecommendedScholarships", out PagedList<Scholarship> cacheValue))
 			{
-				var skills = UserSkills
-							.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-	                        .Select(term => term.ToLower())
-	                        .ToList();
-                var ExpandedSkills = SkillOntology.ExpandSkills(skills);
-                var NewSkills = string.Join(",", ExpandedSkills.ToList());
-				cacheValue = await _repository.Scholarship.GetAllRecommendedScholarships(NewSkills, scholarshipsParameters, trackChanges);
+				cacheValue = await _repository.Scholarship.GetAllRecommendedScholarships(Titles, scholarshipsParameters, trackChanges);
 
 				var jsonSize = JsonSerializer.SerializeToUtf8Bytes(cacheValue).Length;
 

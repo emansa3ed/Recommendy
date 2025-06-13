@@ -103,16 +103,16 @@ namespace Repository
         }
 
 
-        public async Task<PagedList<Internship>> GetAllRecommendedInternships(string UserSkills, InternshipParameters internshipParameters, bool trackChanges)
+        public async Task<PagedList<Internship>> GetAllRecommendedInternships(string Titles, InternshipParameters internshipParameters, bool trackChanges)
 		{
 			var res = await FindByCondition((i => i.IsBanned != true), trackChanges).Include(i => i.InternshipPositions)
 			.ThenInclude(ip => ip.Position)
-		.Filter(internshipParameters.Paid).Paging(internshipParameters.PageNumber, internshipParameters.PageSize).Recommendation(UserSkills)
+		.Filter(internshipParameters.Paid).Paging(internshipParameters.PageNumber, internshipParameters.PageSize).Recommendation(Titles)
 		.Include(i => i.Company)
 		.ThenInclude(c => c.User)
 		.ToListAsync();
 
-			var count = await FindByCondition((i => i.IsBanned != true), trackChanges).Recommendation(UserSkills).CountAsync();
+			var count = await FindByCondition((i => i.IsBanned != true), trackChanges).Recommendation(Titles).CountAsync();
 			return new PagedList<Internship>(res, count, internshipParameters.PageNumber, internshipParameters.PageSize);
 		}
 

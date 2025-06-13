@@ -17,7 +17,7 @@ namespace Contracts
             void UpdateScholarship(Scholarship scholarship);
             void DeleteScholarship(Scholarship scholarship);
             Task<PagedList<Scholarship>> GetAllScholarshipsAsync(ScholarshipsParameters scholarshipsParameters, bool trackChanges);
-            Task<PagedList<Scholarship>> GetAllRecommendedScholarships(string UserSkills,ScholarshipsParameters scholarshipsParameters, bool trackChanges);
+            Task<PagedList<Scholarship>> GetAllRecommendedScholarships(string Titles, ScholarshipsParameters scholarshipsParameters, bool trackChanges);
             Scholarship GetScholarshipById(int id, bool trackChanges);
             Scholarship ScholarshipById(int id, bool trackChanges);
         Task DeleteScholarshipsByUniversityId(string universityId);

@@ -176,18 +176,12 @@ namespace Service
 			return new PagedList<InternshipDto>(internshipDto, internships.MetaData.TotalCount, internshipParameters.PageNumber, internshipParameters.PageSize); 
         }
 
-		public async Task<PagedList<InternshipDto>> GetAllRecommendedInternships(string UserSkills, InternshipParameters internshipParameters, bool trackChanges)
+		public async Task<PagedList<InternshipDto>> GetAllRecommendedInternships(string UserSkills, string Titles, InternshipParameters internshipParameters, bool trackChanges)
 		{
 			if (!_memoryCache.Cache.TryGetValue(internshipParameters.ToString()+UserSkills+ "GetAllRecommendedInternships", out PagedList<Internship> cacheValue))
 			{
 
-				var skills = UserSkills
-			                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-			                .Select(term => term.ToLower())
-			                .ToList();
-				var ExpandedSkills = SkillOntology.ExpandSkills(skills);
-				var NewSkills = string.Join(",", ExpandedSkills.ToList());
-				cacheValue = await _repositoryManager.Intership.GetAllRecommendedInternships(NewSkills, internshipParameters, trackChanges);
+				cacheValue = await _repositoryManager.Intership.GetAllRecommendedInternships(Titles, internshipParameters, trackChanges);
 
 				var jsonSize = JsonSerializer.SerializeToUtf8Bytes(cacheValue).Length;
 
