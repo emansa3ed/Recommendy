@@ -1,6 +1,4 @@
-﻿using AutoGen.Core;
-using AutoGen.Gemini;
-using Entities.Models;
+﻿using Entities.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,25 +38,8 @@ namespace Repository.Extensions
 		}
 
 
-		public static IQueryable<Internship> Recommendation(this IQueryable<Internship> internships, string Skills)
+		public static IQueryable<Internship> Recommendation(this IQueryable<Internship> internships, string jobTitles)
 		{
-
-			if (string.IsNullOrWhiteSpace(Skills))
-				return internships;
-
-			var apiKey = Environment.GetEnvironmentVariable("GeminiKey");
-
-
-			var geminiAgent = new GeminiChatAgent(
-					name: "gemini",
-					model: "gemini-1.5-flash-001",
-					apiKey: apiKey,
-					systemMessage: "just answer without any additional text.")
-				.RegisterMessageConnector()
-				.RegisterPrintMessage();
-			var reply =  geminiAgent.SendAsync($"Based on the skills: {Skills} list the top 5 matching job titles in this exact format: Job1, Job2, Job3, Job4, Job5. No additional text.").Result;
-
-			var jobTitles = reply.GetContent();
 			if (string.IsNullOrWhiteSpace(jobTitles))
 				return internships;
 			var terms = jobTitles

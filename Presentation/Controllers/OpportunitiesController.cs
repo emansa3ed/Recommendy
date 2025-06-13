@@ -1,7 +1,11 @@
 using Entities.GeneralResponse;
+using Entities.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
+using Service;
 using Service.Contracts;
+using Service.Ontology;
 using Shared.DTO.Internship;
 using Shared.DTO.opportunity;
 using Shared.DTO.Scholaship;
@@ -22,11 +26,11 @@ namespace Presentation.Controllers
 	{
 
 		private readonly IServiceManager _service;
-		public OpportunitiesController(IServiceManager ServiceManager)
+		private readonly MyMemoryCache _memoryCache;
+		public OpportunitiesController(IServiceManager ServiceManager,MyMemoryCache memoryCache)
 		{
-
 			_service = ServiceManager;
-
+			_memoryCache = memoryCache;
 		}
 
 
@@ -37,18 +41,46 @@ namespace Presentation.Controllers
 			var user = await _service.UserService.GetDetailsByUserName(username);
 			var UserSkills =  _service.StudentService.GetStudent(user.Id, trackChanges: false).Skills;
 
-			var scholarships = await _service.ScholarshipService.GetAllRecommendedScholarships(UserSkills, new ScholarshipsParameters
-			{
-				PageNumber= OpportunitiesParameters.PageNumber,
-				PageSize=OpportunitiesParameters.PageSize,
-			}
-			, trackChanges: false);
+			var skills = UserSkills
+						.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+						.Select(term => term.ToLower())
+						.ToList();
 
-			var internships = await _service.InternshipService.GetAllRecommendedInternships(UserSkills, new InternshipParameters
+			var ExpandedSkills = SkillOntology.ExpandSkills(skills);
+			var NewSkills = string.Join(",", ExpandedSkills.ToList());
+
+			var scholarshipsParameters = new ScholarshipsParameters
 			{
 				PageNumber = OpportunitiesParameters.PageNumber,
 				PageSize = OpportunitiesParameters.PageSize,
-			}, trackChanges: false);
+			};
+
+			var internshipParameters = new InternshipParameters
+			{
+				PageNumber = OpportunitiesParameters.PageNumber,
+				PageSize = OpportunitiesParameters.PageSize,
+			};
+
+			string Titles;
+			if (!_memoryCache.Cache.TryGetValue(scholarshipsParameters.ToString() + UserSkills + "GetAllRecommendedScholarships", out PagedList<Scholarship> cacheValue))
+			{
+				Titles = _service.GeminiService.SendRequest($"Given the following skills: {NewSkills}," +
+					$" identify the top 10 general titles that are commonly found in the name or description of relevant scholarships or internships." +
+					$" Avoid combining skills with titles (e.g., avoid 'Python Developer'). Only return general," +
+					$" role-based titles such as 'Developer', 'Analyst', or 'Researcher'." +
+					$"Do not use keywords like 'intern' or 'scholarship' directly" +
+					$" Format the result exactly as: Title1, Title2, Title3, Title4, Title5, Title6, Title7, Title8, Title9, Title10." +
+					$" Do not include any additional text or explanations.");
+			}
+			else
+			{
+				Titles = null;
+			}
+
+
+			var scholarships = await _service.ScholarshipService.GetAllRecommendedScholarships(UserSkills, Titles, scholarshipsParameters, trackChanges: false);
+
+			var internships = await _service.InternshipService.GetAllRecommendedInternships(UserSkills, Titles, internshipParameters, trackChanges: false);
 
 			MetaData metaData = new MetaData
 			{

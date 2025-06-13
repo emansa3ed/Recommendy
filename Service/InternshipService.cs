@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Service.Contracts;
+using Service.Ontology;
 using Shared.DTO.Feedback;
 using Shared.DTO.Internship;
 using Shared.DTO.Report;
@@ -175,11 +176,12 @@ namespace Service
 			return new PagedList<InternshipDto>(internshipDto, internships.MetaData.TotalCount, internshipParameters.PageNumber, internshipParameters.PageSize); 
         }
 
-		public async Task<PagedList<InternshipDto>> GetAllRecommendedInternships(string UserSkills, InternshipParameters internshipParameters, bool trackChanges)
+		public async Task<PagedList<InternshipDto>> GetAllRecommendedInternships(string UserSkills, string Titles, InternshipParameters internshipParameters, bool trackChanges)
 		{
 			if (!_memoryCache.Cache.TryGetValue(internshipParameters.ToString()+UserSkills+ "GetAllRecommendedInternships", out PagedList<Internship> cacheValue))
 			{
-				cacheValue = await _repositoryManager.Intership.GetAllRecommendedInternships(UserSkills,internshipParameters, trackChanges);
+
+				cacheValue = await _repositoryManager.Intership.GetAllRecommendedInternships(Titles, internshipParameters, trackChanges);
 
 				var jsonSize = JsonSerializer.SerializeToUtf8Bytes(cacheValue).Length;
 
