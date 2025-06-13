@@ -65,11 +65,11 @@ namespace Presentation.Controllers
 			if (!_memoryCache.Cache.TryGetValue(scholarshipsParameters.ToString() + UserSkills + "GetAllRecommendedScholarships", out PagedList<Scholarship> cacheValue))
 			{
 				Titles = _service.GeminiService.SendRequest($"Given the following skills: {NewSkills}," +
-					$" identify the top 10 general titles that are commonly found in the name or description of relevant scholarships or internships." +
-					$" Avoid combining skills with titles (e.g., avoid 'Python Developer'). Only return general," +
-					$" role-based titles such as 'Developer', 'Analyst', or 'Researcher'." +
+					$" identify the top 10 general keywords that are commonly found in the name or description of relevant scholarships or internships." +
+					$" Avoid combining skills with keywords (e.g., avoid 'Python Developer'). Only return general," +
+					$" role-based keywords such as 'Developer', 'Analyst', or 'Researcher'. and keyword must be one word." +
 					$"Do not use keywords like 'intern' or 'scholarship' directly" +
-					$" Format the result exactly as: Title1, Title2, Title3, Title4, Title5, Title6, Title7, Title8, Title9, Title10." +
+					$" Format the result exactly as: keyword1, keyword2, keyword3, keyword4, keyword5, keyword6, keyword7, keyword8, keyword9, keyword10." +
 					$" Do not include any additional text or explanations.");
 			}
 			else
