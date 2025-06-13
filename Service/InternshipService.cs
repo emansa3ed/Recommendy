@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Service.Contracts;
+using Service.Ontology;
 using Shared.DTO.Feedback;
 using Shared.DTO.Internship;
 using Shared.DTO.Report;
@@ -179,7 +180,14 @@ namespace Service
 		{
 			if (!_memoryCache.Cache.TryGetValue(internshipParameters.ToString()+UserSkills+ "GetAllRecommendedInternships", out PagedList<Internship> cacheValue))
 			{
-				cacheValue = await _repositoryManager.Intership.GetAllRecommendedInternships(UserSkills,internshipParameters, trackChanges);
+
+				var skills = UserSkills
+			                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+			                .Select(term => term.ToLower())
+			                .ToList();
+				var ExpandedSkills = SkillOntology.ExpandSkills(skills);
+				var NewSkills = string.Join(",", ExpandedSkills.ToList());
+				cacheValue = await _repositoryManager.Intership.GetAllRecommendedInternships(NewSkills, internshipParameters, trackChanges);
 
 				var jsonSize = JsonSerializer.SerializeToUtf8Bytes(cacheValue).Length;
 

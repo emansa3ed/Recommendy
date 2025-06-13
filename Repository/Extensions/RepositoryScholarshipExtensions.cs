@@ -39,13 +39,17 @@ namespace Repository.Extensions
 
 			var geminiAgent = new GeminiChatAgent(
 					name: "gemini",
-					model: "gemini-1.5-flash-001",
+					model: "gemini-1.5-flash",
 					apiKey: apiKey,
 					systemMessage: "just answer without any additional text.")
 				.RegisterMessageConnector()
 				.RegisterPrintMessage();
-			var reply = geminiAgent.SendAsync($"Based on the skills: {Skills} list the top 5 matching job titles in this exact format: Job1, Job2, Job3, Job4, Job5. No additional text.").Result;
-
+			var reply = geminiAgent.SendAsync($"Given the following skills: {Skills}," +
+				$" identify the top 10 general titles that are commonly found in the name or description of relevant scholarships or internships." +
+				$" Avoid combining skills with titles (e.g., avoid 'Python Developer'). Only return general," +
+				$" role-based titles such as 'Developer', 'Analyst', or 'Researcher'." +
+				$" Format the result exactly as: Title1, Title2, Title3, Title4, Title5, Title6, Title7, Title8, Title9, Title10." +
+				$" Do not include any additional text or explanations.").Result;
 			var jobTitles = reply.GetContent();
 			if (string.IsNullOrWhiteSpace(jobTitles))
 				return Scholarship;

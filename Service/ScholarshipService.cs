@@ -16,6 +16,7 @@ using Shared.DTO.Scholaship;
 using Microsoft.Extensions.Caching.Memory;
 using System.Text.Json;
 using Shared.DTO.Internship;
+using Service.Ontology;
 
 namespace Service
 {
@@ -171,7 +172,13 @@ namespace Service
 
 			if (!_memoryCache.Cache.TryGetValue(scholarshipsParameters.ToString() + UserSkills+ "GetAllRecommendedScholarships", out PagedList<Scholarship> cacheValue))
 			{
-				cacheValue = await _repository.Scholarship.GetAllRecommendedScholarships(UserSkills,scholarshipsParameters, trackChanges);
+				var skills = UserSkills
+							.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+	                        .Select(term => term.ToLower())
+	                        .ToList();
+                var ExpandedSkills = SkillOntology.ExpandSkills(skills);
+                var NewSkills = string.Join(",", ExpandedSkills.ToList());
+				cacheValue = await _repository.Scholarship.GetAllRecommendedScholarships(NewSkills, scholarshipsParameters, trackChanges);
 
 				var jsonSize = JsonSerializer.SerializeToUtf8Bytes(cacheValue).Length;
 
