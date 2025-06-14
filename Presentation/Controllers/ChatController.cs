@@ -1,4 +1,5 @@
-﻿using Entities.GeneralResponse;
+﻿using AutoMapper;
+using Entities.GeneralResponse;
 using Entities.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -16,46 +17,51 @@ using System.Threading.Tasks;
 
 namespace Presentation.Controllers
 {
-    [Route("api/User/{UserId}/[Controller]")]
-	[Authorize(Roles = "PremiumUser")]
-	[Authorize] 
-
+    [Route("api/Chat")]
+    [Authorize(Roles = "PremiumUser")]
+    [Authorize]
     public class ChatController : ControllerBase
     {
         private readonly IServiceManager _service;
+        private readonly IMapper _mapper;
 
-        public ChatController(IServiceManager serviceManager)
+        public ChatController(IServiceManager serviceManager, IMapper mapper)
         {
             _service = serviceManager;
+            _mapper = mapper;
         }
 
-
-        [HttpGet]
-        public async Task<ActionResult> GetChat([FromRoute]  string UserId)
+        [HttpGet("all")]
+        public async Task<ActionResult<ApiResponse<IEnumerable<ChatDto>>>> GetAllChats()
         {
+            var currentUser = await _service.UserService.GetDetailsByUserName(User.Identity.Name);
+            var chats = await _service.ChatUsersService.GetAllChatsForUser(currentUser.Id);
+            var chatDtos = _mapper.Map<IEnumerable<ChatDto>>(chats);
 
+            return Ok(new ApiResponse<IEnumerable<ChatDto>>
+            {
+                Success = true,
+                Message = "Chats retrieved successfully",
+                Data = chatDtos
+            });
+        }
+
+        [HttpGet("User/{UserId}")]
+        public async Task<ActionResult> GetChat([FromRoute] string UserId)
+        {
             var CurrentUser = await _service.UserService.GetDetailsByUserName(User.Identity.Name);
 
-			var chat = await _service.ChatUsersService.GetChatByUserIds(UserId, CurrentUser.Id);
+            var chat = await _service.ChatUsersService.GetChatByUserIds(UserId, CurrentUser.Id);
             if (chat == null)
-                chat =  await CreateChat(CurrentUser.Id, UserId);
+                chat = await CreateChat(CurrentUser.Id, UserId);
 
             return Ok(new ApiResponse<int> { Success = true, Message = "Fetch success", Data = chat.Id });
-
         }
 
-       
-       private async Task<ChatUsers> CreateChat(string secondUserId,  string UserId)
+        private async Task<ChatUsers> CreateChat(string secondUserId, string UserId)
         {
-
-
             var chat = await _service.ChatUsersService.CreateChat(UserId, secondUserId);
-
             return chat;
-
         }
-
-
-
     }
 }

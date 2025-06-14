@@ -1,12 +1,13 @@
+using Service.Contracts;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Service.Ontology
 {
-    public static class SkillOntology
+    public class SkillOntology : ISkillOntology
     {
         // Map each skill to a set of related skills/concepts (including synonyms and hierarchy)
-        public static readonly Dictionary<string, List<string>> RelatedSkills = new()
+        public Dictionary<string, List<string>> RelatedSkills { get; } = new()
         {
             // Machine Learning & AI
             { "machine learning", new List<string> { "deep learning", "data science", "artificial intelligence", "ai", "python", "scikit-learn", "supervised learning", "unsupervised learning" } },
@@ -94,13 +95,10 @@ namespace Service.Ontology
             { "cybersecurity", new List<string> { "security", "network security", "information security" } },
             { "network security", new List<string> { "cybersecurity", "security" } },
             { "information security", new List<string> { "cybersecurity", "security" } },
-            { "security", new List<string> { "cybersecurity", "network security", "information security" } },
-
-            // Add more as needed...
+            { "security", new List<string> { "cybersecurity", "network security", "information security" } }
         };
 
-        // Recursively expand a set of skills using the ontology
-        public static HashSet<string> ExpandSkills(IEnumerable<string> skills)
+        public HashSet<string> ExpandSkills(IEnumerable<string> skills)
         {
             var expanded = new HashSet<string>(skills, System.StringComparer.OrdinalIgnoreCase);
             var toProcess = new Queue<string>(skills.Select(s => s.ToLower()));

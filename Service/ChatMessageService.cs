@@ -30,17 +30,17 @@ namespace Service
         
         }
 
-        public async Task SendMessage(string UserId,string SecondUserId, int ChatId, string Message)
+        public async Task SendMessage(string senderId, string receiverId, int chatId, string message)
         {
 
-            var Chat = await _repositoryManager.ChatUsersRepository.GetChatByUserIds(UserId, SecondUserId, false);
+            var Chat = await _repositoryManager.ChatUsersRepository.GetChatByUserIds(senderId, receiverId, false);
             if (Chat == null)
-                throw new ChatNotFoundException(ChatId);
-            if (Chat.Id != ChatId)
-                throw new InvalidChatIdBadRequestException(ChatId);
+                throw new ChatNotFoundException(chatId);
+            if (Chat.Id != chatId)
+                throw new InvalidChatIdBadRequestException(chatId);
 
-			var message =new ChatMessage() { Message = Message ,ChatId =ChatId,CreatedAt = DateTime.Now,SenderId=UserId};
-            _repositoryManager.ChatMessagesRepository.CreateMessage(message);
+			var messageObj =new ChatMessage() { Message = message ,ChatId =chatId,CreatedAt = DateTime.Now,SenderId=senderId};
+            _repositoryManager.ChatMessagesRepository.CreateMessage(messageObj);
 
             await _repositoryManager.SaveAsync();
 

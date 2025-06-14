@@ -46,7 +46,8 @@ namespace Presentation.Controllers
 						.Select(term => term.ToLower())
 						.ToList();
 
-			var ExpandedSkills = SkillOntology.ExpandSkills(skills);
+            var ExpandedSkills = _service.SkillOntology.ExpandSkills(skills);
+
 			var NewSkills = string.Join(",", ExpandedSkills.ToList());
 
 			var scholarshipsParameters = new ScholarshipsParameters

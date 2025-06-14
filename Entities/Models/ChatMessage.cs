@@ -18,5 +18,6 @@ namespace Entities.Models
         public DateTime CreatedAt { get; set; }= DateTime.Now;
 
         public ChatUsers chatUsers  { get; set; }
+        public User Sender { get; set; }
     }
 }

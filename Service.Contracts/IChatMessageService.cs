@@ -13,7 +13,7 @@ namespace Service.Contracts
     public interface IChatMessageService
     {
 
-        Task SendMessage(string UserId, string SecondUserId, int ChatId, string Message);
+        Task SendMessage(string senderId, string receiverId, int chatId, string message);
         Task<PagedList<ChatMessageDto>> GetChatMessages(int chatid, string FirstUserId, string SecondUserId, MessageParameters messageParameters);
     }
 }

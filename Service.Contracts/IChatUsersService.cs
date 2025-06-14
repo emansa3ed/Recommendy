@@ -10,9 +10,10 @@ namespace Service.Contracts
 {
     public interface IChatUsersService
     {
-
         Task<ChatUsers> GetChatByUserIds(string FirstUserId ,string secondUserId);
 
         Task<ChatUsers> CreateChat(string FirstUserId, string seccondUserId);
+
+        Task<IEnumerable<ChatUsers>> GetAllChatsForUser(string userId);
     }
 }

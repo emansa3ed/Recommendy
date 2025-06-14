@@ -23,9 +23,14 @@ namespace Recommendy
         public MappingProfile()
         {
 
+        CreateMap<ChatUsers, ChatDto>()
+                .ForMember(dest => dest.LastMessage, opt => opt.MapFrom(src => src.Messages.FirstOrDefault()));
+                 
+
+
             CreateMap<Country, CountryDto>();
             CreateMap<UserForRegistrationDto, User>();
-      
+
             CreateMap<User, UserDto>()
                     .ForMember(dest => dest.Discriminator, opt =>
                         opt.MapFrom(src => src.Discriminator))
@@ -43,7 +48,8 @@ namespace Recommendy
         
             CreateMap<InternshipCreationDto, Internship>();
             CreateMap<InternshipPositionDto, InternshipPosition>();
-            CreateMap<ChatMessage, ChatMessageDto>();
+            CreateMap<ChatMessage, ChatMessageDto>()
+                .ForMember(dest => dest.Sender, opt => opt.MapFrom(src => src.Sender));
 
             CreateMap<Internship, InternshipDto>()
               .ForMember(dest => dest.Positions, opt => opt.MapFrom(src => src.InternshipPositions))
@@ -312,8 +318,10 @@ namespace Recommendy
 
         CreateMap<DateTime, string>()
                     .ConvertUsing(dt => dt.ToString("yyyy-MM-dd HH:mm:ss"));
-            }
-        }
 
+        CreateMap<User, SenderDto>()
+            .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.UrlPicture));
+        }
     }
+}
     

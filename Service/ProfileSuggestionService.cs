@@ -22,12 +22,14 @@ namespace Service
         private readonly IRepositoryManager _repository;
         private readonly IMapper _mapper;
         private readonly MyMemoryCache _memoryCache;
+        private readonly IServiceManager _serviceManager;
 
-        public ProfileSuggestionService(IRepositoryManager repository, IMapper mapper, MyMemoryCache memoryCache)
+        public ProfileSuggestionService(IRepositoryManager repository, IMapper mapper, MyMemoryCache memoryCache , IServiceManager serviceManager)
         {
             _repository = repository;
             _mapper = mapper;
             _memoryCache = memoryCache;
+            _serviceManager = serviceManager;
         }
 
         public async Task<ProfileSuggestionDto> GetProfileSuggestionsAsync(string studentId)
@@ -51,7 +53,7 @@ namespace Service
                     .Select(s => s.ToLower())
                     .ToList();
 
-                var expandedSkills = SkillOntology.ExpandSkills(studentSkills);
+                var expandedSkills = _serviceManager.SkillOntology.ExpandSkills(studentSkills);
 
 
                 var companies = await _repository.Company.GetAllCompaniesAsync(new CompanyParameters { PageSize = int.MaxValue }, false);

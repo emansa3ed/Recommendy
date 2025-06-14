@@ -36,21 +36,16 @@ namespace Presentation.Controllers
 
 
 		[HttpPost]
-		public async Task<ActionResult> SendMessage([FromRoute] int ChatId, [FromRoute] string UserId,  [FromBody]string Message)
+		public async Task<ActionResult> SendMessage([FromRoute] int ChatId, [FromRoute] string UserId, [FromBody] SendMessageDto dto)
 		{
-
-			var CurrentUser  = await _service.UserService.GetDetailsByUserName(User.Identity.Name);
-
-
+			var CurrentUser = await _service.UserService.GetDetailsByUserName(User.Identity.Name);
 
 			if (!ModelState.IsValid)
 				return BadRequest(ModelState);
 
-
-			await _service.ChatMessageService.SendMessage(CurrentUser.Id, UserId, ChatId, Message);
+			await _service.ChatMessageService.SendMessage(CurrentUser.Id, UserId, ChatId, dto.Message);
 
 			return Ok();
-
 		}
 
 	
