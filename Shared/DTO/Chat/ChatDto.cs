@@ -10,5 +10,6 @@ namespace Shared.DTO.Chat
         public string SecondUserId { get; set; }
         public DateTime CreatedAt { get; set; }
         public ChatMessageDto LastMessage { get; set; }
+        public SenderDto OtherUser { get; set; }
     }
 } 

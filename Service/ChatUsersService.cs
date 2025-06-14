@@ -64,6 +64,8 @@ namespace Service
             // Collect all senderIds from last messages
             var lastMessages = chats.Select(c => c.Messages.OrderByDescending(m => m.CreatedAt).FirstOrDefault()).Where(m => m != null).ToList();
             var senderIds = lastMessages.Select(m => m.SenderId).Distinct().ToList();
+            // Collect all other user IDs
+            var otherUserIds = chats.Select(chat => chat.FirstUserId == userId ? chat.SecondUserId : chat.FirstUserId).Distinct().ToList();
             // Fetch all senders
             var senders = new List<User>();
             foreach (var id in senderIds)
@@ -78,10 +80,25 @@ namespace Service
                 UserName = u.UserName,
                 Photo = u.UrlPicture
             });
-            // Map chats to ChatDto, including sender info for lastMessage
+            // Fetch all other users
+            var otherUsers = new List<User>();
+            foreach (var id in otherUserIds)
+            {
+                var user = await _repositoryManager.User.GetById(id);
+                if (user != null)
+                    otherUsers.Add(user);
+            }
+            var otherUserDict = otherUsers.ToDictionary(u => u.Id, u => new Shared.DTO.Chat.SenderDto
+            {
+                Id = u.Id,
+                UserName = u.UserName,
+                Photo = u.UrlPicture
+            });
+            // Map chats to ChatDto, including sender info for lastMessage and OtherUser
             var chatDtos = chats.Select(chat =>
             {
                 var lastMessage = chat.Messages.OrderByDescending(m => m.CreatedAt).FirstOrDefault();
+                var otherUserId = chat.FirstUserId == userId ? chat.SecondUserId : chat.FirstUserId;
                 return new ChatDto
                 {
                     Id = chat.Id,
@@ -98,7 +115,8 @@ namespace Service
                         Sender = lastMessage.SenderId != null && senderDict.ContainsKey(lastMessage.SenderId)
                             ? senderDict[lastMessage.SenderId]
                             : null
-                    }
+                    },
+                    OtherUser = otherUserDict.ContainsKey(otherUserId) ? otherUserDict[otherUserId] : null
                 };
             }).ToList();
             return chatDtos;
