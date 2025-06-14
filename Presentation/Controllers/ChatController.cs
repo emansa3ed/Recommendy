@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 namespace Presentation.Controllers
 {
     [Route("api/Chat")]
-    [Authorize(Roles = "PremiumUser")]
+  //  [Authorize(Roles = "PremiumUser")]
     [Authorize]
     public class ChatController : ControllerBase
     {

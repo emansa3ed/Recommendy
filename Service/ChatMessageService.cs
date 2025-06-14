@@ -52,7 +52,7 @@ namespace Service
             var user1 = await _repositoryManager.User.GetById(SecondUserId);
             if (user1 == null)
                 throw new UserNotFoundException(SecondUserId);
-            if (SecondUserId.Equals(SecondUserId))
+            if (SecondUserId.Equals(CurrentUserId))
                 throw new BadRequestException("the two ids is same ");
             var chat = await _repositoryManager.ChatUsersRepository.GetChatByUserIds(CurrentUserId, SecondUserId, false);
             if (chat.Id != chatid)
