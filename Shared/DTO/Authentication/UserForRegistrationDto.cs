@@ -10,17 +10,22 @@ namespace Shared.DTO.Authentication
 {
     public record UserForRegistrationDto
     {
-        [Required(ErrorMessage = "FirstName is required")]
-        public string FirstName { get; set; }
+		[Required(ErrorMessage = "FirstName is required")]
+		[StringLength(50, MinimumLength = 2, ErrorMessage = "FirstName must be between 2 and 50 characters")]
+		public string FirstName { get; set; }
 
-        [Required(ErrorMessage = "LastName is required")]
-        public string LastName { get; set; }
-        [Required(ErrorMessage = "Username is required")]
-        public string UserName { get; init; }
-        [Required(ErrorMessage = "Password is required")]
-        public string Password { get; init; }
-        [Required(ErrorMessage = "Email is required")]
-        public string Email { get; init; }
+		[Required(ErrorMessage = "LastName is required")]
+		[StringLength(50, MinimumLength = 2, ErrorMessage = "LastName must be between 2 and 50 characters")]
+		public string LastName { get; set; }
+		[Required(ErrorMessage = "Username is required")]
+		[StringLength(20, MinimumLength = 5, ErrorMessage = "Username  must be between 5 and 20 characters")]
+		public string UserName { get; init; }
+		[Required(ErrorMessage = "Password is required")]
+		[StringLength(100, MinimumLength = 10, ErrorMessage = "Password must be at least 10 characters")]
+		public string Password { get; init; }
+		[Required(ErrorMessage = "Email is required")]
+		[EmailAddress(ErrorMessage = "Invalid Email format")]
+		public string Email { get; init; }
         [Required(ErrorMessage = "PhoneNumber is required")]
         public string? PhoneNumber { get; init; }
         [Required(ErrorMessage = "UserImage is required")]
@@ -30,10 +35,10 @@ namespace Shared.DTO.Authentication
 
 
 		[Required(ErrorMessage = "Bio is required")]
-
-        public string Bio { get; set; }
+		[StringLength(500, ErrorMessage = "Bio must not exceed 500 characters")]
+		public string Bio { get; set; }
         public string? Url { get; set; }
-        [Required(ErrorMessage = "Role is required.")]
+        [Required(ErrorMessage = "Roles is required.")]
         public ICollection<string> Roles { get; init; }
 
     }
