@@ -25,7 +25,7 @@ namespace Recommendy
 
         CreateMap<ChatUsers, ChatDto>()
                 .ForMember(dest => dest.LastMessage, opt => opt.MapFrom(src => src.Messages.FirstOrDefault()));
-                 
+           
 
 
             CreateMap<Country, CountryDto>();
