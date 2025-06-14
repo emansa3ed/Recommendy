@@ -33,26 +33,23 @@ namespace Presentation.Controllers
        
         public async Task<IActionResult> RegisterUser([FromForm] UserForRegistrationDto userForRegistration )
         {
-            try
+
+            if (!ModelState.IsValid) 
+                return BadRequest(ModelState);
+
+            var result = await
+            _service.AuthenticationService.RegisterUser(userForRegistration,Request.HttpContext);
+            if (!result.Succeeded)
             {
-                var result = await
-               _service.AuthenticationService.RegisterUser(userForRegistration,Request.HttpContext);
-                if (!result.Succeeded)
+                foreach (var error in result.Errors)
                 {
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.TryAddModelError(error.Code, error.Description);
-                    }
-                    return BadRequest(ModelState);
-
-
+                    ModelState.TryAddModelError(error.Code, error.Description);
                 }
-            }
-            catch (Exception ex) {
+                return BadRequest(ModelState);
 
-                throw new Exception($"Failed. {ex.Message} | Inner Exception: {ex.InnerException?.Message}");
 
             }
+
             var user =  await  _userManager.FindByEmailAsync(userForRegistration.Email);
 
             return StatusCode(201, new ApiResponse<string>
