@@ -24,12 +24,11 @@ namespace Repository
 
         public async Task<PagedList<ChatMessage>> GetChatMessages(int chatid, MessageParameters messageParameters, bool trackChanges)
         {
-            var reports = await FindByCondition(i => i.Id == chatid, trackChanges)
-                .Include(m => m.Sender)
+            var reports = await FindByCondition(i => i.ChatId == chatid, trackChanges)
                 .Paging(messageParameters.PageNumber, messageParameters.PageSize)
                 .OrderBy(e => e.CreatedAt)
                 .ToListAsync();
-            var count = await FindByCondition(i => i.Id == chatid, trackChanges).CountAsync();
+            var count = await FindByCondition(i => i.ChatId == chatid, trackChanges).CountAsync();
             return new PagedList<ChatMessage>(reports, count, messageParameters.PageNumber, messageParameters.PageSize);
         }
 

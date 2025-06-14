@@ -35,9 +35,7 @@ namespace Presentation.Controllers
         public async Task<ActionResult<ApiResponse<IEnumerable<ChatDto>>>> GetAllChats()
         {
             var currentUser = await _service.UserService.GetDetailsByUserName(User.Identity.Name);
-            var chats = await _service.ChatUsersService.GetAllChatsForUser(currentUser.Id);
-            var chatDtos = _mapper.Map<IEnumerable<ChatDto>>(chats);
-
+            var chatDtos = await _service.ChatUsersService.GetAllChatDtosForUser(currentUser.Id);
             return Ok(new ApiResponse<IEnumerable<ChatDto>>
             {
                 Success = true,

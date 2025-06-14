@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Shared.DTO.Chat;
 
 namespace Service
 {
@@ -55,6 +56,52 @@ namespace Service
             var chat = await _repositoryManager.ChatUsersRepository.GetChatByUserIds(FirstUserId, CurrentUserId, false);
 
             return chat;
+        }
+
+        public async Task<IEnumerable<ChatDto>> GetAllChatDtosForUser(string userId)
+        {
+            var chats = (await GetAllChatsForUser(userId)).ToList();
+            // Collect all senderIds from last messages
+            var lastMessages = chats.Select(c => c.Messages.OrderByDescending(m => m.CreatedAt).FirstOrDefault()).Where(m => m != null).ToList();
+            var senderIds = lastMessages.Select(m => m.SenderId).Distinct().ToList();
+            // Fetch all senders
+            var senders = new List<User>();
+            foreach (var id in senderIds)
+            {
+                var user = await _repositoryManager.User.GetById(id);
+                if (user != null)
+                    senders.Add(user);
+            }
+            var senderDict = senders.ToDictionary(u => u.Id, u => new Shared.DTO.Chat.SenderDto
+            {
+                Id = u.Id,
+                UserName = u.UserName,
+                Photo = u.UrlPicture
+            });
+            // Map chats to ChatDto, including sender info for lastMessage
+            var chatDtos = chats.Select(chat =>
+            {
+                var lastMessage = chat.Messages.OrderByDescending(m => m.CreatedAt).FirstOrDefault();
+                return new ChatDto
+                {
+                    Id = chat.Id,
+                    FirstUserId = chat.FirstUserId,
+                    SecondUserId = chat.SecondUserId,
+                    CreatedAt = chat.CreatedAt,
+                    LastMessage = lastMessage == null ? null : new ChatMessageDto
+                    {
+                        Id = lastMessage.Id,
+                        ChatId = lastMessage.ChatId,
+                        SenderId = lastMessage.SenderId,
+                        Message = lastMessage.Message,
+                        CreatedAt = lastMessage.CreatedAt,
+                        Sender = lastMessage.SenderId != null && senderDict.ContainsKey(lastMessage.SenderId)
+                            ? senderDict[lastMessage.SenderId]
+                            : null
+                    }
+                };
+            }).ToList();
+            return chatDtos;
         }
     }
 }
