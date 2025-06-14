@@ -14,9 +14,8 @@ using Stripe.Checkout;
 
 namespace Server.Controllers;
 
-[ApiController]
 [Route("[controller]")]
-public class SubscriptionController : ControllerBase
+public class SubscriptionController : Controller
 {
 	private readonly IServiceManager _service;
 
@@ -122,7 +121,7 @@ public class SubscriptionController : ControllerBase
 
 		_service.EmailsService.Sendemail(user.Email,body, subject);
 
-		return Ok();
+		return Redirect($"http://localhost:3000/student/{user.Id}/subscribe");
 	}
 
 	[HttpGet("User/{UserId}/Fail")]
@@ -146,7 +145,7 @@ public class SubscriptionController : ControllerBase
 
 		_service.EmailsService.Sendemail(user.Email, body, subject);
 
-		return Ok();
+		return Redirect($"http://localhost:3000/student/{user.Id}/subscribe");
 	}
 
 	[HttpDelete("Cancel")]
