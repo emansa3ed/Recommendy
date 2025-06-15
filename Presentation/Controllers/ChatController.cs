@@ -24,12 +24,10 @@ namespace Presentation.Controllers
 	public class ChatController : ControllerBase
     {
         private readonly IServiceManager _service;
-        private readonly IMapper _mapper;
 
-        public ChatController(IServiceManager serviceManager, IMapper mapper)
+        public ChatController(IServiceManager serviceManager)
         {
             _service = serviceManager;
-            _mapper = mapper;
         }
 
         [HttpGet("all")]
