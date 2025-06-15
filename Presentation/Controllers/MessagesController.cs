@@ -20,8 +20,7 @@ namespace Presentation.Controllers
 {
 	[Route("api/User/{UserId}/Chat/{ChatId}/[Controller]")]
 	[ApiController]
-	[Authorize]
-
+	[Authorize(Roles = "PremiumUser,University,Company")]
 	public class MessagesController : ControllerBase
 	{
 		private readonly IServiceManager _service;
