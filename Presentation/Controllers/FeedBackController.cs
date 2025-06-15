@@ -81,7 +81,7 @@ namespace Presentation.Controllers
 			return NoContent();
 		}
 
-		[HttpPatch("{feedbackId}")]
+		[HttpPatch]
 		[Authorize(Roles = "Student")]
 		public async Task<ActionResult> EditFeedBack([FromRoute] string OrganizationID, [FromRoute] int PostId, FeedbackEditDto feedbackEditDto)
 		{
