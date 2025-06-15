@@ -18,17 +18,16 @@ using System.Threading.Tasks;
 namespace Presentation.Controllers
 {
     [Route("api/Chat")]
-  //  [Authorize(Roles = "PremiumUser")]
-    [Authorize]
-    public class ChatController : ControllerBase
+    [ApiController]
+    [Authorize(Roles = "PremiumUser,University,Company")]
+
+	public class ChatController : ControllerBase
     {
         private readonly IServiceManager _service;
-        private readonly IMapper _mapper;
 
-        public ChatController(IServiceManager serviceManager, IMapper mapper)
+        public ChatController(IServiceManager serviceManager)
         {
             _service = serviceManager;
-            _mapper = mapper;
         }
 
         [HttpGet("all")]
