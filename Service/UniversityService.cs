@@ -99,12 +99,13 @@ namespace Service
             _repository.university.UpdateUniversity(university);
             await _repository.SaveAsync();
 
-			await _notificationService.CreateNotificationAsync(new NotificationCreationDto
-			{
-				ActorID = adminId,
-				ReceiverID = universityId,
-				Content = NotificationType.OrganizationVerified
-			});
+            if (verificationDto.IsVerified)
+			    await _notificationService.CreateNotificationAsync(new NotificationCreationDto
+			    {
+				    ActorID = adminId,
+				    ReceiverID = universityId,
+				    Content = NotificationType.OrganizationVerified
+			    });
 
 			var (subject, message) = EmailTemplates.Organization.GetVerificationTemplate(
                 verificationDto.IsVerified,
