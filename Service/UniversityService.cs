@@ -90,7 +90,7 @@ namespace Service
             var university = await _repository.university.GetUniversityAsync(universityId, trackChanges);
             if (university == null)
                 throw new UniversityNotFoundException(universityId);
-            if (university.IsVerified)
+            if (university.IsVerified && verificationDto.IsVerified)
                 throw new OrganizationVerifiedBadRequestException(university.UniversityId);
 
 			university.IsVerified = verificationDto.IsVerified;

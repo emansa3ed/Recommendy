@@ -91,7 +91,7 @@ namespace Service
             var company = _repository.Company.GetCompany(companyId, trackChanges);
             if (company == null)
                 throw new CompanyNotFoundException(companyId);
-			if (company.IsVerified)
+			if (company.IsVerified && verificationDto.IsVerified)
 				throw new OrganizationVerifiedBadRequestException(company.CompanyId);
 			company.IsVerified = verificationDto.IsVerified;
             company.VerificationNotes = verificationDto.VerificationNotes;
