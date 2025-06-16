@@ -15,6 +15,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using DocumentFormat.OpenXml.ExtendedProperties;
+using Shared.DTO.Notification;
 
 namespace Service
 {
@@ -24,17 +26,19 @@ namespace Service
         private readonly IRepositoryManager _repositoryManager;
         private readonly IMapper _mapper;
 
-        public ChatMessageService(IRepositoryManager repositoryManager  ,IMapper mapper) 
+		private readonly INotificationService _notificationService;
+        public ChatMessageService(IRepositoryManager repositoryManager, IMapper mapper, INotificationService notificationService) 
         {
             _repositoryManager = repositoryManager;
             _mapper = mapper;
-        
+            _notificationService = notificationService;
         }
 
         public async Task SendMessage(string senderId, string receiverId, int chatId, string message)
         {
 
             var Chat = await _repositoryManager.ChatUsersRepository.GetChatByUserIds(senderId, receiverId, false);
+            var receiver = await _repositoryManager.User.GetById(receiverId);
             if (Chat == null)
                 throw new ChatNotFoundException(chatId);
             if (Chat.Id != chatId)
@@ -43,7 +47,18 @@ namespace Service
 			var messageObj =new ChatMessage() { Message = message ,ChatId =chatId,CreatedAt = DateTime.Now,SenderId=senderId};
             _repositoryManager.ChatMessagesRepository.CreateMessage(messageObj);
 
+
             await _repositoryManager.SaveAsync();
+
+            if (receiver.Discriminator == "Student")
+            {
+				await _notificationService.CreateNotificationAsync(new NotificationCreationDto
+				{
+					ActorID = senderId,
+					ReceiverID = receiverId,
+					Content = NotificationType.MessageSent,
+				});
+			}
 
         }
 

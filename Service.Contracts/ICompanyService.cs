@@ -15,6 +15,6 @@ namespace Service.Contracts
         CompanyViewDto GetCompany(string companyId, bool trackChanges);
         Task UpdateCompany(string companyId, CompanyDto companyDto, bool trackChanges);
         Task<PagedList<CompanyViewDto>> GetUnverifiedCompaniesAsync(CompanyParameters companyParameters, bool trackChanges);
-        Task VerifyCompany(string companyId, CompanyVerificationDto verificationDto, bool trackChanges);
+        Task VerifyCompany(string companyId, string adminId, CompanyVerificationDto verificationDto, bool trackChanges);
     }
 }
