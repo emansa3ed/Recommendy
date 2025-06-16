@@ -15,6 +15,7 @@ using Shared.DTO.Company;
 using Stripe;
 using Shared.RequestFeatures;
 using Shared.DTO.Notification;
+using DocumentFormat.OpenXml.ExtendedProperties;
 
 namespace Service
 {
@@ -92,6 +93,8 @@ namespace Service
                 throw new UniversityNotFoundException(universityId);
             if (university.IsVerified && verificationDto.IsVerified)
                 throw new OrganizationVerifiedBadRequestException(university.UniversityId);
+			if (!university.IsVerified && !verificationDto.IsVerified)
+				throw new OrganizationUnVerifiedBadRequestException(university.UniversityId);
 
 			university.IsVerified = verificationDto.IsVerified;
             university.VerificationNotes = verificationDto.VerificationNotes;

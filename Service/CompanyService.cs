@@ -93,6 +93,9 @@ namespace Service
                 throw new CompanyNotFoundException(companyId);
 			if (company.IsVerified && verificationDto.IsVerified)
 				throw new OrganizationVerifiedBadRequestException(company.CompanyId);
+			if (!company.IsVerified && !verificationDto.IsVerified)
+				throw new OrganizationUnVerifiedBadRequestException(company.CompanyId);
+
 			company.IsVerified = verificationDto.IsVerified;
             company.VerificationNotes = verificationDto.VerificationNotes;
 
