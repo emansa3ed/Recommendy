@@ -44,7 +44,9 @@ namespace Presentation.Controllers
             string id,
             [FromBody] CompanyVerificationDto verificationDto)
         {
-            await _service.CompanyService.VerifyCompany(id, verificationDto, trackChanges: true);
+            var UserName = User.Identity.Name;
+            var user = await _service.UserService.GetDetailsByUserName(UserName);
+            await _service.CompanyService.VerifyCompany(id, user.Id, verificationDto, trackChanges: true);
             return NoContent();
         }
         [HttpGet("universities/unverified")]
@@ -64,7 +66,10 @@ namespace Presentation.Controllers
         [HttpPatch("universities/{id}/verify")]
         public async Task<IActionResult> University(string id, [FromBody] UniversityVerificationDto verificationDto)
         {
-            await _service.UniversityService.VerifyUniversity(id, verificationDto, trackChanges: true);
+			var UserName = User.Identity.Name;
+			var user = await _service.UserService.GetDetailsByUserName(UserName);
+
+			await _service.UniversityService.VerifyUniversity(id, user.Id, verificationDto, trackChanges: true);
             return NoContent();
         }
 

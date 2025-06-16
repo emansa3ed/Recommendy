@@ -14,6 +14,7 @@ using Shared.DTO.Company;
 using Stripe;
 using Microsoft.Extensions.Logging;
 using Shared.RequestFeatures;
+using Shared.DTO.Notification;
 
 namespace Service
 {
@@ -22,12 +23,14 @@ namespace Service
         private readonly IRepositoryManager _repository;
         private readonly IServiceManager _service;
         private readonly IMapper _mapper;
+        INotificationService _notificationService;
 
-        public CompanyService(IRepositoryManager repository, IMapper mapper,  IServiceManager service)
+		public CompanyService(IRepositoryManager repository, IMapper mapper, INotificationService notificationService, IServiceManager service)
         {
             _repository = repository;
             _mapper = mapper;
             _service = service;
+            _notificationService = notificationService;
         }
         public CompanyViewDto GetCompany(string id, bool trackChanges)
         {
@@ -83,27 +86,32 @@ namespace Service
                 companies.MetaData.PageSize);
         }
 
-        public async Task VerifyCompany(string companyId, CompanyVerificationDto verificationDto, bool trackChanges)
+        public async Task VerifyCompany(string companyId, string adminId, CompanyVerificationDto verificationDto, bool trackChanges)
         {
             var company = _repository.Company.GetCompany(companyId, trackChanges);
             if (company == null)
                 throw new CompanyNotFoundException(companyId);
-
-            company.IsVerified = verificationDto.IsVerified;
+			if (company.IsVerified)
+				throw new OrganizationVerifiedBadRequestException(company.CompanyId);
+			company.IsVerified = verificationDto.IsVerified;
             company.VerificationNotes = verificationDto.VerificationNotes;
 
             _repository.Company.UpdateCompany(company);
             await _repository.SaveAsync();
 
-            var (subject, message) = EmailTemplates.Organization.GetVerificationTemplate(
+			await _notificationService.CreateNotificationAsync(new NotificationCreationDto
+			{
+				ActorID = adminId,
+				ReceiverID = companyId,
+				Content = NotificationType.OrganizationVerified
+			});
+
+
+			var (subject, message) = EmailTemplates.Organization.GetVerificationTemplate(
                 verificationDto.IsVerified,
                 verificationDto.VerificationNotes);
             await _service.EmailsService.Sendemail(company.User.Email, message, subject);
         }
-
-
-
-
 
     }
 }

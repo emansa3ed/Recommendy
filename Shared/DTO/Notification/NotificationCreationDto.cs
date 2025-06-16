@@ -10,7 +10,8 @@ namespace Shared.DTO.Notification
 {
 	public enum NotificationType
 	{
-		SaveOpportunity,
+		MessageSent,
+		OrganizationVerified,
 		CreateFeedBack
 	}
 
@@ -21,8 +22,7 @@ namespace Shared.DTO.Notification
 		
 		[Required(ErrorMessage = "ActorID Id is required")]
 		public string ActorID { get; set; }
-		[Required(ErrorMessage = "ActorID Id is required")]
-		public int PostID { get; set; }
+		public int? PostID { get; set; }
 		public NotificationType Content { get; set; }
 	}
 }

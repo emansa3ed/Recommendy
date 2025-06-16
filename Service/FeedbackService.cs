@@ -65,13 +65,12 @@ namespace Service
 
 			_repository.FeedbackRepository.CreateFeedback(feedbackEntity);
 
+			await _repository.SaveAsync();
+
 			await _notificationService.CreateNotificationAsync(new NotificationCreationDto { ActorID = StudentId,
 				ReceiverID = CompanyID,
 				Content = NotificationType.CreateFeedBack,
 			PostID=PostId});
-
-
-			await _repository.SaveAsync();
 			string jsonData = JsonSerializer.Serialize(feedbackEntity);
 			await _hubContext.Clients.All.SendAsync("ReceiveNotification", jsonData);
 		}

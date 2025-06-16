@@ -20,12 +20,10 @@ namespace Service
 	{
 		private readonly IRepositoryManager _repositoryManager;
 		private readonly IMapper _mapper;
-		private readonly INotificationService _notificationService;
-		public OpportunityService(IRepositoryManager repositoryManager, IMapper mapper, INotificationService notificationService)
+		public OpportunityService(IRepositoryManager repositoryManager, IMapper mapper)
 		{
 			_repositoryManager = repositoryManager;
 			_mapper = mapper;
-			_notificationService = notificationService;
 		}
 
 		public async Task SavedOpportunity(string StudentId, SavedOpportunityDto savedOpportunityDto)
@@ -68,12 +66,6 @@ namespace Service
 				savedPost.StudentId = StudentId;
 				await _repositoryManager.OpportunityRepository.SavedOpportunity(savedPost);
 				await _repositoryManager.SaveAsync();
-				
-				await _notificationService.CreateNotificationAsync(new NotificationCreationDto { ActorID = StudentId,
-					ReceiverID = ReceiverID,
-					Content = NotificationType.SaveOpportunity,
-				PostID=savedOpportunityDto.PostId});
-
 			}
 
 		}

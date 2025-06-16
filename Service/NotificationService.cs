@@ -35,10 +35,15 @@ namespace Service
 			if (actor == null)
 				throw new UserNotFoundException(notification.ActorID);
 			var notificationEntity = _mapper.Map<Notification>(notification);
+
 			if (notification.Content == NotificationType.CreateFeedBack)
 				notificationEntity.Content = $"User {actor.UserName} create feedback in your post";
-			else if (notification.Content == NotificationType.SaveOpportunity)
-				notificationEntity.Content = $"User {actor.UserName} save your post";
+			else if (notification.Content == NotificationType.MessageSent)
+				notificationEntity.Content = $"User {actor.UserName} send message for you";
+			else if (notification.Content == NotificationType.OrganizationVerified)
+				notificationEntity.Content = $"Congratulations, {actor.UserName} has verified your organization.";
+
+
 			notificationEntity.CreatedAt = DateTime.UtcNow;
 			notificationEntity.IsRead = false;
 			_repository.NotificationRepository.CreateNotification(notificationEntity);

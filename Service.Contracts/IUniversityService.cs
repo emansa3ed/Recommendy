@@ -15,7 +15,7 @@ namespace Service.Contracts
         Task<UniversityViewDto> GetUniversityAsync(string universityId, bool trackChanges);
         Task UpdateUniversity(string universityId, UniversityDto universityDto, bool trackChanges);
         Task<PagedList<UniversityViewDto>> GetUnverifiedUniversitiesAsync(UniversityParameters universityParameters, bool trackChanges);
-        Task VerifyUniversity(string universityId, UniversityVerificationDto verificationDto, bool trackChanges);
+        Task VerifyUniversity(string universityId, string adminId, UniversityVerificationDto verificationDto, bool trackChanges);
 
     }
 }

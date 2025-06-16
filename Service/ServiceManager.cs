@@ -68,17 +68,17 @@ namespace Service
 
             var scholarshipServiceLogger = loggerFactory.CreateLogger<ScholarshipService>();
             _scholarshipService = new Lazy<IScholarshipService>(() => new ScholarshipService(repositoryManager, mapper, scholarshipServiceLogger, memoryCache));
-            _universityService = new Lazy<IUniversityService>(() => new UniversityService(repositoryManager, this, mapper, userManager));
+            _universityService = new Lazy<IUniversityService>(() => new UniversityService(repositoryManager, this, mapper, _notificationservice.Value, userManager));
             _emailsService = new Lazy<IEmailsService>(() => new EmailsService(configuration, loggerFactory.CreateLogger<EmailsService>(), repositoryManager, userManager));
             _userCodeService = new Lazy<IUserCodeService>(() => new UserCodeService(repositoryManager, emailsService, userManager));
-            _companyService = new Lazy<ICompanyService>(() => new CompanyService(repositoryManager, mapper, this));
+            _companyService = new Lazy<ICompanyService>(() => new CompanyService(repositoryManager, mapper, _notificationservice.Value, this));
             _studentService = new Lazy<IStudentService>(() => new StudentService(repositoryManager, mapper, userManager));
             _notificationservice = new Lazy<INotificationService>(() => new NotificationService(repositoryManager, mapper, _hubContext, userManager));
             _feedbackService = new Lazy<IFeedbackService>(() => new FeedbackService(repositoryManager, mapper, _notificationservice.Value, _FeedBackhubContext));
             _reportService = new Lazy<IReportService>(() => new ReportService(repositoryManager, mapper, memoryCache));
-            _opportunityService = new Lazy<IOpportunityService>(() => new OpportunityService(repositoryManager, mapper, _notificationservice.Value));
+            _opportunityService = new Lazy<IOpportunityService>(() => new OpportunityService(repositoryManager, mapper));
             _chatUsersService = new Lazy<IChatUsersService>(() => new ChatUsersService(repositoryManager));
-            _chatMessageService = new Lazy<IChatMessageService>(() => new ChatMessageService(repositoryManager, mapper));
+            _chatMessageService = new Lazy<IChatMessageService>(() => new ChatMessageService(repositoryManager, mapper, _notificationservice.Value));
             _resumeParserService = new Lazy<IResumeParserService>(() => new ResumeParserService(repositoryManager));
             _skillService = new Lazy<ISkillService>(() => new SkillService(repositoryManager));
             _profileSuggestionService = new Lazy<IProfileSuggestionService>(() => new ProfileSuggestionService(repositoryManager, mapper, memoryCache, this));
