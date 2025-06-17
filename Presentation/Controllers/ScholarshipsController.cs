@@ -67,7 +67,6 @@ namespace Presentation.Controllers
                 return BadRequest("Scholarship data is null.");
             }
 
-            // Log the file information for debugging
             if (scholarshipForCreation.ImageFile != null)
             {
                 _logger.LogInformation($"Received file: {scholarshipForCreation.ImageFile.FileName}, " +
@@ -76,9 +75,14 @@ namespace Presentation.Controllers
 
             _logger.LogInformation($"Requirements: {JsonSerializer.Serialize(scholarshipForCreation.Requirements)}");
 
+			var UserName = User.Identity?.Name;
 
+			var user = await _service.UserService.GetDetailsByUserName(UserName);
 
-            var createdScholarship = await _service.ScholarshipService
+			if (user.Id != universityId)
+				return BadRequest(new ApiResponse<EditedScholarshipDto> { Success = false, Message = "universityId don't match with authorized one", Data = null });
+
+			var createdScholarship = await _service.ScholarshipService
                 .CreateScholarshipForUniversity(universityId, scholarshipForCreation, trackChanges: false);
 
             _logger.LogInformation($"Successfully created scholarship with ID: {createdScholarship.Id}");
@@ -112,7 +116,15 @@ namespace Presentation.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            await _service.ScholarshipService.UpdateScholarshipForUniversityAsync(universityId, id, scholarshipDto, trackChanges: true);
+
+			var UserName = User.Identity?.Name;
+
+			var user = await _service.UserService.GetDetailsByUserName(UserName);
+
+			if (user.Id != universityId)
+				return BadRequest(new ApiResponse<EditedScholarshipDto> { Success = false, Message = "universityId don't match with authorized one", Data = null });
+
+			await _service.ScholarshipService.UpdateScholarshipForUniversityAsync(universityId, id, scholarshipDto, trackChanges: true);
             return NoContent();
         }
 
@@ -125,7 +137,15 @@ namespace Presentation.Controllers
         [Authorize(Policy = "VerifiedOrganization")]
         public async Task<IActionResult> DeleteScholarshipForUniversity(string universityId, int id)
        {
-            await _service.ScholarshipService.DeleteScholarshipForUniversityAsync(universityId, id, trackChanges: false);
+
+			var UserName = User.Identity?.Name;
+
+			var user = await _service.UserService.GetDetailsByUserName(UserName);
+
+			if (user.Id != universityId)
+				return BadRequest(new ApiResponse<EditedScholarshipDto> { Success = false, Message = "universityId don't match with authorized one", Data = null });
+
+			await _service.ScholarshipService.DeleteScholarshipForUniversityAsync(universityId, id, trackChanges: false);
             return NoContent();
        }
     }
