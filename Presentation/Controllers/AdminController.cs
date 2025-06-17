@@ -20,7 +20,7 @@ namespace Presentation.Controllers
 {
     [Route("api/admin")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+  [Authorize(Roles = "Admin")]
     public class AdminController : ControllerBase
     {
         private readonly IServiceManager _service;

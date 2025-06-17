@@ -61,12 +61,12 @@ namespace Service
         public async Task<IEnumerable<ChatDto>> GetAllChatDtosForUser(string userId)
         {
             var chats = (await GetAllChatsForUser(userId)).ToList();
-            // Collect all senderIds from last messages
+
             var lastMessages = chats.Select(c => c.Messages.OrderByDescending(m => m.CreatedAt).FirstOrDefault()).Where(m => m != null).ToList();
             var senderIds = lastMessages.Select(m => m.SenderId).Distinct().ToList();
-            // Collect all other user IDs
+
             var otherUserIds = chats.Select(chat => chat.FirstUserId == userId ? chat.SecondUserId : chat.FirstUserId).Distinct().ToList();
-            // Fetch all senders
+
             var senders = new List<User>();
             foreach (var id in senderIds)
             {
@@ -80,7 +80,6 @@ namespace Service
                 UserName = u.UserName,
                 Photo = u.UrlPicture
             });
-            // Fetch all other users
             var otherUsers = new List<User>();
             foreach (var id in otherUserIds)
             {
@@ -94,7 +93,6 @@ namespace Service
                 UserName = u.UserName,
                 Photo = u.UrlPicture
             });
-            // Map chats to ChatDto, including sender info for lastMessage and OtherUser
             var chatDtos = chats.Select(chat =>
             {
                 var lastMessage = chat.Messages.OrderByDescending(m => m.CreatedAt).FirstOrDefault();

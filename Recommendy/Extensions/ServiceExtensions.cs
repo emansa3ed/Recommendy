@@ -145,7 +145,8 @@ namespace Recommendy.Extensions
 				};
 
 
-			});
+			})
+           ;
         }
 
 		public static void ConfigureRateLimiter(this IServiceCollection services)

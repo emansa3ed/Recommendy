@@ -21,6 +21,8 @@ using System.Text.Json;
 using System.Transactions;
 using Shared.DTO.Authentication;
 using Entities.ResumeModels;
+using Google.Apis.Auth;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Service
 {
@@ -338,6 +340,60 @@ namespace Service
             }
 
             return userId;
+        }
+
+        public async Task<TokenDto> HandleGoogleLoginAsync(string email, string name, string? picture, string? firstName = null, string? lastName = null)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                user = new User
+                {
+                    UserName = email,
+                    Email = email,
+                    FirstName = firstName ?? name?.Split(' ')[0],
+                    LastName = lastName ?? (name?.Split(' ').Length > 1 ? name.Split(' ')[1] : ""),
+                    EmailConfirmed = true,
+                    UrlPicture = picture,
+                    Discriminator = "Student"
+                };
+                var createResult = await _userManager.CreateAsync(user);
+                if (!createResult.Succeeded)
+                    throw new Exception("Failed to create user account");
+                await _userManager.AddToRoleAsync(user, "Student");
+            }
+          
+            _user = user;
+            Student student = new Student();
+            student.StudentId = user.Id;
+            _repository.Student.CreateStudent(student);
+            _repository.SaveAsync().Wait();
+            return await CreateToken(populateExp: true);
+        }
+
+        public async Task<TokenDto> HandleGoogleIdTokenAsync(string idToken, string? firstName = null, string? lastName = null)
+        {
+            var settings = new GoogleJsonWebSignature.ValidationSettings()
+            {
+                Audience = new List<string> { Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID") }
+            };
+            var payload = await GoogleJsonWebSignature.ValidateAsync(idToken, settings);
+            return await HandleGoogleLoginAsync(payload.Email,payload.Name, payload.Picture, firstName, lastName);
+        }
+
+        public async Task<TokenDto> HandleGoogleLoginOnlyAsync(string idToken)
+        {
+            var settings = new GoogleJsonWebSignature.ValidationSettings()
+            {
+                Audience = new List<string> { Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID") }
+            };
+            var payload = await GoogleJsonWebSignature.ValidateAsync(idToken, settings);
+
+            var user = await _userManager.FindByEmailAsync(payload.Email);
+            if (user == null)
+                throw new UnauthorizedAccessException("User not found or not registered with Google.");
+            _user = user;
+            return await CreateToken(populateExp: true);
         }
     }
 }

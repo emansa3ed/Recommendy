@@ -11,6 +11,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Shared.DTO.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
 
 namespace Presentation.Controllers
 {
@@ -148,9 +150,23 @@ namespace Presentation.Controllers
            
 
         }
+      
 
+      
 
-       
+        [HttpPost("google-register")]
+        public async Task<IActionResult> GoogleRegister([FromBody] GoogleRegisterDto dto)
+        {
+            var tokenDto = await _service.AuthenticationService.HandleGoogleIdTokenAsync(dto.IdToken, dto.FirstName, dto.LastName);
+            return Ok(tokenDto);
+        }
+
+        [HttpPost("google-login")]
+        public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginDto dto)
+        {
+            var tokenDto = await _service.AuthenticationService.HandleGoogleLoginOnlyAsync(dto.IdToken);
+            return Ok(tokenDto);
+        }
 
     }
 }
