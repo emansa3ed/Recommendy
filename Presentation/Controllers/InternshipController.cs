@@ -43,7 +43,14 @@ namespace Presentation.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _service.InternshipService.CreateInternship(CompanyID, internshipCreation);
+            var UserName = User.Identity?.Name;
+
+            var user = await _service.UserService.GetDetailsByUserName(UserName);
+
+            if (user.Id != CompanyID)
+                return BadRequest(new ApiResponse<Internship> { Success = false,Message = "CompanyID don't match with authorized one",Data=null });
+
+			var result = await _service.InternshipService.CreateInternship(CompanyID, internshipCreation);
               
                 return Ok(  new ApiResponse<Internship>
                 {
@@ -65,7 +72,14 @@ namespace Presentation.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result =   await _service.InternshipPosition.CreateInternshipPosition(CompanyID, InternshipId, internshipPositionDto);
+			var UserName = User.Identity?.Name;
+
+			var user = await _service.UserService.GetDetailsByUserName(UserName);
+
+			if (user.Id != CompanyID)
+				return BadRequest(new ApiResponse<Internship> { Success = false, Message = "CompanyID don't match with authorized one", Data = null });
+
+			var result =   await _service.InternshipPosition.CreateInternshipPosition(CompanyID, InternshipId, internshipPositionDto);
 
 
             return Ok(new ApiResponse<InternshipPosition>
@@ -118,9 +132,14 @@ namespace Presentation.Controllers
         public async Task<IActionResult> DeleteInternship([FromRoute] string CompanyID, [FromRoute] int InternshipId)
         {
 
-          
+			var UserName = User.Identity?.Name;
 
-               await _service.InternshipService.DeleteInternship(CompanyID, InternshipId, false);
+			var user = await _service.UserService.GetDetailsByUserName(UserName);
+
+			if (user.Id != CompanyID)
+				return BadRequest(new ApiResponse<Internship> { Success = false, Message = "CompanyID don't match with authorized one", Data = null });
+
+			await _service.InternshipService.DeleteInternship(CompanyID, InternshipId, false);
 
                 return NoContent();
            
@@ -133,8 +152,15 @@ namespace Presentation.Controllers
         [Authorize(Policy = "VerifiedOrganization")]
         public  async Task<IActionResult> DeletePosition([FromRoute] string CompanyID, [FromRoute] int InternshipId, [FromRoute] int PositionId)
         {
+		
+            var UserName = User.Identity?.Name;
 
-                 await _service.InternshipPosition.DeleteInternshipPosition(CompanyID, InternshipId, PositionId);
+			var user = await _service.UserService.GetDetailsByUserName(UserName);
+
+			if (user.Id != CompanyID)
+				return BadRequest(new ApiResponse<Internship> { Success = false, Message = "CompanyID don't match with authorized one", Data = null });
+
+			await _service.InternshipPosition.DeleteInternshipPosition(CompanyID, InternshipId, PositionId);
 
             return NoContent();
 
@@ -147,8 +173,15 @@ namespace Presentation.Controllers
 
         public async Task<IActionResult> UpdateInternship([FromRoute] string CompanyID, [FromRoute]int InternshipId, [FromForm] InternshipUpdateDto internshipUpdateDto) 
         {
-           
-                await _service.InternshipService.UpdateInternship(CompanyID, InternshipId, internshipUpdateDto);
+
+			var UserName = User.Identity?.Name;
+
+			var user = await _service.UserService.GetDetailsByUserName(UserName);
+
+			if (user.Id != CompanyID)
+				return BadRequest(new ApiResponse<Internship> { Success = false, Message = "CompanyID don't match with authorized one", Data = null });
+
+			await _service.InternshipService.UpdateInternship(CompanyID, InternshipId, internshipUpdateDto);
 
             return NoContent();
         
@@ -160,11 +193,17 @@ namespace Presentation.Controllers
 
         public async Task<IActionResult> UpdateInternshipPosition([FromRoute] string CompanyID, [FromRoute] int InternshipId, [FromRoute] int PositionId, [FromBody] InternshipPositionUpdateDto internshipPositionUpdate)
         {
-            
-               
-                 await _service.InternshipPosition.UpdateInternshipPosition(CompanyID, InternshipId, PositionId, internshipPositionUpdate);
+
+			var UserName = User.Identity?.Name;
+
+			var user = await _service.UserService.GetDetailsByUserName(UserName);
+
+			if (user.Id != CompanyID)
+				return BadRequest(new ApiResponse<Internship> { Success = false, Message = "CompanyID don't match with authorized one", Data = null });
+
+			await _service.InternshipPosition.UpdateInternshipPosition(CompanyID, InternshipId, PositionId, internshipPositionUpdate);
               
-             return NoContent();
+            return NoContent();
         }
 
     }
