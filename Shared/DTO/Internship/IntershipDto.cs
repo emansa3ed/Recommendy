@@ -1,4 +1,4 @@
-﻿using Entities.Models;
+using Entities.Models;
 using Shared.DTO.Company;
 using System;
 using System.Collections.Generic;
@@ -16,6 +16,8 @@ namespace Shared.DTO.Internship
         public string ApplicationDeadline { get; set; }
         public string Description { get; set; }
         public string UrlPicture { get; set; }
+        public bool IsBanned { get; set; } 
+        public DateTime? CreatedAt { get; set; }
         public bool Paid { get; set; }
         public string Approach { get; set; }
 
