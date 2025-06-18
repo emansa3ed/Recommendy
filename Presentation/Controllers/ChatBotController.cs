@@ -10,12 +10,12 @@ namespace Presentation.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class OllamaController : ControllerBase
+    public class ChatBotController : ControllerBase
     {
         private readonly IOllamaService _ollamaService;
         private readonly IServiceManager _service;
 
-        public OllamaController(IOllamaService ollamaService, IServiceManager service)
+        public ChatBotController(IOllamaService ollamaService, IServiceManager service)
         {
             _ollamaService = ollamaService;
             _service = service;
