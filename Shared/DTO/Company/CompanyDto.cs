@@ -15,6 +15,9 @@ namespace Shared.DTO.Company
         public string? Bio { get; init; }
         public string? PhoneNumber { get; init; }
 
+        public string? OldPassword { get; set; }
+        public string? NewPassword { get; set; }
+
     }
     public record CompanyViewDto
     {
