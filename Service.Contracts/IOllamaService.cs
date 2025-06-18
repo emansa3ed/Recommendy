@@ -16,5 +16,9 @@ namespace Service.Contracts
             string promptType = "recommendation",
             string studentSkills = "");
 
+        IAsyncEnumerable<string> GenerateTextStreamAsync(string userPrompt, string model = "deepseek-r1:8b",
+            string systemPrompt = null, string promptType = "recommendation", string studentSkills = "");
+
+
     }
 } 

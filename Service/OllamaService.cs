@@ -5,7 +5,9 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.IO;
 using System.Text.Json.Serialization;
+using System.Threading;
 using Service.Contracts;
 using Shared.DTO.Ollama;
 using Contracts;
@@ -17,7 +19,7 @@ namespace Service
     {
         private readonly HttpClient _httpClient;
         private const string BaseUrl = "http://localhost:11434";
-        private readonly IRepositoryManager _repositoryManager; 
+        private readonly IRepositoryManager _repositoryManager;
 
         public OllamaService(HttpClient httpClient, IRepositoryManager repositoryManager)
         {
@@ -27,6 +29,46 @@ namespace Service
             _repositoryManager = repositoryManager;
         }
 
+        public async IAsyncEnumerable<string> GenerateTextStreamAsync(
+            string userPrompt,
+            string model = "deepseek-r1:8b",
+            string systemPrompt = null,
+            string promptType = "recommendation",
+            string studentSkills = ""
+        )
+        {
+            var internshipNames = await GetInternshipNamesAsync();
+            var scholarshipNames = await GetScholarshipNamesAsync();
+
+            string fullPrompt = BuildPrompt(userPrompt, promptType, studentSkills, internshipNames, scholarshipNames);
+
+            var request = new
+            {
+                model = model,
+                prompt = fullPrompt,
+                stream = true,
+                system = systemPrompt
+            };
+
+            var content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, "/api/generate") { Content = content };
+
+            using var response = await _httpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);
+            response.EnsureSuccessStatusCode();
+
+            using var stream = await response.Content.ReadAsStreamAsync();
+            using var reader = new StreamReader(stream);
+
+            while (!reader.EndOfStream)
+            {
+                var line = await reader.ReadLineAsync();
+                if (!string.IsNullOrWhiteSpace(line))
+                {
+                    yield return line;
+                }
+            }
+        }
+
         public async Task<string> GenerateTextAsync(
             string userPrompt,
             string model = "deepseek-r1:8b",
@@ -34,97 +76,99 @@ namespace Service
             string systemPrompt = null,
             string promptType = "recommendation",
             string studentSkills = ""
-            
-            )
+        )
         {
-            // Fetch all internships (names only)
-            var internshipParameters = new InternshipParameters { PageNumber = 1, PageSize = 1000 };
-            var internshipsPaged = await _repositoryManager.Intership.GetAllInternshipsAsync(internshipParameters, trackChanges: false);
-            List<string> internshipNames  = internshipsPaged.Select(i => i.Name).ToList();
-
-            // Fetch all scholarships (names only)
-            var scholarshipParameters = new ScholarshipsParameters { PageNumber = 1, PageSize = 1000 };
-            var scholarshipsPaged = await  _repositoryManager.Scholarship.GetAllScholarshipsAsync(scholarshipParameters, trackChanges: false);
-            List<string> scholarshipNames = scholarshipsPaged.Select(s => s.Name).ToList();
-
-
-
-            const string RecommendationStaticPart =  @"
-You are Recommendy, a smart recommendation system.
-
-Student skills:
-{0}
-
-Internship opportunities:
-{1}
-
-Scholarship opportunities:
-{2}
-
-Based on the student's skills, recommend the most suitable internship and scholarship.
-
-Respond clearly and directly. Do not include explanations or internal thoughts. Start your answer with 'ANSWER:' only.
-
-Question: ";
-
-
-            const string ExpertAdviceStaticPart =  @"
-You are Recommendy, an expert career advisor.
-
-Student skills: {0}
-
-Based on these skills, give precise and actionable advice tailored to the student. Avoid explanations or internal thoughts. Answer directly and clearly.
-
-Start your response with 'ANSWER:' only.
-
-Question: ";
-
-
-            string fullPrompt;
-            if (promptType?.ToLower() == "expert")
+            try
             {
-                fullPrompt = string.Format(ExpertAdviceStaticPart, studentSkills) + userPrompt.Trim();
+                var internshipNames = await GetInternshipNamesAsync();
+                var scholarshipNames = await GetScholarshipNamesAsync();
+
+                string fullPrompt = BuildPrompt(userPrompt, promptType, studentSkills, internshipNames, scholarshipNames);
+
+                var request = new
+                {
+                    model = model,
+                    prompt = fullPrompt,
+                    stream = true, // force stream to handle all models like gemma
+                    system = systemPrompt
+                };
+
+                var content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
+                var requestMessage = new HttpRequestMessage(HttpMethod.Post, "/api/generate") { Content = content };
+
+                using var response = await _httpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);
+                response.EnsureSuccessStatusCode();
+
+                using var streamResponse = await response.Content.ReadAsStreamAsync();
+                using var reader = new StreamReader(streamResponse);
+
+                var completeAnswer = new StringBuilder();
+
+                while (!reader.EndOfStream)
+                {
+                    var line = await reader.ReadLineAsync();
+                    if (!string.IsNullOrWhiteSpace(line))
+                    {
+                        try
+                        {
+                            var jsonDoc = JsonDocument.Parse(line);
+                            if (jsonDoc.RootElement.TryGetProperty("response", out var responseProp))
+                            {
+                                completeAnswer.Append(responseProp.GetString());
+                            }
+                        }
+                        catch (JsonException)
+                        {
+                            // skip invalid json lines
+                        }
+                    }
+                }
+
+                return completeAnswer.ToString().Trim();
             }
-            else
+            catch (Exception ex)
             {
-                string formattedInternships = internshipNames != null ? string.Join("\n- ", internshipNames.Prepend("").ToArray()) : "";
-                string formattedScholarships = scholarshipNames != null ? string.Join("\n- ", scholarshipNames.Prepend("").ToArray()) : "";
-                fullPrompt = string.Format(
-                    RecommendationStaticPart,
-                    studentSkills,
-                    formattedInternships,
-                    formattedScholarships
-                ) + userPrompt.Trim();
+                // log ex if needed
+                return "Sorry, I'm having trouble answering right now. Please try again later or contact support if the issue persists.";
             }
-
-            var request = new
-            {
-                model = model,
-                prompt = fullPrompt,
-                stream = stream,
-                system = systemPrompt
-            };
-
-            var content = new StringContent(
-                JsonSerializer.Serialize(request),
-                Encoding.UTF8,
-                "application/json"
-            );
-
-            var response = await _httpClient.PostAsync("/api/generate", content);
-            response.EnsureSuccessStatusCode();
-
-            var responseContent = await response.Content.ReadAsStringAsync();
-            Console.WriteLine("Ollama raw response: " + responseContent);
-            var responseObject = JsonSerializer.Deserialize<OllamaResponse>(responseContent);
-
-            var answer = responseObject?.Response ?? string.Empty;
-            answer = Regex.Replace(answer, @"<think>[\s\S]*?</think>", "", RegexOptions.IgnoreCase).Trim();
-            return answer;
         }
 
-       
+        // Reusable prompt builder
+        private string BuildPrompt(string userPrompt, string promptType, string studentSkills, List<string> internshipNames, List<string> scholarshipNames)
+        {
+            if (promptType?.ToLower() == "expert")
+            {
+                return string.Format(PromptTemplates.ExpertAdvice, studentSkills) + userPrompt.Trim();
+            }
+
+            string formattedInternships = internshipNames != null ? string.Join("\n- ", internshipNames.Prepend("")) : "";
+            string formattedScholarships = scholarshipNames != null ? string.Join("\n- ", scholarshipNames.Prepend("")) : "";
+
+            return string.Format(
+                PromptTemplates.Recommendation,
+                studentSkills,
+                formattedInternships,
+                formattedScholarships
+            ) + userPrompt.Trim();
+        }
+
+        // Fetch internships
+        private async Task<List<string>> GetInternshipNamesAsync()
+        {
+            var parameters = new InternshipParameters { PageNumber = 1, PageSize = 1000 };
+            var data = await _repositoryManager.Intership.GetAllInternshipsAsync(parameters, trackChanges: false);
+            return data.Select(i => i.Name).ToList();
+        }
+
+        // Fetch scholarships
+        private async Task<List<string>> GetScholarshipNamesAsync()
+        {
+            var parameters = new ScholarshipsParameters { PageNumber = 1, PageSize = 1000 };
+            var data = await _repositoryManager.Scholarship.GetAllScholarshipsAsync(parameters, trackChanges: false);
+            return data.Select(s => s.Name).ToList();
+        }
     }
 
-   
+ 
+    
 }
