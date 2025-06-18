@@ -15,6 +15,7 @@ using Stripe;
 using Microsoft.Extensions.Logging;
 using Shared.RequestFeatures;
 using Shared.DTO.Notification;
+using Shared.DTO.Student;
 
 namespace Service
 {
@@ -31,8 +32,8 @@ namespace Service
             _mapper = mapper;
             _service = service;
             _notificationService = notificationService;
-        }
-        public CompanyViewDto GetCompany(string id, bool trackChanges)
+		}
+		public CompanyViewDto GetCompany(string id, bool trackChanges)
         {
             var company = _repository.Company.GetCompany(id, trackChanges);
             if (company is null)
@@ -66,8 +67,11 @@ namespace Service
             {
                 company.User.PhoneNumber = companyDto.PhoneNumber;
             }
+			if (!string.IsNullOrEmpty(companyDto.NewPassword) && !string.IsNullOrEmpty(companyDto.OldPassword))
+                await _service.UserService.ChangePasswordAsync(companyId,
+                    new ChangePasswordDto { CurrentPassword = companyDto.OldPassword,NewPassword = companyDto.NewPassword});
 
-            _repository.Company.UpdateCompany(company);
+			_repository.Company.UpdateCompany(company);
             _repository.Save();
         }
         public async Task<PagedList<CompanyViewDto>> GetUnverifiedCompaniesAsync(

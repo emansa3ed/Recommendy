@@ -16,6 +16,8 @@ using Stripe;
 using Shared.RequestFeatures;
 using Shared.DTO.Notification;
 using DocumentFormat.OpenXml.ExtendedProperties;
+using Shared.DTO.Student;
+using System.ComponentModel.Design;
 
 namespace Service
 {
@@ -68,8 +70,10 @@ namespace Service
             {
                 university.User.PhoneNumber = universityDto.PhoneNumber;
             }
-        
-            await _repository.SaveAsync();
+			if (!string.IsNullOrEmpty(universityDto.NewPassword) && !string.IsNullOrEmpty(universityDto.OldPassword))
+				await _service.UserService.ChangePasswordAsync(universityId,
+					new ChangePasswordDto { CurrentPassword = universityDto.OldPassword, NewPassword = universityDto.NewPassword });
+			await _repository.SaveAsync();
         }
 
         public async Task<PagedList<UniversityViewDto>> GetUnverifiedUniversitiesAsync(

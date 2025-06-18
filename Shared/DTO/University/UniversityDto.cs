@@ -15,9 +15,10 @@ namespace Shared.DTO.University
         public int? CountryId { get; init; }
         public string? Bio { get; init; }
         public string? PhoneNumber { get; init; }
+		public string? OldPassword { get; set; }
+		public string? NewPassword { get; set; }
 
-
-    }
+	}
     public record EditUniversityProfileDto
     {
         public string? UniversityUrl { get; init; }
