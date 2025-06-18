@@ -5,11 +5,13 @@ using Service.Contracts;
 using Shared.DTO.Ollama;
 using Shared.RequestFeatures;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Presentation.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = "Student")]
     public class ChatBotController : ControllerBase
     {
         private readonly IOllamaService _ollamaService;
