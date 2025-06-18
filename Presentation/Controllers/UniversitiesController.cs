@@ -30,7 +30,7 @@ namespace Presentation.Controllers
         }
 
 
-        [HttpPut("edit-profile/{id}")]
+        [HttpPatch("edit-profile/{id}")]
 		[Authorize(Roles = "University")]
 		public async Task<IActionResult> EditProfile(string id, [FromBody] UniversityDto universityDto)
         {
