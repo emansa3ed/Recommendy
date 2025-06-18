@@ -16,7 +16,7 @@ namespace Service.Contracts
         Task<TokenDto> CreateToken(bool populateExp);
         Task<TokenDto> RefreshToken(TokenDto tokenDto);
         Task<TokenDto> HandleGoogleLoginAsync(string email, string name, string? picture,  string? firstName = null, string? lastName = null);
-        Task<TokenDto> HandleGoogleIdTokenAsync(string idToken, string? firstName = null, string? lastName = null);
+        Task<TokenDto> HandleGoogleIdTokenAsync(string idToken);
         Task<TokenDto> HandleGoogleLoginOnlyAsync(string idToken);
 
 

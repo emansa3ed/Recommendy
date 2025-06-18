@@ -371,14 +371,14 @@ namespace Service
             return await CreateToken(populateExp: true);
         }
 
-        public async Task<TokenDto> HandleGoogleIdTokenAsync(string idToken, string? firstName = null, string? lastName = null)
+        public async Task<TokenDto> HandleGoogleIdTokenAsync(string idToken)
         {
             var settings = new GoogleJsonWebSignature.ValidationSettings()
             {
                 Audience = new List<string> { Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID") }
             };
             var payload = await GoogleJsonWebSignature.ValidateAsync(idToken, settings);
-            return await HandleGoogleLoginAsync(payload.Email,payload.Name, payload.Picture, firstName, lastName);
+            return await HandleGoogleLoginAsync(payload.Email,payload.Name, payload.Picture, payload.Name, payload.FamilyName);
         }
 
         public async Task<TokenDto> HandleGoogleLoginOnlyAsync(string idToken)
@@ -388,6 +388,7 @@ namespace Service
                 Audience = new List<string> { Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID") }
             };
             var payload = await GoogleJsonWebSignature.ValidateAsync(idToken, settings);
+            
 
             var user = await _userManager.FindByEmailAsync(payload.Email);
             if (user == null)

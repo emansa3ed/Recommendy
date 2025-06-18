@@ -155,15 +155,23 @@ namespace Presentation.Controllers
       
 
         [HttpPost("google-register")]
-        public async Task<IActionResult> GoogleRegister([FromBody] GoogleRegisterDto dto)
+        public async Task<IActionResult> GoogleRegister([FromBody] GoogleAuthenticationDto dto)
         {
-            var tokenDto = await _service.AuthenticationService.HandleGoogleIdTokenAsync(dto.IdToken, dto.FirstName, dto.LastName);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var tokenDto = await _service.AuthenticationService.HandleGoogleIdTokenAsync(dto.IdToken);
             return Ok(tokenDto);
         }
 
         [HttpPost("google-login")]
-        public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginDto dto)
+        public async Task<IActionResult> GoogleLogin([FromBody] GoogleAuthenticationDto dto)
         {
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var tokenDto = await _service.AuthenticationService.HandleGoogleLoginOnlyAsync(dto.IdToken);
             return Ok(tokenDto);
         }
