@@ -34,8 +34,8 @@ namespace Presentation.Controllers
 		}
 
 
-		[HttpGet]
-		public async Task<IActionResult> GetOpportunities([FromQuery] OpportunitiesParameters OpportunitiesParameters)
+		[HttpGet("RecommendedScholarships")]
+		public async Task<IActionResult> GetOpportunities([FromQuery] ScholarshipsParameters scholarshipsParameters)
 		{
 			var username = User.Identity.Name;
 			var user = await _service.UserService.GetDetailsByUserName(username);
@@ -49,18 +49,6 @@ namespace Presentation.Controllers
             var ExpandedSkills = _service.SkillOntology.ExpandSkills(skills);
 
 			var NewSkills = string.Join(",", ExpandedSkills.ToList());
-
-			var scholarshipsParameters = new ScholarshipsParameters
-			{
-				PageNumber = OpportunitiesParameters.PageNumber,
-				PageSize = OpportunitiesParameters.PageSize,
-			};
-
-			var internshipParameters = new InternshipParameters
-			{
-				PageNumber = OpportunitiesParameters.PageNumber,
-				PageSize = OpportunitiesParameters.PageSize,
-			};
 
 			string Titles;
 			if (!_memoryCache.Cache.TryGetValue(scholarshipsParameters.ToString() + UserSkills + "GetAllRecommendedScholarships", out PagedList<Scholarship> cacheValue))
@@ -81,25 +69,58 @@ namespace Presentation.Controllers
 
 			var scholarships = await _service.ScholarshipService.GetAllRecommendedScholarships(UserSkills, Titles, scholarshipsParameters, trackChanges: false);
 
-			var internships = await _service.InternshipService.GetAllRecommendedInternships(UserSkills, Titles, internshipParameters, trackChanges: false);
 
-			MetaData metaData = new MetaData
-			{
-				PageSize = OpportunitiesParameters.PageSize,
-				CurrentPage = OpportunitiesParameters.PageNumber,
-				TotalCount = scholarships.MetaData.TotalCount+internships.MetaData.TotalCount,
-				TotalPages = (int)Math.Ceiling((double)(scholarships.MetaData.TotalCount + internships.MetaData.TotalCount) / OpportunitiesParameters.PageSize),
-			};
-			Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(metaData));
+			Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(scholarships.MetaData));
 
-			GetOpportunitiesDto opportunities = new GetOpportunitiesDto
-			{
-				Scholarships = scholarships,
-				Internships = internships
-			};
-			return Ok(new ApiResponse<GetOpportunitiesDto> {Data= opportunities,Success=true});
+			return Ok(new ApiResponse<List<GetScholarshipDto>> {Data= scholarships, Success=true});
 
 		}
+
+
+		[HttpGet("RecommendedInternships")]
+		public async Task<IActionResult> GetOpportunities([FromQuery] InternshipParameters internshipParameters)
+		{
+			var username = User.Identity.Name;
+			var user = await _service.UserService.GetDetailsByUserName(username);
+			var UserSkills = _service.StudentService.GetStudent(user.Id, trackChanges: false).Skills;
+
+			var skills = UserSkills
+						.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+						.Select(term => term.ToLower())
+						.ToList();
+
+			var ExpandedSkills = _service.SkillOntology.ExpandSkills(skills);
+
+			var NewSkills = string.Join(",", ExpandedSkills.ToList());
+
+			string Titles;
+			if (!_memoryCache.Cache.TryGetValue(internshipParameters.ToString() + UserSkills + "GetAllRecommendedScholarships", out PagedList<Scholarship> cacheValue))
+			{
+				Titles = _service.GeminiService.SendRequest($"Given the following skills: {NewSkills}," +
+					$" identify the top 10 general keywords that are commonly found in the name or description of relevant scholarships or internships." +
+					$" Avoid combining skills with keywords (e.g., avoid 'Python Developer'). Only return general," +
+					$" role-based keywords such as 'Developer', 'Analyst', or 'Researcher'. and keyword must be one word." +
+					$"Do not use keywords like 'intern' or 'scholarship' directly" +
+					$" Format the result exactly as: keyword1, keyword2, keyword3, keyword4, keyword5, keyword6, keyword7, keyword8, keyword9, keyword10." +
+					$" Do not include any additional text or explanations.");
+			}
+			else
+			{
+				Titles = null;
+			}
+
+
+
+			var internships = await _service.InternshipService.GetAllRecommendedInternships(UserSkills, Titles, internshipParameters, trackChanges: false);
+
+			Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(internships.MetaData));
+
+
+			return Ok(new ApiResponse<List<InternshipDto>> { Data = internships, Success = true });
+
+		}
+
+
 
 		[HttpGet("Scholarships/all")]
 		public async Task<IActionResult> GetScholarships([FromQuery] ScholarshipsParameters scholarshipsParameters)
