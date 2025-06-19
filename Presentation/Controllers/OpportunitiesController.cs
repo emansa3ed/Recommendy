@@ -50,24 +50,35 @@ namespace Presentation.Controllers
 
 			var NewSkills = string.Join(",", ExpandedSkills.ToList());
 
-			string Titles;
+			string IDS;
 			if (!_memoryCache.Cache.TryGetValue(scholarshipsParameters.ToString() + UserSkills + "GetAllRecommendedScholarships", out PagedList<Scholarship> cacheValue))
 			{
-				Titles = _service.GeminiService.SendRequest($"Given the following skills: {NewSkills}," +
-					$" identify the top 10 general keywords that are commonly found in the name or description of relevant scholarships or internships." +
-					$" Avoid combining skills with keywords (e.g., avoid 'Python Developer'). Only return general," +
-					$" role-based keywords such as 'Developer', 'Analyst', or 'Researcher'. and keyword must be one word." +
-					$"Do not use keywords like 'intern' or 'scholarship' directly" +
-					$" Format the result exactly as: keyword1, keyword2, keyword3, keyword4, keyword5, keyword6, keyword7, keyword8, keyword9, keyword10." +
-					$" Do not include any additional text or explanations.");
+				var res = await _service.ScholarshipService.GetAllScholarships(new ScholarshipsParameters { PageSize = 50 }, false);
+				var scholarsJson = JsonSerializer.Serialize(res);
+
+				var prompt = $"You are an intelligent assistant that recommends relevant scholarships based on skills." +
+					$"\n\nSkills: {NewSkills}" +
+					$"\n\nScholarship data (as JSON): {scholarsJson}" +
+					$"\n\nFrom the above list, analyze the scholarship data and return the IDs of the scholarships that best match the given skills." +
+					$"\nOnly consider the fields that are relevant to matching (e.g., name, description." +
+					$"\nReturn only a comma-separated list of scholarship IDs like this: id1, id2, id3, ..." +
+					$"\nDo not include any explanation, titles, or extra text — only the IDs.";
+				 
+				IDS = await _service.OllamaService.RecommendedOpportunities(
+									prompt,
+									"gemma3:4b-it-q8_0",
+									false,
+									null,
+									"recommendation"
+								);
 			}
 			else
 			{
-				Titles = null;
+				IDS = null;
 			}
 
 
-			var scholarships = await _service.ScholarshipService.GetAllRecommendedScholarships(UserSkills, Titles, scholarshipsParameters, trackChanges: false);
+			var scholarships = await _service.ScholarshipService.GetAllRecommendedScholarships(UserSkills, IDS, scholarshipsParameters, trackChanges: false);
 
 
 			Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(scholarships.MetaData));
@@ -93,25 +104,36 @@ namespace Presentation.Controllers
 
 			var NewSkills = string.Join(",", ExpandedSkills.ToList());
 
-			string Titles;
-			if (!_memoryCache.Cache.TryGetValue(internshipParameters.ToString() + UserSkills + "GetAllRecommendedScholarships", out PagedList<Scholarship> cacheValue))
+			string IDS;
+			if (!_memoryCache.Cache.TryGetValue(internshipParameters.ToString() + UserSkills + "GetAllRecommendedInternships", out PagedList<Scholarship> cacheValue))
 			{
-				Titles = _service.GeminiService.SendRequest($"Given the following skills: {NewSkills}," +
-					$" identify the top 10 general keywords that are commonly found in the name or description of relevant scholarships or internships." +
-					$" Avoid combining skills with keywords (e.g., avoid 'Python Developer'). Only return general," +
-					$" role-based keywords such as 'Developer', 'Analyst', or 'Researcher'. and keyword must be one word." +
-					$"Do not use keywords like 'intern' or 'scholarship' directly" +
-					$" Format the result exactly as: keyword1, keyword2, keyword3, keyword4, keyword5, keyword6, keyword7, keyword8, keyword9, keyword10." +
-					$" Do not include any additional text or explanations.");
+				var res = await _service.InternshipService.GetAllInternships(new InternshipParameters { PageSize = 50 }, false);
+				var internsJson = JsonSerializer.Serialize(res);
+
+				var prompt = _service.GeminiService.SendRequest(
+					$"You are an intelligent assistant that recommends relevant internships based on skills." +
+					$"\n\nSkills: {NewSkills}" +
+					$"\n\nInternship data (as JSON): {internsJson}" +
+					$"\n\nFrom the above list, analyze the internship data and return the IDs of the internships that best match the given skills." +
+					$"\nOnly consider the fields that are relevant to matching (e.g., name, description)." +
+					$"\nReturn only a comma-separated list of internship IDs like this: id1, id2, id3, ..." +
+					$"\nDo not include any explanation, titles, or extra text — only the IDs.");
+				IDS = await _service.OllamaService.RecommendedOpportunities(
+					prompt,
+					"gemma3:4b-it-q8_0",
+					false,
+					null,
+					"recommendation"
+				);
 			}
 			else
 			{
-				Titles = null;
+				IDS = null;
 			}
 
 
 
-			var internships = await _service.InternshipService.GetAllRecommendedInternships(UserSkills, Titles, internshipParameters, trackChanges: false);
+			var internships = await _service.InternshipService.GetAllRecommendedInternships(UserSkills, IDS, internshipParameters, trackChanges: false);
 
 			Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(internships.MetaData));
 

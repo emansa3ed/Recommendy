@@ -16,12 +16,10 @@ namespace Presentation.Controllers
     [Authorize(Roles = "Student")]
     public class ChatBotController : ControllerBase
     {
-        private readonly IOllamaService _ollamaService;
         private readonly IServiceManager _service;
 
-        public ChatBotController(IOllamaService ollamaService, IServiceManager service)
+        public ChatBotController(IServiceManager service)
         {
-            _ollamaService = ollamaService;
             _service = service;
         }
 
@@ -41,7 +39,7 @@ namespace Presentation.Controllers
 
 
 
-            var response = await _ollamaService.GenerateTextAsync(
+            var response = await _service.OllamaService.GenerateTextAsync(
                 request.Prompt,
                 request.Model,
                 request.Stream,
@@ -63,7 +61,7 @@ namespace Presentation.Controllers
                 var student = _service.StudentService.GetStudent(user.Id, trackChanges: false);
                 var studentSkills = student.Skills ?? string.Empty;
 
-                await foreach (var chunk in _ollamaService.GenerateTextStreamAsync(
+                await foreach (var chunk in _service.OllamaService.GenerateTextStreamAsync(
                     request.Prompt,
                     request.Model,
                     request.SystemPrompt,
