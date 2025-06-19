@@ -54,24 +54,46 @@ namespace Presentation.Controllers
 			if (!_memoryCache.Cache.TryGetValue(scholarshipsParameters.ToString() + UserSkills + "GetAllRecommendedScholarships", out PagedList<Scholarship> cacheValue))
 			{
 				var res = await _service.ScholarshipService.GetAllScholarships(new ScholarshipsParameters { PageSize = 50 }, false);
-				var scholarsJson = JsonSerializer.Serialize(res);
+				var res2 = res.Select(r => new { r.Description, r.Name, r.Id });
+				var scholarsJson = JsonSerializer.Serialize(res2);
 
-				var prompt = $"You are an intelligent assistant that recommends relevant scholarships based on skills." +
-					$"\n\nSkills: {NewSkills}" +
-					$"\n\nScholarship data (as JSON): {scholarsJson}" +
-					$"\n\nFrom the above list, analyze the scholarship data and return the IDs of the scholarships that best match the given skills." +
-					$"\nOnly consider the fields that are relevant to matching (e.g., name, description." +
-					$"\nReturn only a comma-separated list of scholarship IDs like this: id1, id2, id3, ..." +
-					$"\nDo not include any explanation, titles, or extra text — only the IDs.";
-				 
-				IDS = await _service.OllamaService.RecommendedOpportunities(
-									prompt,
-									"gemma3:4b-it-q8_0",
-									false,
-									null,
-									"recommendation"
-								);
+				List<string> chunks = ChunkJsonString(scholarsJson, 1000); 
+
+				var tasks = chunks.Select(async chunk =>
+				{
+					var prompt =
+						"You are an intelligent assistant that recommends relevant scholarships based on skills." +
+						$"\n\nSkills: {NewSkills}" +
+						$"\n\nHere is a portion of the scholarship data (as JSON): {chunk}" +
+						"\n\nFrom the above list, return only the IDs of scholarships that best match the given skills." +
+						"\nOnly consider fields that are relevant to matching (e.g., name, description)." +
+						"\nReturn only a comma-separated list of scholarship IDs like this: id1, id2, id3, ..." +
+						"\nDo not include any explanation, titles, or extra text — only the IDs.";
+
+						var idsChunk = await _service.OllamaService.RecommendedOpportunities(
+							prompt,
+							"gemma3:4b-it-q8_0",
+							false,
+							null,
+							"recommendation"
+						);
+
+						return idsChunk;
+
+				}).ToList();
+
+				var results = await Task.WhenAll(tasks);
+
+				var allIds = results
+					.Where(r => !string.IsNullOrWhiteSpace(r))
+					.SelectMany(r => r.Split(',', StringSplitOptions.RemoveEmptyEntries)
+						.Select(id => id.Trim()))
+					.Distinct()
+					.ToList();
+
+				IDS = string.Join(", ", allIds);
 			}
+
 			else
 			{
 				IDS = null;
@@ -86,6 +108,20 @@ namespace Presentation.Controllers
 			return Ok(new ApiResponse<List<GetScholarshipDto>> {Data= scholarships, Success=true});
 
 		}
+		private static List<string> ChunkJsonString(string json, int maxChunkSize)
+		{
+			var chunks = new List<string>();
+			int totalLength = json.Length;
+
+			for (int i = 0; i < totalLength; i += maxChunkSize)
+			{
+				int length = Math.Min(maxChunkSize, totalLength - i);
+				chunks.Add(json.Substring(i, length));
+			}
+
+			return chunks;
+		}
+
 
 
 		[HttpGet("RecommendedInternships")]
@@ -108,24 +144,46 @@ namespace Presentation.Controllers
 			if (!_memoryCache.Cache.TryGetValue(internshipParameters.ToString() + UserSkills + "GetAllRecommendedInternships", out PagedList<Scholarship> cacheValue))
 			{
 				var res = await _service.InternshipService.GetAllInternships(new InternshipParameters { PageSize = 50 }, false);
-				var internsJson = JsonSerializer.Serialize(res);
+				var res2 = res.Select(r => new { r.Description, r.Name,r.Id });
+				var internsJson = JsonSerializer.Serialize(res2);
 
-				var prompt = _service.GeminiService.SendRequest(
-					$"You are an intelligent assistant that recommends relevant internships based on skills." +
-					$"\n\nSkills: {NewSkills}" +
-					$"\n\nInternship data (as JSON): {internsJson}" +
-					$"\n\nFrom the above list, analyze the internship data and return the IDs of the internships that best match the given skills." +
-					$"\nOnly consider the fields that are relevant to matching (e.g., name, description)." +
-					$"\nReturn only a comma-separated list of internship IDs like this: id1, id2, id3, ..." +
-					$"\nDo not include any explanation, titles, or extra text — only the IDs.");
-				IDS = await _service.OllamaService.RecommendedOpportunities(
-					prompt,
-					"gemma3:4b-it-q8_0",
-					false,
-					null,
-					"recommendation"
-				);
+				List<string> chunks = ChunkJsonString(internsJson, 1000); 
+
+				var tasks = chunks.Select(async chunk =>
+				{
+					var prompt =
+						"You are an intelligent assistant that recommends relevant internships based on skills." +
+						$"\n\nSkills: {NewSkills}" +
+						$"\n\nHere is a portion of the internship data (as JSON): {chunk}" +
+						"\n\nFrom the above list, return only the IDs of internships that best match the given skills." +
+						"\nOnly consider fields that are relevant to matching (e.g., name, description)." +
+						"\nReturn only a comma-separated list of internship IDs like this: id1, id2, id3, ..." +
+						"\nDo not include any explanation, titles, or extra text — only the IDs.";
+				
+						var idsChunk = await _service.OllamaService.RecommendedOpportunities(
+							prompt,
+							"gemma3:4b-it-q8_0",
+							false,
+							null,
+							"recommendation"
+						);
+
+						return idsChunk;
+
+				}).ToList();
+
+				var results = await Task.WhenAll(tasks);
+
+				var allIds = results
+					.Where(r => !string.IsNullOrWhiteSpace(r))
+					.SelectMany(r => r.Split(',', StringSplitOptions.RemoveEmptyEntries)
+						.Select(id => id.Trim()))
+					.Distinct()
+					.ToList();
+
+				IDS = string.Join(", ", allIds);
 			}
+
 			else
 			{
 				IDS = null;
