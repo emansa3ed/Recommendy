@@ -29,7 +29,6 @@ namespace Recommendy
             builder.Services.AddScoped<IResumeParserService, ResumeParserService>();
 			builder.Services.AddScoped< IUserCodeService , UserCodeService > ();
             builder.Services.AddScoped<IFileRepository, FileRepository>();
-            builder.Services.AddScoped<IOllamaService, OllamaService>();
 			builder.Services.AddHttpClient();
 			builder.Services.AddSignalR();
 

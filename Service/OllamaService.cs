@@ -167,7 +167,59 @@ namespace Service
             var data = await _repositoryManager.Scholarship.GetAllScholarshipsAsync(parameters, trackChanges: false);
             return data.Select(s => s.Name).ToList();
         }
-    }
+
+        public async Task<string> RecommendedOpportunities(string userPrompt, string model = "deepseek-r1:8b", bool stream = false, string systemPrompt = null, string promptType = "recommendation")
+        {
+            try
+            {
+                var request = new
+                {
+                    model = model,
+                    prompt = userPrompt,
+                    stream = true, // force stream to handle all models like gemma
+                    system = systemPrompt
+                };
+
+                var content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
+                var requestMessage = new HttpRequestMessage(HttpMethod.Post, "/api/generate") { Content = content };
+
+                var response = await _httpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);
+                response.EnsureSuccessStatusCode();
+
+                var streamResponse = await response.Content.ReadAsStreamAsync();
+                var reader = new StreamReader(streamResponse);
+
+                var completeAnswer = new StringBuilder();
+
+                while (!reader.EndOfStream)
+                {
+                    var line = await reader.ReadLineAsync();
+                    if (!string.IsNullOrWhiteSpace(line))
+                    {
+                        try
+                        {
+                            var jsonDoc = JsonDocument.Parse(line);
+                            if (jsonDoc.RootElement.TryGetProperty("response", out var responseProp))
+                            {
+                                completeAnswer.Append(responseProp.GetString());
+                            }
+                        }
+                        catch (JsonException)
+                        {
+                            // skip invalid json lines
+                        }
+                    }
+                }
+
+                return completeAnswer.ToString().Trim();
+            }
+            catch (Exception ex)
+            {
+                // log ex if needed
+                return "Sorry, I'm having trouble answering right now. Please try again later or contact support if the issue persists.";
+            }
+        }
+	}
 
  
     

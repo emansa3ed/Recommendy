@@ -4,6 +4,8 @@
     {
         IAdminService AdminService { get; }
         ICountryService CountryService { get; }
+		IOllamaService OllamaService { get; }
+
         IAuthenticationService AuthenticationService { get; }
         IUserService UserService { get; }
         IInternshipService InternshipService { get; }
