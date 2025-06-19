@@ -32,11 +32,10 @@ namespace Repository.Extensions
 				return Scholarship;
 			var terms = jobTitles
 				.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-				.Select(term => term.ToLower())
+				.Select(term => int.Parse(term))
 				.ToList();
 
-			return Scholarship.Where(Scholarship =>
-				terms.Any(term => Scholarship.Name.ToLower().Contains(term) || Scholarship.Description.ToLower().Contains(term)));
+			return Scholarship.Where(Scholarship => terms.Contains(Scholarship.Id));
 		}
 	}
 }

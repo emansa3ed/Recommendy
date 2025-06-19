@@ -44,11 +44,10 @@ namespace Repository.Extensions
 				return internships;
 			var terms = jobTitles
 				.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-				.Select(term => term.ToLower())
+				.Select(term => int.Parse(term))
 				.ToList();
 
-			return internships.Where(internship =>
-				terms.Any(term => internship.Name.ToLower().Contains(term) || internship.Description.ToLower().Contains(term)));
+			return internships.Where(Scholarship => terms.Contains(Scholarship.Id));
 		}
 
 	}
