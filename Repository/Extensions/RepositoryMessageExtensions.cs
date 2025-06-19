@@ -12,6 +12,7 @@ namespace Repository.Extensions
         public static IQueryable<ChatMessage> Paging(this IQueryable<ChatMessage> ChatMessage, int PageNumber, int PageSize)
         {
             return ChatMessage
+            .OrderByDescending(m=>m.Id)
             .Skip((PageNumber - 1) * PageSize)
             .Take(PageSize);
         }

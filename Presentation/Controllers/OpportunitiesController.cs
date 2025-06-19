@@ -35,7 +35,7 @@ namespace Presentation.Controllers
 
 
 		[HttpGet("RecommendedScholarships")]
-		public async Task<IActionResult> GetOpportunities([FromQuery] ScholarshipsParameters scholarshipsParameters)
+		public async Task<IActionResult> RecommendedScholarships([FromQuery] ScholarshipsParameters scholarshipsParameters)
 		{
 			var username = User.Identity.Name;
 			var user = await _service.UserService.GetDetailsByUserName(username);
@@ -78,7 +78,7 @@ namespace Presentation.Controllers
 
 
 		[HttpGet("RecommendedInternships")]
-		public async Task<IActionResult> GetOpportunities([FromQuery] InternshipParameters internshipParameters)
+		public async Task<IActionResult> RecommendedInternships([FromQuery] InternshipParameters internshipParameters)
 		{
 			var username = User.Identity.Name;
 			var user = await _service.UserService.GetDetailsByUserName(username);
