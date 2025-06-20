@@ -21,7 +21,7 @@ namespace Shared.DTO.Authentication
 		[StringLength(20, MinimumLength = 5, ErrorMessage = "Username  must be between 5 and 20 characters")]
 		public string UserName { get; init; }
 		[Required(ErrorMessage = "Password is required")]
-		[StringLength(100, MinimumLength = 10, ErrorMessage = "Password must be at least 10 characters")]
+		[StringLength(100, MinimumLength = 6, ErrorMessage = "Password must be at least 8 characters and include at least one uppercase letter, one lowercase letter, one digit, and one special character.")]
 		public string Password { get; init; }
 		[Required(ErrorMessage = "Email is required")]
 		[EmailAddress(ErrorMessage = "Invalid Email format")]
