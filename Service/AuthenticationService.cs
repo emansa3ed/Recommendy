@@ -23,6 +23,7 @@ using Shared.DTO.Authentication;
 using Entities.ResumeModels;
 using Google.Apis.Auth;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 
 namespace Service
 {
@@ -344,30 +345,45 @@ namespace Service
 
         public async Task<TokenDto> HandleGoogleLoginAsync(string email, string name, string? picture, string? firstName = null, string? lastName = null)
         {
+            Console.WriteLine(email + "aaaaaaaaaaaaaaaaaaa");
+
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
             {
-                user = new User
-                {
-                    UserName = email,
-                    Email = email,
-                    FirstName = firstName ?? name?.Split(' ')[0],
-                    LastName = lastName ?? (name?.Split(' ').Length > 1 ? name.Split(' ')[1] : ""),
-                    EmailConfirmed = true,
-                    UrlPicture = picture,
-                    Discriminator = "Student"
-                };
-                var createResult = await _userManager.CreateAsync(user);
-                if (!createResult.Succeeded)
-                    throw new Exception("Failed to create user account");
-                await _userManager.AddToRoleAsync(user, "Student");
+                
+                    user = new User
+                    {
+                        UserName = (firstName ).Replace(" ", ""),
+                        Email = email,
+                        FirstName = firstName ?? name?.Split(' ')[0],
+                        LastName = lastName ?? (name?.Split(' ').Length > 1 ? name.Split(' ')[1] : ""),
+                        EmailConfirmed = true,
+                        UrlPicture = picture,
+                        Discriminator = "Student"
+                    };
+                    var createResult = await _userManager.CreateAsync(user);
+                    if (!createResult.Succeeded)
+                    {
+                        foreach (var error in createResult.Errors)
+                        {
+                            Console.WriteLine($"❌ Identity Error: {error.Code} - {error.Description}");
+                        }
+
+                        throw new Exception("Failed to create user account");
+                    };
+                    await _userManager.AddToRoleAsync(user, "Student");
+
+                    Student student = new Student();
+                    student.StudentId = user.Id;
+                    _repository.Student.CreateStudent(student);
+                    _repository.SaveAsync().Wait();
+                
+
+                
             }
           
             _user = user;
-            Student student = new Student();
-            student.StudentId = user.Id;
-            _repository.Student.CreateStudent(student);
-            _repository.SaveAsync().Wait();
+            
             return await CreateToken(populateExp: true);
         }
 
