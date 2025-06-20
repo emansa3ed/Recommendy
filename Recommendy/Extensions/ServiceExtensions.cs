@@ -60,9 +60,9 @@ namespace Recommendy.Extensions
                 o.Password.RequireUppercase = true;
                 o.Password.RequireNonAlphanumeric = true;
                 o.Password.RequiredLength = 8;
-                o.User.RequireUniqueEmail = true; 
-                
-            })
+                o.User.RequireUniqueEmail = true;
+				o.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+			})
             .AddEntityFrameworkStores<RepositoryContext>()
             .AddDefaultTokenProviders();
         }
