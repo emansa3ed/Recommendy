@@ -66,8 +66,9 @@ namespace Repository
             builder.ApplyConfiguration(new UserConfiguration());
             builder.ApplyConfiguration(new AdminConfiguration());
             builder.ApplyConfiguration(new UserRoleConfiguration());
-            ///// Composite keys
-            builder.Entity<SavedPost>()
+            builder.ApplyConfiguration(new MessageConfiguration());
+			///// Composite keys
+			builder.Entity<SavedPost>()
                 .HasKey(sp => new { sp.StudentId, sp.PostId, sp.Type });
 
             builder.Entity<UserInterest>()

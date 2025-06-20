@@ -108,7 +108,7 @@ namespace Presentation.Controllers
 			return Ok(new ApiResponse<List<GetScholarshipDto>> {Data= scholarships, Success=true});
 
 		}
-		private static List<string> ChunkJsonString(string json, int maxChunkSize)
+		private List<string> ChunkJsonString(string json, int maxChunkSize)
 		{
 			var chunks = new List<string>();
 			int totalLength = json.Length;
