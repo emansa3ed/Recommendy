@@ -188,8 +188,8 @@ namespace Service
 
 				var cacheEntryOptions = new MemoryCacheEntryOptions()
 					.SetSize(jsonSize)
-					.SetSlidingExpiration(TimeSpan.FromSeconds(30))
-					.SetAbsoluteExpiration(TimeSpan.FromSeconds(120));
+					.SetSlidingExpiration(TimeSpan.FromSeconds(240))
+					.SetAbsoluteExpiration(TimeSpan.FromSeconds(320));
 
 				_memoryCache.Cache.Set(internshipParameters.ToString() + UserSkills+ "GetAllRecommendedInternships", cacheValue, cacheEntryOptions);
 			}

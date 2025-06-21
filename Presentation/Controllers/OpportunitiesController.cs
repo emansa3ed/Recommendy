@@ -41,17 +41,7 @@ namespace Presentation.Controllers
 			var user = await _service.UserService.GetDetailsByUserName(username);
 			var UserSkills =  _service.StudentService.GetStudent(user.Id, trackChanges: false).Skills;
 
-			var skills = UserSkills
-						.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-						.Select(term => term.ToLower())
-						.ToList();
-
-            var ExpandedSkills = _service.SkillOntology.ExpandSkills(skills);
-
-			var NewSkills = string.Join(",", ExpandedSkills.ToList());
-
-			string IDS;
-			if (!_memoryCache.Cache.TryGetValue(scholarshipsParameters.ToString() + UserSkills + "GetAllRecommendedScholarships", out PagedList<Scholarship> cacheValue))
+			if (!_memoryCache.Cache.TryGetValue(scholarshipsParameters.ToString() + UserSkills + "GetAllRecommendedScholarshipsIDS", out string IDS))
 			{
 				var res = await _service.ScholarshipService.GetAllScholarships(new ScholarshipsParameters { PageSize = 50 }, false);
 				var res2 = res.Select(r => new { r.Description, r.Name, r.Id });
@@ -63,7 +53,7 @@ namespace Presentation.Controllers
 				{
 					var prompt =
 						"You are an intelligent assistant that recommends relevant scholarships based on skills." +
-						$"\n\nSkills: {NewSkills}" +
+						$"\n\nSkills: {UserSkills}" +
 						$"\n\nHere is a portion of the scholarship data (as JSON): {chunk}" +
 						"\n\nFrom the above list, return only the IDs of scholarships that best match the given skills." +
 						"\nOnly consider fields that are relevant to matching (e.g., name, description)." +
@@ -92,13 +82,15 @@ namespace Presentation.Controllers
 					.ToList();
 
 				IDS = string.Join(", ", allIds);
-			}
 
-			else
-			{
-				IDS = null;
-			}
 
+				var cacheEntryOptions = new MemoryCacheEntryOptions()
+					.SetSize(IDS.Length)
+					.SetSlidingExpiration(TimeSpan.FromSeconds(240))
+					.SetAbsoluteExpiration(TimeSpan.FromSeconds(320));
+
+				_memoryCache.Cache.Set(scholarshipsParameters.ToString() + UserSkills + "GetAllRecommendedScholarshipsIDS", IDS, cacheEntryOptions);
+			}
 
 			var scholarships = await _service.ScholarshipService.GetAllRecommendedScholarships(UserSkills, IDS, scholarshipsParameters, trackChanges: false);
 
@@ -131,17 +123,7 @@ namespace Presentation.Controllers
 			var user = await _service.UserService.GetDetailsByUserName(username);
 			var UserSkills = _service.StudentService.GetStudent(user.Id, trackChanges: false).Skills;
 
-			var skills = UserSkills
-						.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-						.Select(term => term.ToLower())
-						.ToList();
-
-			var ExpandedSkills = _service.SkillOntology.ExpandSkills(skills);
-
-			var NewSkills = string.Join(",", ExpandedSkills.ToList());
-
-			string IDS;
-			if (!_memoryCache.Cache.TryGetValue(internshipParameters.ToString() + UserSkills + "GetAllRecommendedInternships", out PagedList<Scholarship> cacheValue))
+			if (!_memoryCache.Cache.TryGetValue(internshipParameters.ToString() + UserSkills + "GetAllRecommendedInternshipsIDS", out string IDS))
 			{
 				var res = await _service.InternshipService.GetAllInternships(new InternshipParameters { PageSize = 50 }, false);
 				var res2 = res.Select(r => new { r.Description, r.Name,r.Id });
@@ -153,7 +135,7 @@ namespace Presentation.Controllers
 				{
 					var prompt =
 						"You are an intelligent assistant that recommends relevant internships based on skills." +
-						$"\n\nSkills: {NewSkills}" +
+						$"\n\nSkills: {UserSkills}" +
 						$"\n\nHere is a portion of the internship data (as JSON): {chunk}" +
 						"\n\nFrom the above list, return only the IDs of internships that best match the given skills." +
 						"\nOnly consider fields that are relevant to matching (e.g., name, description)." +
@@ -181,14 +163,18 @@ namespace Presentation.Controllers
 					.Distinct()
 					.ToList();
 
+
+
 				IDS = string.Join(", ", allIds);
-			}
 
-			else
-			{
-				IDS = null;
-			}
+				var cacheEntryOptions = new MemoryCacheEntryOptions()
+					.SetSize(IDS.Length)
+					.SetSlidingExpiration(TimeSpan.FromSeconds(240))
+					.SetAbsoluteExpiration(TimeSpan.FromSeconds(320));
 
+				_memoryCache.Cache.Set(internshipParameters.ToString() + UserSkills + "GetAllRecommendedInternshipsIDS", IDS, cacheEntryOptions);
+
+			}
 
 
 			var internships = await _service.InternshipService.GetAllRecommendedInternships(UserSkills, IDS, internshipParameters, trackChanges: false);
