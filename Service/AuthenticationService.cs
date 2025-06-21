@@ -345,7 +345,7 @@ namespace Service
 
         public async Task<TokenDto> HandleGoogleLoginAsync(string email, string name, string? picture, string? firstName = null, string? lastName = null)
         {
-            Console.WriteLine(email + "aaaaaaaaaaaaaaaaaaa");
+           // Console.WriteLine(email + "aaaaaaaaaaaaaaaaaaa");
 
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
@@ -353,7 +353,7 @@ namespace Service
                 
                     user = new User
                     {
-                        UserName = (firstName ).Replace(" ", ""),
+                        UserName = email,
                         Email = email,
                         FirstName = firstName ?? name?.Split(' ')[0],
                         LastName = lastName ?? (name?.Split(' ').Length > 1 ? name.Split(' ')[1] : ""),

@@ -91,6 +91,13 @@ namespace Service
 
             var reportDto = _mapper.Map<ReportDto>(report);
 
+            // Get user details to include username
+            var user = await _repository.User.GetById(report.UserId);
+            if (user != null)
+            {
+                reportDto.Username = user.UserName;
+            }
+
             reportDto.ReportedItem = await GetReportedItem(report.Type, report.TypeId);
 
             return reportDto;
@@ -147,6 +154,17 @@ namespace Service
             var result = cacheValue;
 
 			var mappedResult = _mapper.Map<List<ReportDto>>(result);
+
+            // Populate usernames for all reports
+            foreach (var reportDto in mappedResult)
+            {
+                var user = await _repository.User.GetById(reportDto.UserId);
+                if (user != null)
+                {
+                    reportDto.Username = user.UserName;
+                }
+            }
+
            // return mappedResult;
             return new PagedList<ReportDto>(mappedResult, result.MetaData.TotalCount, reportParameters.PageNumber, reportParameters.PageSize);
 
