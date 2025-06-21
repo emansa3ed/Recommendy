@@ -20,27 +20,30 @@ namespace Service
         private readonly HttpClient _httpClient;
         private const string BaseUrl = "http://localhost:11434";
         private readonly IRepositoryManager _repositoryManager;
+        private readonly IQuestionClassificationService _questionClassificationService;
 
-        public OllamaService(HttpClient httpClient, IRepositoryManager repositoryManager)
+        public OllamaService(HttpClient httpClient, IRepositoryManager repositoryManager, IQuestionClassificationService questionClassificationService)
         {
             _httpClient = httpClient;
             _httpClient.BaseAddress = new Uri(BaseUrl);
             _httpClient.Timeout = TimeSpan.FromMinutes(5);
             _repositoryManager = repositoryManager;
+            _questionClassificationService = questionClassificationService;
         }
 
         public async IAsyncEnumerable<string> GenerateTextStreamAsync(
             string userPrompt,
             string model = "deepseek-r1:8b",
             string systemPrompt = null,
-            string promptType = "recommendation",
             string studentSkills = ""
         )
         {
+            var questionType = _questionClassificationService.ClassifyQuestion(userPrompt);
+
             var internshipNames = await GetInternshipNamesAsync();
             var scholarshipNames = await GetScholarshipNamesAsync();
 
-            string fullPrompt = BuildPrompt(userPrompt, promptType, studentSkills, internshipNames, scholarshipNames);
+            string fullPrompt = BuildPrompt(userPrompt, questionType, studentSkills, internshipNames, scholarshipNames);
 
             var request = new
             {
@@ -74,16 +77,17 @@ namespace Service
             string model = "deepseek-r1:8b",
             bool stream = false,
             string systemPrompt = null,
-            string promptType = "recommendation",
             string studentSkills = ""
         )
         {
             try
             {
+                var questionType = _questionClassificationService.ClassifyQuestion(userPrompt);
+
                 var internshipNames = await GetInternshipNamesAsync();
                 var scholarshipNames = await GetScholarshipNamesAsync();
 
-                string fullPrompt = BuildPrompt(userPrompt, promptType, studentSkills, internshipNames, scholarshipNames);
+                string fullPrompt = BuildPrompt(userPrompt, questionType, studentSkills, internshipNames, scholarshipNames);
 
                 var request = new
                 {
@@ -134,22 +138,24 @@ namespace Service
         }
 
         // Reusable prompt builder
-        private string BuildPrompt(string userPrompt, string promptType, string studentSkills, List<string> internshipNames, List<string> scholarshipNames)
+        private string BuildPrompt(string userPrompt, QuestionType questionType, string studentSkills, List<string> internshipNames, List<string> scholarshipNames)
         {
-            if (promptType?.ToLower() == "expert")
+            if (questionType == QuestionType.Irrelevant)
             {
-                return string.Format(PromptTemplates.ExpertAdvice, studentSkills) + userPrompt.Trim();
+                return PromptTemplates.IrrelevantQuestion + userPrompt.Trim();
             }
 
+            // questionType is Relevant, so use the concise prompt.
             string formattedInternships = internshipNames != null ? string.Join("\n- ", internshipNames.Prepend("")) : "";
             string formattedScholarships = scholarshipNames != null ? string.Join("\n- ", scholarshipNames.Prepend("")) : "";
 
             return string.Format(
-                PromptTemplates.Recommendation,
+                PromptTemplates.ConciseAnswer,
+                userPrompt.Trim(),
                 studentSkills,
                 formattedInternships,
                 formattedScholarships
-            ) + userPrompt.Trim();
+            );
         }
 
         // Fetch internships

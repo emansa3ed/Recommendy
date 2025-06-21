@@ -37,17 +37,21 @@ namespace Presentation.Controllers
             var student = _service.StudentService.GetStudent(user.Id, trackChanges: false);
             var studentSkills = student.Skills ?? string.Empty;
 
-
-
             var response = await _service.OllamaService.GenerateTextAsync(
                 request.Prompt,
                 request.Model,
                 request.Stream,
                 request.SystemPrompt,
-                request.PromptType,
                 studentSkills
             );
-            return Ok(new { response });
+
+            var questionType = _service.QuestionClassificationService.ClassifyQuestion(request.Prompt);
+
+            return Ok(new { 
+                response,
+                questionType = questionType.ToString(),
+                isRelevant = questionType != QuestionType.Irrelevant
+            });
         }
 
         [HttpPost("generate/stream")]
@@ -65,7 +69,6 @@ namespace Presentation.Controllers
                     request.Prompt,
                     request.Model,
                     request.SystemPrompt,
-                    request.PromptType,
                     studentSkills))
                 {
                     try
@@ -90,6 +93,25 @@ namespace Presentation.Controllers
             {
                 await Response.WriteAsync("Sorry, the AI is currently unavailable. Please try again later.");
             }
+        }
+
+        [HttpPost("classify")]
+        public IActionResult ClassifyQuestion([FromBody] GenerateTextRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(request.Prompt))
+            {
+                return BadRequest("Prompt cannot be empty");
+            }
+
+            var questionType = _service.QuestionClassificationService.ClassifyQuestion(request.Prompt);
+            
+            return Ok(new { 
+                questionType = questionType.ToString(),
+                isRelevant = questionType != QuestionType.Irrelevant,
+                message = questionType == QuestionType.Irrelevant 
+                    ? "This question is not related to career advice, internships, or education. Please ask questions about career guidance, internships, scholarships, or educational planning."
+                    : "This question is relevant to career and educational topics."
+            });
         }
 
     }

@@ -32,5 +32,6 @@
         IOrganizationProfileService OrganizationProfileService { get; }
         IGeminiService GeminiService { get; }
         ISkillOntology SkillOntology { get; }
+        IQuestionClassificationService QuestionClassificationService { get; }
 	}
 }
