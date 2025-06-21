@@ -61,7 +61,6 @@ namespace Recommendy.Extensions
                 o.Password.RequireNonAlphanumeric = true;
                 o.Password.RequiredLength = 8;
                 o.User.RequireUniqueEmail = true;
-				o.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 			})
             .AddEntityFrameworkStores<RepositoryContext>()
             .AddDefaultTokenProviders();
@@ -162,7 +161,7 @@ namespace Recommendy.Extensions
 						factory: partition => new SlidingWindowRateLimiterOptions
 						{
 							AutoReplenishment = true,
-							PermitLimit = 20,
+							PermitLimit = 50,
 							SegmentsPerWindow = 5,
 							QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
 							QueueLimit = 5,
