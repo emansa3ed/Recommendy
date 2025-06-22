@@ -16,7 +16,10 @@ namespace Repository
         public ChatMessagesRepository(RepositoryContext context) : base(context) { }
 
 
-        public void CreateMessage(ChatMessage chatMessage) => Create(chatMessage);
+        public void CreateMessage(ChatMessage chatMessage) {
+            chatMessage.Encrypt();
+            Create(chatMessage);
+		} 
 
         public void DeleteMessage(ChatMessage chatMessage) => Delete(chatMessage);
         public void UpdateMessage(ChatMessage chatMessage) => Update(chatMessage);
@@ -24,12 +27,13 @@ namespace Repository
 
         public async Task<PagedList<ChatMessage>> GetChatMessages(int chatid, MessageParameters messageParameters, bool trackChanges)
         {
-            var reports = await FindByCondition(i => i.ChatId == chatid, trackChanges)
+            var messages = await FindByCondition(i => i.ChatId == chatid, trackChanges)
                 .Paging(messageParameters.PageNumber, messageParameters.PageSize)
                 .OrderBy(e => e.CreatedAt)
                 .ToListAsync();
+            messages.Decrypt();
             var count = await FindByCondition(i => i.ChatId == chatid, trackChanges).CountAsync();
-            return new PagedList<ChatMessage>(reports, count, messageParameters.PageNumber, messageParameters.PageSize);
+            return new PagedList<ChatMessage>(messages, count, messageParameters.PageNumber, messageParameters.PageSize);
         }
 
 

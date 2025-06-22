@@ -112,7 +112,11 @@ namespace Repository
 		.ThenInclude(c => c.User)
 		.ToListAsync();
 
-			var count = await FindByCondition((i => i.IsBanned != true), trackChanges).Recommendation(Titles).CountAsync();
+			var count = await FindByCondition((i => i.IsBanned != true), trackChanges)
+		.Filter(internshipParameters.Paid)
+        .Paging(internshipParameters.PageNumber, internshipParameters.PageSize)
+        .Recommendation(Titles)
+		.CountAsync();
 			return new PagedList<Internship>(res, count, internshipParameters.PageNumber, internshipParameters.PageSize);
 		}
 

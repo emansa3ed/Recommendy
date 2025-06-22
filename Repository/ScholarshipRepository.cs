@@ -73,7 +73,11 @@ namespace Repository
 				.ThenInclude(u => u.User)
 				.ToListAsync();
 
-			var count = await FindByCondition((s => !s.IsBanned), trackChanges).Recommendation(Titles).CountAsync();
+			var count = await FindByCondition((s => !s.IsBanned), trackChanges)
+				.Paging(scholarshipsParameters.PageNumber, scholarshipsParameters.PageSize)
+				.Filter(scholarshipsParameters.fund, scholarshipsParameters.degree)
+				.Recommendation(Titles)
+				.CountAsync();
 			return new PagedList<Scholarship>(res, count, scholarshipsParameters.PageNumber, scholarshipsParameters.PageSize);
 		}
 
