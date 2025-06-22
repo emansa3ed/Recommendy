@@ -31,6 +31,15 @@ namespace Service
             _questionClassificationService = questionClassificationService;
         }
 
+        private string SanitizeUserPrompt(string userPrompt)
+        {
+            if (userPrompt.Contains("what is miss me", StringComparison.OrdinalIgnoreCase))
+            {
+                return userPrompt.Replace("what is miss me", "what am I missing", StringComparison.OrdinalIgnoreCase);
+            }
+            return userPrompt;
+        }
+
         public async IAsyncEnumerable<string> GenerateTextStreamAsync(
             string userPrompt,
             string model = "deepseek-r1:8b",
@@ -38,12 +47,13 @@ namespace Service
             string studentSkills = ""
         )
         {
-            var questionType = _questionClassificationService.ClassifyQuestion(userPrompt);
+            var sanitizedPrompt = SanitizeUserPrompt(userPrompt);
+            var questionType = _questionClassificationService.ClassifyQuestion(sanitizedPrompt);
 
             var internshipNames = await GetInternshipNamesAsync();
             var scholarshipNames = await GetScholarshipNamesAsync();
 
-            string fullPrompt = BuildPrompt(userPrompt, questionType, studentSkills, internshipNames, scholarshipNames);
+            string fullPrompt = BuildPrompt(sanitizedPrompt, questionType, studentSkills, internshipNames, scholarshipNames);
 
             var request = new
             {
@@ -82,12 +92,13 @@ namespace Service
         {
             try
             {
-                var questionType = _questionClassificationService.ClassifyQuestion(userPrompt);
+                var sanitizedPrompt = SanitizeUserPrompt(userPrompt);
+                var questionType = _questionClassificationService.ClassifyQuestion(sanitizedPrompt);
 
                 var internshipNames = await GetInternshipNamesAsync();
                 var scholarshipNames = await GetScholarshipNamesAsync();
 
-                string fullPrompt = BuildPrompt(userPrompt, questionType, studentSkills, internshipNames, scholarshipNames);
+                string fullPrompt = BuildPrompt(sanitizedPrompt, questionType, studentSkills, internshipNames, scholarshipNames);
 
                 var request = new
                 {
