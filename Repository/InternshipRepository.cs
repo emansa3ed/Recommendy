@@ -67,14 +67,14 @@ namespace Repository
 
 		public async Task<PagedList<Internship>> GetAllInternshipsAsync(InternshipParameters internshipParameters,bool trackChanges)
         {
-		    var res = await FindByCondition((i => i.IsBanned != true), trackChanges).Include(i => i.InternshipPositions)
+		    var res = await FindByCondition((i => i.IsBanned != true && i.ApplicationDeadline>=DateTime.Now), trackChanges).Include(i => i.InternshipPositions)
                     .ThenInclude(ip => ip.Position)
                 .Filter(internshipParameters.Paid).Paging(internshipParameters.PageNumber, internshipParameters.PageSize).Search(internshipParameters.searchTerm)
                 .Include(i => i.Company)
                 .ThenInclude(c => c.User)
                 .ToListAsync();
 
-            var count = await FindByCondition((i => i.IsBanned != true), trackChanges).Search(internshipParameters.searchTerm).CountAsync();
+            var count = await FindByCondition((i => i.IsBanned != true && i.ApplicationDeadline >= DateTime.Now), trackChanges).Search(internshipParameters.searchTerm).CountAsync();
 			return new PagedList<Internship>(res, count, internshipParameters.PageNumber, internshipParameters.PageSize);
 
 		}
@@ -105,14 +105,14 @@ namespace Repository
 
         public async Task<PagedList<Internship>> GetAllRecommendedInternships(string Titles, InternshipParameters internshipParameters, bool trackChanges)
 		{
-			var res = await FindByCondition((i => i.IsBanned != true), trackChanges).Include(i => i.InternshipPositions)
+			var res = await FindByCondition((i => i.IsBanned != true && i.ApplicationDeadline >= DateTime.Now), trackChanges).Include(i => i.InternshipPositions)
 			.ThenInclude(ip => ip.Position)
 		.Filter(internshipParameters.Paid).Paging(internshipParameters.PageNumber, internshipParameters.PageSize).Recommendation(Titles)
 		.Include(i => i.Company)
 		.ThenInclude(c => c.User)
 		.ToListAsync();
 
-			var count = await FindByCondition((i => i.IsBanned != true), trackChanges)
+			var count = await FindByCondition((i => i.IsBanned != true && i.ApplicationDeadline >= DateTime.Now), trackChanges)
 		.Filter(internshipParameters.Paid)
         .Paging(internshipParameters.PageNumber, internshipParameters.PageSize)
         .Recommendation(Titles)
