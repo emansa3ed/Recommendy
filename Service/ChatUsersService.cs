@@ -60,7 +60,7 @@ namespace Service
 
         public async Task<IEnumerable<ChatDto>> GetAllChatDtosForUser(string userId)
         {
-            var chats = (await GetAllChatsForUser(userId)).ToList();
+            var chats = await GetAllChatsForUser(userId);
 
             var lastMessages = chats.Select(c => c.Messages.OrderByDescending(m => m.CreatedAt).FirstOrDefault()).Where(m => m != null).ToList();
             var senderIds = lastMessages.Select(m => m.SenderId).Distinct().ToList();
