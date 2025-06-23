@@ -199,7 +199,7 @@ namespace Service
                 }
                 else if (report.Type == ReportType.Internship)
                 {
-                    var internship =  _repository.Intership.InternshipById(report.TypeId, true);
+                    var internship =   await _repository.Intership.InternshipById(report.TypeId, true);
                     if (internship == null) throw new InternshipNotFoundException(report.TypeId);
 
                     if (dto.DeletePost == true)

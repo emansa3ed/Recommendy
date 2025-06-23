@@ -34,7 +34,7 @@ namespace Service
 				throw new StudentNotFoundException(StudentId);
             if (savedOpportunityDto.Type == "I")
             {
-                var internship = _repositoryManager.Intership.InternshipById(savedOpportunityDto.PostId, false);
+                var internship =  await _repositoryManager.Intership.InternshipById(savedOpportunityDto.PostId, false);
                 if (internship == null)
                     throw new InternshipNotFoundException(savedOpportunityDto.PostId);
 				ReceiverID = internship.CompanyId;

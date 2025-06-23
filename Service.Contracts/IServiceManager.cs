@@ -33,5 +33,6 @@
         IGeminiService GeminiService { get; }
         ISkillOntology SkillOntology { get; }
         IQuestionClassificationService QuestionClassificationService { get; }
+        ICourseService CourseService { get; }
 	}
 }

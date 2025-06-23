@@ -20,8 +20,9 @@ namespace Contracts
             Task<PagedList<Scholarship>> GetAllRecommendedScholarships(string Titles, ScholarshipsParameters scholarshipsParameters, bool trackChanges);
             Scholarship GetScholarshipById(int id, bool trackChanges);
             Scholarship ScholarshipById(int id, bool trackChanges);
-        Task DeleteScholarshipsByUniversityId(string universityId);
-    }
+            Task DeleteScholarshipsByUniversityId(string universityId);
+            Task<Scholarship> GetByIdAsync(int scholarshipId);
+        }
 
     
 }

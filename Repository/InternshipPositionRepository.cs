@@ -53,5 +53,10 @@ namespace Repository
 
             return result;
         }
+
+        public async Task<List<InternshipPosition>> GetAllByInternshipIdAsync(int internshipId)
+        {
+            return await FindByCondition(i => i.InternshipId == internshipId, false).ToListAsync();
+        }
     }
 }

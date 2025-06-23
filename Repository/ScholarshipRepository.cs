@@ -89,5 +89,10 @@ namespace Repository
                 Delete(scholarship);
             }
         }
+
+        public async Task<Scholarship> GetByIdAsync(int scholarshipId)
+        {
+            return await FindByCondition(s => s.Id == scholarshipId, false).FirstOrDefaultAsync();
+        }
     }
 }

@@ -197,5 +197,8 @@ namespace Recommendy.Extensions
                     policy.Requirements.Add(new VerifiedOrganizationRequirement()));
             });
         }
+
+        public static void ConfigureCourseService(this IServiceCollection services) =>
+         services.AddScoped<ICourseService, CourseService>();
     }
 }

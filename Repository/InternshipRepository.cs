@@ -92,14 +92,14 @@ namespace Repository
                 .FirstOrDefault();
         }
 
-        public Internship InternshipById(int id, bool trackChanges)
+        public  async Task <Internship> InternshipById(int id, bool trackChanges)
         {
-            return FindByCondition(i => i.Id == id, trackChanges)
+            return await FindByCondition(i => i.Id == id, trackChanges)
                 .Include(i => i.InternshipPositions)
                     .ThenInclude(ip => ip.Position)
                 .Include(i => i.Company)
-                    .ThenInclude(c => c.User)
-                .FirstOrDefault();
+                    .ThenInclude(c => c.User).FirstOrDefaultAsync();
+                
         }
 
 
