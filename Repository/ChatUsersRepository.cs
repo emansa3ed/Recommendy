@@ -1,6 +1,7 @@
 ﻿using Contracts;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
+using Repository.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,9 +23,15 @@ namespace Repository
 
         public async Task<IEnumerable<ChatUsers>> GetAllChatsWithLastMessageForUser(string userId, bool trackChanges)
         {
-            return await FindByCondition(c => c.FirstUserId == userId || c.SecondUserId == userId, trackChanges)
+            var res = await FindByCondition(c => c.FirstUserId == userId || c.SecondUserId == userId, trackChanges)
                 .Include(c => c.Messages.OrderByDescending(m => m.CreatedAt).Take(1))
                 .ToListAsync();
+            foreach (var chat in res)
+			{
+                chat.Messages.Decrypt();
+			}
+
+			return res;
         }
 
         public async Task<ChatUsers> GetChatByUserIds(string FirstUserId, string secondUserId, bool trackchange)

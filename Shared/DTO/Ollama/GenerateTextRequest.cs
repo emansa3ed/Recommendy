@@ -16,8 +16,6 @@ namespace Shared.DTO.Ollama
         public string Model { get; set; } = "deepseek-r1:8b";
         public bool Stream { get; set; } = false;
         public string SystemPrompt { get; set; } = null;
-        [Required(ErrorMessage = "PromptType is required.")]
-        public string PromptType { get; set; } = "recommendation";
     }
 
 }

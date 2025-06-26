@@ -84,7 +84,7 @@ namespace Presentation.Controllers
 
 
 			string interns;
-			if (!_memoryCache.Cache.TryGetValue(internshipParameters.ToString() + UserSkills + "GetAllRecommendedScholarships", out PagedList<Scholarship> cacheValue))
+			if (!_memoryCache.Cache.TryGetValue(internshipParameters.ToString() + UserSkills + "GetAllRecommendedInternships", out PagedList<Scholarship> cacheValue))
 			{
 				var res = await _service.InternshipService.GetAllInternships(new InternshipParameters { PageSize = 50 }, false);
 				var internsJson = JsonSerializer.Serialize(res);

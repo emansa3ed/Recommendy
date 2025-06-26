@@ -4,6 +4,8 @@
     {
         IAdminService AdminService { get; }
         ICountryService CountryService { get; }
+		IOllamaService OllamaService { get; }
+
         IAuthenticationService AuthenticationService { get; }
         IUserService UserService { get; }
         IInternshipService InternshipService { get; }
@@ -30,5 +32,7 @@
         IOrganizationProfileService OrganizationProfileService { get; }
         IGeminiService GeminiService { get; }
         ISkillOntology SkillOntology { get; }
+        IQuestionClassificationService QuestionClassificationService { get; }
+        ICourseService CourseService { get; }
 	}
 }

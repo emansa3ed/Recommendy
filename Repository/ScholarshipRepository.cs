@@ -21,12 +21,12 @@ namespace Repository
 
         public async Task<PagedList<Scholarship>> GetAllScholarshipsAsync(string universityId, ScholarshipsParameters scholarshipsParameters, bool trackChanges)
         {
-			var res = await FindByCondition(s => s.UniversityId.Equals(universityId), trackChanges)
+			var res = await FindByCondition(s => s.UniversityId.Equals(universityId) && s.IsBanned != true && s.ApplicationDeadline >= DateTime.Now, trackChanges)
 			    .Paging(scholarshipsParameters.PageNumber, scholarshipsParameters.PageSize)
 			    .Filter(scholarshipsParameters.fund, scholarshipsParameters.degree)
                 .Search(scholarshipsParameters.searchTerm)
 				.ToListAsync();
-			var count = await FindByCondition(s => s.UniversityId.Equals(universityId), trackChanges).CountAsync();
+			var count = await FindByCondition(s => s.UniversityId.Equals(universityId) && s.IsBanned != true && s.ApplicationDeadline >= DateTime.Now, trackChanges).CountAsync();
 
 			return new PagedList<Scholarship>(res, count, scholarshipsParameters.PageNumber, scholarshipsParameters.PageSize);
 		}
@@ -45,7 +45,7 @@ namespace Repository
 
 		public async Task<PagedList<Scholarship>> GetAllScholarshipsAsync(ScholarshipsParameters scholarshipsParameters, bool trackChanges)
         {
-			var res = await FindByCondition((s => !s.IsBanned),trackChanges)
+			var res = await FindByCondition((s => !s.IsBanned && s.IsBanned != true && s.ApplicationDeadline >= DateTime.Now),trackChanges)
 			    .Paging(scholarshipsParameters.PageNumber, scholarshipsParameters.PageSize)
 				.Filter(scholarshipsParameters.fund, scholarshipsParameters.degree)
 				.Search(scholarshipsParameters.searchTerm)
@@ -53,7 +53,7 @@ namespace Repository
 				.ThenInclude(u => u.User)
 				.ToListAsync();
 
-			var count = await FindByCondition((s => !s.IsBanned), trackChanges).Search(scholarshipsParameters.searchTerm).CountAsync();
+			var count = await FindByCondition((s => !s.IsBanned && s.IsBanned != true && s.ApplicationDeadline >= DateTime.Now), trackChanges).Search(scholarshipsParameters.searchTerm).CountAsync();
 			return new PagedList<Scholarship>(res, count, scholarshipsParameters.PageNumber, scholarshipsParameters.PageSize);
 		}
 
@@ -65,7 +65,7 @@ namespace Repository
 
         public async Task<PagedList<Scholarship>> GetAllRecommendedScholarships(string Titles, ScholarshipsParameters scholarshipsParameters, bool trackChanges)
 		{
-			var res = await FindByCondition((s => !s.IsBanned), trackChanges)
+			var res = await FindByCondition((s => !s.IsBanned && s.IsBanned != true && s.ApplicationDeadline >= DateTime.Now), trackChanges)
 				.Paging(scholarshipsParameters.PageNumber, scholarshipsParameters.PageSize)
 				.Filter(scholarshipsParameters.fund, scholarshipsParameters.degree)
 				.Recommendation(Titles)
@@ -73,7 +73,11 @@ namespace Repository
 				.ThenInclude(u => u.User)
 				.ToListAsync();
 
-			var count = await FindByCondition((s => !s.IsBanned), trackChanges).Recommendation(Titles).CountAsync();
+			var count = await FindByCondition((s => !s.IsBanned && s.IsBanned != true && s.ApplicationDeadline >= DateTime.Now), trackChanges)
+				.Paging(scholarshipsParameters.PageNumber, scholarshipsParameters.PageSize)
+				.Filter(scholarshipsParameters.fund, scholarshipsParameters.degree)
+				.Recommendation(Titles)
+				.CountAsync();
 			return new PagedList<Scholarship>(res, count, scholarshipsParameters.PageNumber, scholarshipsParameters.PageSize);
 		}
 
@@ -84,6 +88,11 @@ namespace Repository
             {
                 Delete(scholarship);
             }
+        }
+
+        public async Task<Scholarship> GetByIdAsync(int scholarshipId)
+        {
+            return await FindByCondition(s => s.Id == scholarshipId, false).FirstOrDefaultAsync();
         }
     }
 }

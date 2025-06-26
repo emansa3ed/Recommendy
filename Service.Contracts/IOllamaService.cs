@@ -13,11 +13,16 @@ namespace Service.Contracts
             string model = "deepseek-r1:8b",
             bool stream = false,
             string systemPrompt = null,
-            string promptType = "recommendation",
             string studentSkills = "");
+        Task<string> RecommendedOpportunities(
+            string userPrompt,
+            string model = "deepseek-r1:8b",
+            bool stream = false,
+            string systemPrompt = null,
+            string promptType = "recommendation");
 
         IAsyncEnumerable<string> GenerateTextStreamAsync(string userPrompt, string model = "deepseek-r1:8b",
-            string systemPrompt = null, string promptType = "recommendation", string studentSkills = "");
+            string systemPrompt = null, string studentSkills = "");
 
 
     }

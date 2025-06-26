@@ -56,13 +56,12 @@ namespace Recommendy.Extensions
             var builder = services.AddIdentity<User, IdentityRole>(o =>
             {
                 o.Password.RequireDigit = true;
-                o.Password.RequireLowercase = false;
-                o.Password.RequireUppercase = false;
-                o.Password.RequireNonAlphanumeric = false;
-                o.Password.RequiredLength = 10;
-                o.User.RequireUniqueEmail = true; 
-                
-            })
+                o.Password.RequireLowercase = true;
+                o.Password.RequireUppercase = true;
+                o.Password.RequireNonAlphanumeric = true;
+                o.Password.RequiredLength = 8;
+                o.User.RequireUniqueEmail = true;
+			})
             .AddEntityFrameworkStores<RepositoryContext>()
             .AddDefaultTokenProviders();
         }
@@ -162,7 +161,7 @@ namespace Recommendy.Extensions
 						factory: partition => new SlidingWindowRateLimiterOptions
 						{
 							AutoReplenishment = true,
-							PermitLimit = 20,
+							PermitLimit = 50,
 							SegmentsPerWindow = 5,
 							QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
 							QueueLimit = 5,
@@ -198,5 +197,8 @@ namespace Recommendy.Extensions
                     policy.Requirements.Add(new VerifiedOrganizationRequirement()));
             });
         }
+
+        public static void ConfigureCourseService(this IServiceCollection services) =>
+         services.AddScoped<ICourseService, CourseService>();
     }
 }

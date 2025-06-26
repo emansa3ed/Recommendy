@@ -48,6 +48,9 @@ namespace Service
         private readonly Lazy<IOrganizationProfileService> _organizationProfileService;
         private readonly Lazy<IGeminiService> _geminiservice;
         private readonly Lazy<ISkillOntology> _skillOntology;
+        private readonly Lazy<IOllamaService> _ollamaservice;
+        private readonly Lazy<IQuestionClassificationService> _questionClassificationService;
+        private readonly Lazy<ICourseService> _courseService;
 
         public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper,
             UserManager<User> userManager, IConfiguration configuration, 
@@ -85,7 +88,11 @@ namespace Service
             _organizationProfileService = new Lazy<IOrganizationProfileService>(() => new OrganizationProfileService(repositoryManager));
             _geminiservice = new Lazy<IGeminiService>(() => new GeminiService());
             _skillOntology = new Lazy<ISkillOntology>(() => new SkillOntology());
-        }
+            _questionClassificationService = new Lazy<IQuestionClassificationService>(() => new QuestionClassificationService());
+			_ollamaservice = new Lazy<IOllamaService>(() => new OllamaService(_httpClient, repositoryManager, _questionClassificationService.Value));
+            _courseService = new Lazy<ICourseService>(() => new CourseService(repositoryManager, _skillOntology.Value));
+
+		}
 
         public IAdminService AdminService => _adminService.Value;
         public ICountryService CountryService => _countryService.Value;
@@ -112,5 +119,9 @@ namespace Service
         public IOrganizationProfileService OrganizationProfileService => _organizationProfileService.Value;
         public IGeminiService GeminiService => _geminiservice.Value;
         public ISkillOntology SkillOntology => _skillOntology.Value;
-    }
+        public IQuestionClassificationService QuestionClassificationService => _questionClassificationService.Value;
+        public ICourseService CourseService => _courseService.Value;
+
+        public IOllamaService OllamaService => _ollamaservice.Value;
+	}
 }

@@ -14,5 +14,6 @@ namespace Contracts
 
         Task DeleteInternshipPosition(int InternshipId ,int PositionId);
         InternshipPosition GetInternshipPosition(int InternshipId, int PositionId);
+        Task<List<InternshipPosition>> GetAllByInternshipIdAsync(int internshipId);
     }
 }

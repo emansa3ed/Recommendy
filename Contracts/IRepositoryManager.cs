@@ -37,6 +37,9 @@ namespace Contracts
         IChatMessagesRepository ChatMessagesRepository { get; }
 
 		ISkillsRepository SkillsRepository { get; }
+
+        ICourseRepository CourseRepository { get; }
+
 		void Save();
         Task SaveAsync();
         Task<IDbContextTransaction> BeginTransactionAsync();

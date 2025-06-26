@@ -34,6 +34,7 @@ namespace Repository
        private readonly Lazy<IChatUsersRepository> _chatUsersRepository;
         private readonly Lazy<IChatMessagesRepository> _chatMessagesRepository;
         private readonly Lazy<ISkillsRepository> _skillsRepository;
+        private readonly Lazy<ICourseRepository> _courseRepository;
 		public RepositoryManager(RepositoryContext repositoryContext , UserManager<User> userManager , IWebHostEnvironment webHostEnvironment)
         {
             _repositoryContext = repositoryContext;
@@ -59,6 +60,8 @@ namespace Repository
             _chatMessagesRepository = new Lazy<IChatMessagesRepository>(() => new ChatMessagesRepository(repositoryContext));
 
 			_skillsRepository = new Lazy<ISkillsRepository>(() => new SkillsRepository());
+
+            _courseRepository = new Lazy<ICourseRepository>(() => new CourseRepository(repositoryContext));
 
 		}
         public IAdminRepository Admin=> _adminRepository.Value;
@@ -91,6 +94,8 @@ namespace Repository
         public IChatMessagesRepository ChatMessagesRepository => _chatMessagesRepository.Value;
 
 		public ISkillsRepository SkillsRepository => _skillsRepository.Value;
+
+        public ICourseRepository CourseRepository => _courseRepository.Value;
 
 		public async Task SaveAsync() => await _repositoryContext.SaveChangesAsync();
         public void Save() => _repositoryContext.SaveChanges();

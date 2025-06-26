@@ -51,13 +51,12 @@ namespace Repository
 
             // builder.ApplyConfiguration(new AdminConfiguration());
             // builder.ApplyConfiguration(new UserConfiguration());
-         //   builder.ApplyConfiguration(new UserRoleConfiguration()); 
+            //   builder.ApplyConfiguration(new UserRoleConfiguration()); 
+
+            // 
+            //  builder.ApplyConfiguration(new CourseConfiguration());
 
 
-          
-             
-           // 
-          
 
 
             base.OnModelCreating(builder);
@@ -66,8 +65,8 @@ namespace Repository
             builder.ApplyConfiguration(new UserConfiguration());
             builder.ApplyConfiguration(new AdminConfiguration());
             builder.ApplyConfiguration(new UserRoleConfiguration());
-            ///// Composite keys
-            builder.Entity<SavedPost>()
+			///// Composite keys
+			builder.Entity<SavedPost>()
                 .HasKey(sp => new { sp.StudentId, sp.PostId, sp.Type });
 
             builder.Entity<UserInterest>()
@@ -192,8 +191,6 @@ namespace Repository
                .WithMany(g => g.Messages)
                .HasForeignKey(m => m.ChatId)
                .OnDelete(DeleteBehavior.Cascade);
-
-
 
 
         }
