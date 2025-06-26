@@ -60,7 +60,12 @@ namespace Service///////////////////  دا المنقذ حرفيا
             if (question.StartsWith("what is ") || question.StartsWith("what are ") || question.StartsWith("define "))
             {
                 // Instead of only checking the last word, check if the question contains any career-related keywords anywhere.
-                var keywords = new[] { "internship", "intership", "intrnship", "job", "career", "scholarship", "sholarship", "opportunity", "opportunitiy", "opportunityies", "opportunities" };
+                var keywords = new[] {
+                    // English
+                    "internship", "intership", "intrnship", "job", "career", "scholarship", "sholarship", "opportunity", "opportunitiy", "opportunityies", "opportunities",
+                    // Arabic
+                    "فرصة", "فرص", "تدريب", "تدريب عملي", "منحة", "منح", "وظيفة", "وظائف", "مهنة", "مهارات"
+                };
                 foreach (var keyword in keywords)
                 {
                     if (question.Contains(keyword))
@@ -75,22 +80,22 @@ namespace Service///////////////////  دا المنقذ حرفيا
                 // Catches 'what am I missing to become ...' questions
                 @"what am i missing to become",
                 // Catches preparation questions: "how do I prepare for a master's"
-                @"\b(prepare\s+for|how\s+to\s+prepare\s+for)\s+(a|an|the)?\s+(masters?|phd|bachelors?|degree|job|career|internship|intership|intrnship|internshp|iternship|internhsip|opportunity|opportunitiy|opportunityies|opportunities|oportunity|oppotunity|oppertunity|oppurtunity|opporunity|scholarship|sholarship|scholrship|schlarship|schollarship)\b",
+                @"\b(prepare\s+for|how\s+to\s+prepare\s+for)\s+(a|an|the)?\s+(masters?|phd|bachelors?|degree|job|career|internship|intership|intrnship|internshp|iternship|internhsip|opportunity|opportunitiy|opportunityies|opportunities|oportunity|oppotunity|oppertunity|oppurtunity|opporunity|scholarship|sholarship|scholrship|schlarship|schollarship|فرصة|فرص|تدريب|تدريب عملي|منحة|منح|وظيفة|وظائف|مهنة|مهارات)\b",
 
                 // Catches intent + career noun: "how to get a job", "find an internship for ai"
-                @"\b(become|get|find|apply|search|look|want|need|recommend|suggest)\s+.*?\s+((?:intern|intrn|inter|itern|internh|internsh|interns|intrnsh|internshp).?ship|job|career|work|position|role|(?:scholar|sholar|scholr|schlar|schollar).?ship|opportunit(?:y|ies|iy|yies|y|ies|i|e|ies|ity|itiy|ities|iies|eis|eit|eitiy|eitie|eitiy|eitiy|eitiy))\b",
+                @"\b(become|get|find|apply|search|look|want|need|recommend|suggest)\s+.*?\s+((?:intern|intrn|inter|itern|internh|internsh|interns|intrnsh|internshp).?ship|job|career|work|position|role|(?:scholar|sholar|scholr|schlar|schollar).?ship|opportunit(?:y|ies|iy|yies|y|ies|i|e|ies|ity|itiy|ities|iies|eis|eit|eitiy|eitie|eitiy|eitiy|eitiy)|فرصة|فرص|تدريب|تدريب عملي|منحة|منح|وظيفة|وظائف|مهنة|مهارات)\b",
                 
                 // Catches quality + career noun: "best internship for me"
-                @"\b(best|good|top|recommended|suitable|perfect|ideal)\s+((?:intern|intrn|inter|itern|internh|internsh|interns|intrnsh|internshp).?ship|job|career|(?:scholar|sholar|scholr|schlar|schollar).?ship|opportunit(?:y|ies|iy|yies|y|ies|i|e|ies|ity|itiy|ities|iies|eis|eit|eitiy|eitie|eitiy|eitiy|eitiy))\b",
+                @"\b(best|good|top|recommended|suitable|perfect|ideal)\s+((?:intern|intrn|inter|itern|internh|internsh|interns|intrnsh|internshp).?ship|job|career|(?:scholar|sholar|scholr|schlar|schollar).?ship|opportunit(?:y|ies|iy|yies|y|ies|i|e|ies|ity|itiy|ities|iies|eis|eit|eitiy|eitie|eitiy|eitiy|eitiy)|فرصة|فرص|تدريب|تدريب عملي|منحة|منح|وظيفة|وظائف|مهنة|مهارات)\b",
 
                 // Catches simple noun queries: "AI internships", "python developer jobs"
-                @"\b((backend|frontend|ai|python|java|c#)\s+)?((?:intern|intrn|inter|itern|internh|internsh|interns|intrnsh|internshp).?ship|job|career|work|position|role|(?:scholar|sholar|scholr|schlar|schollar).?ship|opportunit(?:y|ies|iy|yies|y|ies|i|e|ies|ity|itiy|ities|iies|eis|eit|eitiy|eitie|eitiy|eitiy|eitiy))s?\b",
+                @"\b((backend|frontend|ai|python|java|c#)\s+)?((?:intern|intrn|inter|itern|internh|internsh|interns|intrnsh|internshp).?ship|job|career|work|position|role|(?:scholar|sholar|scholr|schlar|schollar).?ship|opportunit(?:y|ies|iy|yies|y|ies|i|e|ies|ity|itiy|ities|iies|eis|eit|eitiy|eitie|eitiy|eitiy|eitiy)|فرصة|فرص|تدريب|تدريب عملي|منحة|منح|وظيفة|وظائف|مهنة|مهارات)s?\b",
 
                 // Catches skill-related questions: "how to improve my skills"
-                @"\b(improve|enhance|develop|learn|build)\s+(my)?\s+(skills?|skils|skil|skill|sklils|sills|sklls|career|profile)\b",
+                @"\b(improve|enhance|develop|learn|build)\s+(my)?\s+(skills?|skils|skil|skill|sklils|sills|sklls|career|profile|مهارات)\b",
 
                 // Catches general "what/how to" questions about careers: "what skills do I need"
-                @"\b(what|how|where|when|which)\s+.*?\s+(skill|skills|skils|skil|skill|sklils|sills|sklls|course|degree|masters?|phd|bachelors?)\b"
+                @"\b(what|how|where|when|which)\s+.*?\s+(skill|skills|skils|skil|skill|sklils|sills|sklls|course|degree|masters?|phd|bachelors?|مهارات)\b"
             };
 
             return careerPatterns.Any(pattern => Regex.IsMatch(question, pattern, RegexOptions.IgnoreCase));
