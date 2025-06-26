@@ -33,9 +33,30 @@ namespace Service
 
         private string SanitizeUserPrompt(string userPrompt)
         {
+            // Handle common user typos/awkward phrasing
             if (userPrompt.Contains("what is miss me", StringComparison.OrdinalIgnoreCase))
             {
                 return userPrompt.Replace("what is miss me", "what am I missing", StringComparison.OrdinalIgnoreCase);
+            }
+            if (userPrompt.Contains("what's miss me", StringComparison.OrdinalIgnoreCase))
+            {
+                return userPrompt.Replace("what's miss me", "what am I missing", StringComparison.OrdinalIgnoreCase);
+            }
+            if (userPrompt.Contains("what is missing for me", StringComparison.OrdinalIgnoreCase))
+            {
+                return userPrompt.Replace("what is missing for me", "what am I missing", StringComparison.OrdinalIgnoreCase);
+            }
+            if (userPrompt.Contains("what's missing for me", StringComparison.OrdinalIgnoreCase))
+            {
+                return userPrompt.Replace("what's missing for me", "what am I missing", StringComparison.OrdinalIgnoreCase);
+            }
+            if (userPrompt.Contains("what is missing in me", StringComparison.OrdinalIgnoreCase))
+            {
+                return userPrompt.Replace("what is missing in me", "what am I missing", StringComparison.OrdinalIgnoreCase);
+            }
+            if (userPrompt.Contains("what's missing in me", StringComparison.OrdinalIgnoreCase))
+            {
+                return userPrompt.Replace("what's missing in me", "what am I missing", StringComparison.OrdinalIgnoreCase);
             }
             return userPrompt;
         }
@@ -53,7 +74,33 @@ namespace Service
             var internshipNames = await GetInternshipNamesAsync();
             var scholarshipNames = await GetScholarshipNamesAsync();
 
+            // Debug: Print the returned lists to the console
+            Console.WriteLine($"Internship list count: {internshipNames?.Count ?? 0}");
+            if (internshipNames != null)
+            {
+                foreach (var name in internshipNames)
+                {
+                    Console.WriteLine($"Internship: {name}");
+                }
+            }
+            Console.WriteLine($"Scholarship list count: {scholarshipNames?.Count ?? 0}");
+            if (scholarshipNames != null)
+            {
+                foreach (var name in scholarshipNames)
+                {
+                    Console.WriteLine($"Scholarship: {name}");
+                }
+            }
+
             string fullPrompt = BuildPrompt(sanitizedPrompt, questionType, studentSkills, internshipNames, scholarshipNames);
+
+            // Directly return the custom message if there are no opportunities
+            if (fullPrompt.StartsWith("ANSWER: There is no opportunity for you now"))
+            {
+                var jsonLine = $"{{\"response\": \"{fullPrompt.Replace("\"", "\\\"")}\"}}";
+                yield return jsonLine;
+                yield break;
+            }
 
             var request = new
             {
@@ -98,7 +145,31 @@ namespace Service
                 var internshipNames = await GetInternshipNamesAsync();
                 var scholarshipNames = await GetScholarshipNamesAsync();
 
+                // Debug: Print the returned lists to the console
+                Console.WriteLine($"Internship list count: {internshipNames?.Count ?? 0}");
+                if (internshipNames != null)
+                {
+                    foreach (var name in internshipNames)
+                    {
+                        Console.WriteLine($"Internship: {name}");
+                    }
+                }
+                Console.WriteLine($"Scholarship list count: {scholarshipNames?.Count ?? 0}");
+                if (scholarshipNames != null)
+                {
+                    foreach (var name in scholarshipNames)
+                    {
+                        Console.WriteLine($"Scholarship: {name}");
+                    }
+                }
+
                 string fullPrompt = BuildPrompt(sanitizedPrompt, questionType, studentSkills, internshipNames, scholarshipNames);
+
+                // Directly return the custom message if there are no opportunities
+                if (fullPrompt.StartsWith("ANSWER: There is no opportunity for you now"))
+                {
+                    return fullPrompt;
+                }
 
                 var request = new
                 {
@@ -156,12 +227,63 @@ namespace Service
                 return PromptTemplates.IrrelevantQuestion + userPrompt.Trim();
             }
 
-            // questionType is Relevant, so use the concise prompt.
+            var lowerPrompt = userPrompt.ToLowerInvariant();
+            bool asksInternship = lowerPrompt.Contains("internship") || lowerPrompt.Contains("intership") || lowerPrompt.Contains("intrnship");
+            bool asksScholarship = lowerPrompt.Contains("scholarship") || lowerPrompt.Contains("sholarship");
+            bool asksOpportunity = lowerPrompt.Contains("opportunity") || lowerPrompt.Contains("opportunitiy") || lowerPrompt.Contains("opportunityies") || lowerPrompt.Contains("opportunities");
+
+            // If user asks for opportunity and both lists are empty, return custom message
+            if (asksOpportunity &&
+                ( (internshipNames == null || internshipNames.Count == 0) && (scholarshipNames == null || scholarshipNames.Count == 0) ) )
+            {
+                return "ANSWER: There is no opportunity for you now, please try later.";
+            }
+
+            // Stricter logic: if user asks ONLY for scholarships and none exist, return custom message
+            if (asksScholarship && !asksInternship && !asksOpportunity && (scholarshipNames == null || scholarshipNames.Count == 0))
+            {
+                return "ANSWER: There is no opportunity for you now, please try later.";
+            }
+            // If user asks ONLY for internships and none exist, return custom message
+            if (asksInternship && !asksScholarship && !asksOpportunity && (internshipNames == null || internshipNames.Count == 0))
+            {
+                return "ANSWER: There is no opportunity for you now, please try later.";
+            }
+            // If user asks for both, and both lists are empty, return custom message
+            if ((asksInternship && asksScholarship || asksOpportunity) &&
+                (internshipNames == null || internshipNames.Count == 0) &&
+                (scholarshipNames == null || scholarshipNames.Count == 0))
+            {
+                return "ANSWER: There is no opportunity for you now, please try later.";
+            }
+
+            // Dynamically add extra instruction to the prompt
+            string extraInstruction = "";
             string formattedInternships = internshipNames != null ? string.Join("\n- ", internshipNames.Prepend("")) : "";
             string formattedScholarships = scholarshipNames != null ? string.Join("\n- ", scholarshipNames.Prepend("")) : "";
 
+            if (asksScholarship && !asksInternship && !asksOpportunity)
+            {
+                extraInstruction = "Only recommend scholarships from the list below. Do not recommend internships.";
+                formattedInternships = ""; // Hide internships from the prompt
+            }
+            else if (asksInternship && !asksScholarship && !asksOpportunity)
+            {
+                extraInstruction = "Only recommend internships from the list below. Do not recommend scholarships.";
+                formattedScholarships = ""; // Hide scholarships from the prompt
+            }
+            // If asks both or asks opportunity, include both as before
+
+            // Insert extraInstruction into the prompt template
+            string promptTemplate = PromptTemplates.ConciseAnswer;
+            if (!string.IsNullOrWhiteSpace(extraInstruction))
+            {
+                // Insert extraInstruction after the main instructions
+                promptTemplate = promptTemplate.Replace("**Instructions:**", "**Instructions:**\n- " + extraInstruction);
+            }
+
             return string.Format(
-                PromptTemplates.ConciseAnswer,
+                promptTemplate,
                 userPrompt.Trim(),
                 studentSkills,
                 formattedInternships,
