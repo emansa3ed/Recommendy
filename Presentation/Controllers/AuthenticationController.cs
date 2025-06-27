@@ -77,7 +77,15 @@ namespace Presentation.Controllers
                     Success = false,
                     Data = user1.Id
                 });
-            
+
+            if (user1.IsBanned)
+                return StatusCode(401, new ApiResponse<string>
+                {
+                    Message = "User is Banned ",
+                    Success = false,
+                  
+                });
+
 
 
             var tokenDto = await _service.AuthenticationService .CreateToken(populateExp: true);
