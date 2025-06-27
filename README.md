@@ -392,7 +392,8 @@ Recommendy provides personalized recommendations for both internships and schola
 
 ## Entity Relationship Diagram (ERD)
 
-![ERD](Rcommendy/new ERD.png)
+![image](https://github.com/user-attachments/assets/60659300-fe01-4cad-9996-e568d17cf313)
+
 
 
 ---
