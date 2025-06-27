@@ -173,8 +173,8 @@ The API will be available at `https://localhost:7001` (or your configured port).
 
 ### Chatbot Endpoints
 - `POST /api/ChatBot/generate` - Send message to AI chatbot
-- `GET /api/ChatBot/history` - Get chat history
-- `POST /api/ChatBot/feedback` - Submit chatbot feedback
+- `POST /api/ChatBot/generate/stream` - Send message to AI chatbot  get response as stream
+- 
 
 ### Profile & Interest Endpoints
 - `GET /api/ProfileSuggestion/interesting-profiles` - Get interesting profiles based on interests
