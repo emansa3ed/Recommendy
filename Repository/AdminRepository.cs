@@ -28,6 +28,7 @@ namespace Repository
                     .ThenInclude(u => u.Country)
                 .Include(u => u.Company)
                 .Include(u => u.Student)
+                .Where(u=>u.Discriminator != "Admin")
                 .AsNoTracking();
 
             // Apply filters
