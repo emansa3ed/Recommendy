@@ -178,9 +178,7 @@ The API will be available at `https://localhost:7001` (or your configured port).
 
 ### Profile & Interest Endpoints
 - `GET /api/ProfileSuggestion/interesting-profiles` - Get interesting profiles based on interests
-- `POST /api/ProfileSuggestion/update-interests` - Update user interests
-- `GET /api/ProfileSuggestion/matched-profiles` - Get profiles with matching interests
-- `POST /api/ProfileSuggestion/connect` - Connect with another user
+
 
 ### Skill Management Endpoints
 - `GET /api/Skill` - Get user skills
