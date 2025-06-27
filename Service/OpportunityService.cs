@@ -151,9 +151,9 @@ namespace Service
 
 			var internships = new List<InternshipDto>();
 
-			foreach (var savedPost in savedPosts)///بدل الفور دي كنت علمت  ليست جوه ال ماب
+			foreach (var savedPost in savedPosts)
 			{
-				var internship = _repositoryManager.Intership.InternshipById(savedPost.PostId, trackChanges: false);
+				var internship = await _repositoryManager.Intership.InternshipById(savedPost.PostId, trackChanges: false);
 				if (internship != null)
 				{
 					var internshipDto = _mapper.Map<InternshipDto>(internship);

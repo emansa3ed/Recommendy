@@ -23,7 +23,7 @@ namespace Recommendy
         public MappingProfile()
         {
 
-        CreateMap<ChatUsers, ChatDto>()
+            CreateMap<ChatUsers, ChatDto>()
                 .ForMember(dest => dest.LastMessage, opt => opt.MapFrom(src => src.Messages.FirstOrDefault()));
            
 
