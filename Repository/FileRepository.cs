@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Azure.Core;
 using Entities.Exceptions;
+using MimeDetective;
 
 namespace Repository
 {
@@ -26,14 +27,35 @@ namespace Repository
                 return null;
             }
 
-            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
-            var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png"};
+			var allowedMimeTypes = new[] { "image/jpeg", "image/png"};
+			var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
             if (string.IsNullOrEmpty(extension) || !allowedExtensions.Contains(extension))
             {
-                return "InvalidFileType";
+				throw new FileUploadBadRequestException("Invalid File Type");
             }
 
-            var path = Path.Combine(_webHostEnvironment.WebRootPath, Location);
+			if (file.Length > 10 * 1024 * 1024) // 10 MB
+			{
+				throw new FileUploadBadRequestException("File Too Large");
+			}
+
+			var stream = file.OpenReadStream();
+
+			var inspector = new ContentInspectorBuilder()
+			{
+				Definitions = MimeDetective.Definitions.DefaultDefinitions.All()
+			}.Build();
+			
+            var result = inspector.Inspect(stream);
+			var mime = result.ByMimeType();
+            var s =mime.Select(m => m.MimeType);
+			if (mime == null || !s.Any(item => allowedMimeTypes.Contains(item)))
+			{
+				throw new FileUploadBadRequestException("Invalid File Type");
+			}
+
+			var path = Path.Combine(_webHostEnvironment.WebRootPath, Location);
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
