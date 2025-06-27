@@ -33,18 +33,16 @@ namespace Service
             _memoryCache = memoryCache;
         }  
 
-        public  async Task   CreateReport(  string StudentId , int  PostId  , ReportDtoCreation reportDtoCreation)
+        public async Task   CreateReport(  string StudentId , int  PostId  , ReportDtoCreation reportDtoCreation)
         {
           
-
             var student = _repository.Student.GetStudent(StudentId, false);
-            //Console.WriteLine(student);
             if(student == null )
                 throw new StudentNotFoundException(StudentId);
 
             if (reportDtoCreation.Type == ReportType.Internship)
             {
-                var internship = _repository.Intership.InternshipById(PostId,false);
+                var internship = await _repository.Intership.InternshipById(PostId,false);
                 Console.WriteLine(internship);
 
                 if (internship == null )
@@ -116,7 +114,7 @@ namespace Service
                         return scholarshipDto;
 
                     case ReportType.Internship:
-                        var internship =  _repository.Intership.InternshipById(typeId, trackChanges: false);
+                        var internship = await _repository.Intership.InternshipById(typeId, trackChanges: false);
                         if (internship == null) return new { Error = "Internship not found" };
                         var internshipDto = _mapper.Map<InternshipDto>(internship);
                         return internshipDto;

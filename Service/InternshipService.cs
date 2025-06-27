@@ -139,15 +139,12 @@ namespace Service
 
         public async Task<InternshipDto> GetInternshipById(int id, bool trackChanges)
         {
-            
-               var internship =  _repositoryManager.Intership.InternshipById(id, trackChanges);
+            var internship = await _repositoryManager.Intership.InternshipById(id, trackChanges);
             if (internship == null)
                 throw new InternshipNotFoundException(id);
 
-                var internshipDto = _mapper.Map<InternshipDto>(internship);
-                return internshipDto;
-
-         
+            var internshipDto = _mapper.Map<InternshipDto>(internship);
+            return internshipDto;
         }
 
 
