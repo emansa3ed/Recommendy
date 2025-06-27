@@ -337,13 +337,7 @@ SignalR hubs for real-time communication:
 - **Subscription Emails**: Payment and subscription notifications
 - **Organization Verification**: Verification status emails
 
-## 🧪 Testing
 
-Run unit tests:
-```bash
-cd RecommendyUnitTests
-dotnet test
-```
 
 ## Recommendation Endpoints & Logic
 
@@ -390,12 +384,18 @@ Recommendy provides personalized recommendations for both internships and schola
 
 
 
-   ## Entity Relationship Diagram (ERD)
+### Entity Relationship Diagram (ERD)
 
    ![ERD](new%20ERD.png)
 
 
+## 🧪 Testing
 
+Run unit tests:
+```bash
+cd RecommendyUnitTests
+dotnet test
+```
 ---
 
 **Built with ❤️ for students, companies, and universities**
