@@ -394,23 +394,6 @@ Run unit tests:
 cd RecommendyUnitTests
 dotnet test
 ```
-
-## Demo
-
-You can watch a short demo of Recommendy in action below:
-
-> **Note:** GitHub does not support direct playback of `.mp4` files in the README preview. To view the demo, please download the video or upload it to a video platform (e.g., YouTube) for easier sharing.
-
-### Download or View
-
-[Download Demo Video](./demo.mp4)
-
-<!--
-If you upload the video to YouTube, you can embed it like this:
-
-[![Watch the demo](https://img.youtube.com/vi/YOUR_VIDEO_ID/0.jpg)](https://www.youtube.com/watch?v=YOUR_VIDEO_ID)
--->
-
 ---
 
 **Built with ❤️ for students, companies, and universities**
