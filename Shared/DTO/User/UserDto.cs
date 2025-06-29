@@ -9,6 +9,7 @@ namespace Shared.DTO.User
     public record UserDto
     {
         public string Id { get; init; }
+        public string phoneNumber { get; set; }
         public string UserName { get; init; }
         public string Email { get; init; }
         public string FirstName { get; init; }
