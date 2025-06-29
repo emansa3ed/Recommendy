@@ -5,7 +5,7 @@ A comprehensive AI-powered platform that connects students with internship and s
 ## 🌟 Core Features
 
 ### For Students
-- **AI-Powered Recommendations**: Get personalized internship and scholarship recommendations based on your skills and profile using Google Gemini API
+- **AI-Powered Recommendations**: Get personalized internship and scholarship recommendations based on your skills and profile using Ollama LLM (see [Recommendation Endpoints & Logic](#recommendation-endpoints--logic))
 - **Resume Parser**: Upload your resume to automatically extract and match your skills with opportunities
 - **Save Opportunities**: Bookmark and manage your favorite internships and scholarships
 - **Real-time Notifications**: Receive instant updates about new opportunities and application status
@@ -51,7 +51,7 @@ This project follows the **Onion Architecture** pattern, which provides a clean 
 - **Database**: SQL Server with Entity Framework Core
 - **Authentication**: JWT Bearer Tokens with ASP.NET Core Identity
 - **Real-time Communication**: SignalR Hubs
-- **AI Integration**: Google Gemini API for recommendations, Ollama for chatbot
+- **AI Integration**: Ollama LLM for recommendations and chatbot
 - **Email Service**: SMTP with HTML templates using MailKit
 - **File Storage**: Local file system for images and documents
 - **Payment Processing**: Stripe integration for premium features
@@ -173,14 +173,12 @@ The API will be available at `https://localhost:7001` (or your configured port).
 
 ### Chatbot Endpoints
 - `POST /api/ChatBot/generate` - Send message to AI chatbot
-- `GET /api/ChatBot/history` - Get chat history
-- `POST /api/ChatBot/feedback` - Submit chatbot feedback
+- `POST /api/ChatBot/generate/stream` - Send message to AI chatbot  get response as stream
+- 
 
 ### Profile & Interest Endpoints
 - `GET /api/ProfileSuggestion/interesting-profiles` - Get interesting profiles based on interests
-- `POST /api/ProfileSuggestion/update-interests` - Update user interests
-- `GET /api/ProfileSuggestion/matched-profiles` - Get profiles with matching interests
-- `POST /api/ProfileSuggestion/connect` - Connect with another user
+
 
 ### Skill Management Endpoints
 - `GET /api/Skill` - Get user skills
@@ -259,8 +257,8 @@ Configure CORS in `ServiceExtensions.cs` for your frontend application.
 ## 🤖 AI Integration
 
 The platform uses multiple AI services for different purposes:
-- **Google Gemini API**: For skill-based recommendations and content analysis
-- **Ollama**: For intelligent chatbot responses and conversation handling
+**Ollama LLM**: For intelligent chatbot responses and conversation handling
+- **Ollama LLM**: For skill-based recommendations and content analysis
 - **Regex Pattern Matching**: For question classification and response routing
 - **Smart filtering**: Provide intelligent search and filtering options
 
@@ -337,6 +335,58 @@ SignalR hubs for real-time communication:
 - **Subscription Emails**: Payment and subscription notifications
 - **Organization Verification**: Verification status emails
 
+
+
+## Recommendation Endpoints & Logic
+
+Recommendy provides personalized recommendations for both internships and scholarships to students, leveraging AI (Ollama LLM) and a user's skill profile. The recommendation logic is implemented in the following endpoints:
+
+- **GET `/api/Opportunities/RecommendedInternships`**
+- **GET `/api/Opportunities/RecommendedScholarships`**
+
+### How the Recommendation Logic Works
+
+1. **Skill Extraction:**  
+   When a student requests recommendations, the system retrieves the student's skills from their profile.
+
+2. **Data Preparation:**  
+   The system fetches a list of available internships or scholarships (up to 50 at a time), including their names, descriptions, and IDs.
+
+3. **Chunking:**  
+   To handle large data, the list is split into manageable JSON chunks.
+
+4. **Prompt Engineering & AI Matching:**  
+   For each chunk, a prompt is constructed and sent to the Ollama LLM. The prompt asks the AI to select the IDs of opportunities that best match the student's skills, based on the name and description fields.
+
+5. **ID Aggregation:**  
+   The AI returns a comma-separated list of matching IDs for each chunk. All IDs are aggregated, deduplicated, and combined.
+
+6. **Caching:**  
+   The resulting list of recommended IDs is cached (with a sliding expiration) to optimize performance for repeated or similar queries.
+
+7. **Filtering & Pagination:**  
+   The system queries the database for the full details of the recommended opportunities, applying any additional filters (e.g., paid/unpaid, degree, funding) and paginates the results.
+
+### Technologies Used
+
+- **Ollama LLM** for semantic matching and recommendations
+- **In-memory caching** for performance
+- **.NET 8 Web API** for endpoints
+- **Entity Framework** for data access
+
+### Key Points
+
+- Recommendations are **personalized** and **AI-driven**.
+- The system is **scalable** (handles large data via chunking and caching).
+- The logic is **modular** and can be extended to other types of opportunities.
+
+
+
+### Entity Relationship Diagram (ERD)
+
+   ![ERD](new%20ERD.png)
+
+
 ## 🧪 Testing
 
 Run unit tests:
@@ -344,7 +394,8 @@ Run unit tests:
 cd RecommendyUnitTests
 dotnet test
 ```
-
 ---
 
 **Built with ❤️ for students, companies, and universities**
+
+

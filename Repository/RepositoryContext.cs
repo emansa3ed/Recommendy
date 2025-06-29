@@ -34,8 +34,6 @@ namespace Repository
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Report> Reports { get; set; }
         public DbSet<SavedPost> SavedPosts { get; set; }
-        public DbSet<Interest> Interests { get; set; }
-        public DbSet<UserInterest> UserInterests { get; set; }
         public DbSet<UserCode> userCodes { get; set; }
         public DbSet<ChatUsers> ChatUsers { get; set; }
         public DbSet<ChatMessage> ChatMessages { get; set; }
@@ -69,8 +67,6 @@ namespace Repository
 			builder.Entity<SavedPost>()
                 .HasKey(sp => new { sp.StudentId, sp.PostId, sp.Type });
 
-            builder.Entity<UserInterest>()
-                .HasKey(ui => new { ui.StudentId, ui.InterestId });
 
             builder.Entity<InternshipPosition>()
                 .HasKey(ip => new { ip.InternshipId, ip.PositionId });
@@ -162,17 +158,7 @@ namespace Repository
                 .HasForeignKey(sp => sp.StudentId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<UserInterest>()
-                .HasOne<Student>()
-                .WithMany()
-                .HasForeignKey(ui => ui.StudentId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            builder.Entity<UserInterest>()
-                .HasOne<Interest>()
-                .WithMany()
-                .HasForeignKey(ui => ui.InterestId)
-                .OnDelete(DeleteBehavior.NoAction);
+          
 
 
 
