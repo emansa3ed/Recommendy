@@ -45,8 +45,11 @@ namespace Presentation.Controllers
 			{
 				var res = await _service.ScholarshipService.GetAllScholarships(new ScholarshipsParameters { PageSize = 50 }, false);
 				var res2 = res.Select(r => new { r.Description, r.Name, r.Id });
-				var scholarsJson = JsonSerializer.Serialize(res2);
-
+				List<string> scholarsJson = new();
+				foreach (var scholar in res2)
+				{
+					scholarsJson.Add(JsonSerializer.Serialize(scholar));
+				}
 				List<string> chunks = ChunkJsonString(scholarsJson, 1000);
 
 				var tasks = chunks.Select(async chunk =>
@@ -100,17 +103,21 @@ namespace Presentation.Controllers
 			return Ok(new ApiResponse<List<GetScholarshipDto>> { Data = scholarships, Success = true });
 
 		}
-		private List<string> ChunkJsonString(string json, int maxChunkSize)
+		private List<string> ChunkJsonString(List<string> json, int maxChunkSize)
 		{
 			var chunks = new List<string>();
-			int totalLength = json.Length;
-
-			for (int i = 0; i < totalLength; i += maxChunkSize)
+			StringBuilder chunk= new();
+			foreach (var item in json)
 			{
-				int length = Math.Min(maxChunkSize, totalLength - i);
-				chunks.Add(json.Substring(i, length));
+				chunk.Append(item);
+				if (chunk.Length > maxChunkSize)
+				{
+					chunks.Add(chunk.ToString());
+					chunk= new StringBuilder();
+				}
 			}
-
+			if (chunk.Length > 0)
+				chunks.Add(chunk.ToString());
 			return chunks;
 		}
 
@@ -127,8 +134,11 @@ namespace Presentation.Controllers
 			{
 				var res = await _service.InternshipService.GetAllInternships(new InternshipParameters { PageSize = 50 }, false);
 				var res2 = res.Select(r => new { r.Description, r.Name, r.Id });
-				var internsJson = JsonSerializer.Serialize(res2);
-
+				List<string> internsJson = new();
+				foreach(var internship in res2)
+				{
+					internsJson.Add(JsonSerializer.Serialize(internship));
+				}
 				List<string> chunks = ChunkJsonString(internsJson, 1000);
 
 				var tasks = chunks.Select(async chunk =>
