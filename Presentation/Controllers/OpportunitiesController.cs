@@ -50,7 +50,7 @@ namespace Presentation.Controllers
 				{
 					scholarsJson.Add(JsonSerializer.Serialize(scholar));
 				}
-				List<string> chunks = ChunkJsonString(scholarsJson, 1000);
+				List<string> chunks = ChunkJsonString(scholarsJson, 2000);
 
 				var tasks = chunks.Select(async chunk =>
 				{
@@ -139,7 +139,7 @@ namespace Presentation.Controllers
 				{
 					internsJson.Add(JsonSerializer.Serialize(internship));
 				}
-				List<string> chunks = ChunkJsonString(internsJson, 1000);
+				List<string> chunks = ChunkJsonString(internsJson, 2000);
 
 				var tasks = chunks.Select(async chunk =>
 				{
