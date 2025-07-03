@@ -51,8 +51,9 @@ namespace Service
         private readonly Lazy<IOllamaService> _ollamaservice;
         private readonly Lazy<IQuestionClassificationService> _questionClassificationService;
         private readonly Lazy<ICourseService> _courseService;
+        private readonly Lazy<IWebScrapingService> _webScrapingService;
 
-        public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper,
+		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper,
             UserManager<User> userManager, IConfiguration configuration, 
             ILogger<ServiceManager> logger, 
             ILoggerFactory loggerFactory, IHttpContextAccessor httpContextAccessor, IEmailsService emailsService, HttpClient httpClient,
@@ -91,6 +92,7 @@ namespace Service
             _questionClassificationService = new Lazy<IQuestionClassificationService>(() => new QuestionClassificationService());
 			_ollamaservice = new Lazy<IOllamaService>(() => new OllamaService(_httpClient, repositoryManager, _questionClassificationService.Value));
             _courseService = new Lazy<ICourseService>(() => new CourseService(repositoryManager, _skillOntology.Value));
+            _webScrapingService = new Lazy<IWebScrapingService>(() => new WebScrapingService(memoryCache));
 
 		}
 
@@ -123,5 +125,6 @@ namespace Service
         public ICourseService CourseService => _courseService.Value;
 
         public IOllamaService OllamaService => _ollamaservice.Value;
+        public IWebScrapingService WebScrapingService => _webScrapingService.Value;
 	}
 }
