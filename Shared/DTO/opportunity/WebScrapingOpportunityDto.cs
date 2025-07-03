@@ -1,6 +1,6 @@
 ﻿namespace Shared.DTO.opportunity
 {
-    public record WuzzufOpportunityDto
+    public record WebScrapingOpportunityDto
 	{
 		public string JobTitle { get; set; }
 		public string CompanyName { get; set; }

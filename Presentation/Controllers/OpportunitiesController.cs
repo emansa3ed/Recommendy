@@ -246,7 +246,7 @@ namespace Presentation.Controllers
 
 			opportunities = opportunities.Where(o => allTitles.Contains(o.JobTitle)).ToList();
 
-			return Ok(new ApiResponse<List<WuzzufOpportunityDto>>
+			return Ok(new ApiResponse<List<WebScrapingOpportunityDto>>
 			{
 				Success = true,
 				Message = "Fetched Wuzzuf internship opportunities successfully.",

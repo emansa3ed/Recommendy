@@ -15,9 +15,9 @@ namespace Service
 		{
 			_memoryCache = memoryCache;
 		}
-		public async Task<List<WuzzufOpportunityDto>> GetWuzzufOpportunities(int PageNumber)
+		public async Task<List<WebScrapingOpportunityDto>> GetWuzzufOpportunities(int PageNumber)
 		{
-			if (!_memoryCache.Cache.TryGetValue("GetWuzzufOpportunities" + PageNumber, out List<WuzzufOpportunityDto> opportunities))
+			if (!_memoryCache.Cache.TryGetValue("GetWuzzufOpportunities" + PageNumber, out List<WebScrapingOpportunityDto> opportunities))
 			{
 				opportunities = new();
 				string url = $"https://wuzzuf.net/a/Internships-in-Egypt?page%5Bnumber%5D={PageNumber}";
@@ -40,7 +40,7 @@ namespace Service
 						string postedAgo = jobCard.SelectSingleNode(".//span[contains(@class,'css-ahonbi')]")?.InnerText?.Trim();
 						string imageUrl = jobCard.SelectSingleNode(".//img")?.GetAttributeValue("src", "").Trim();
 
-						opportunities.Add(new WuzzufOpportunityDto
+						opportunities.Add(new WebScrapingOpportunityDto
 						{
 							JobTitle = jobTitle,
 							CompanyName = companyName,

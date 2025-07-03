@@ -1,5 +1,6 @@
 using Entities.Exceptions;
 using Entities.GeneralResponse;
+using Entities.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -34,9 +35,14 @@ namespace Presentation.Controllers
 		[Authorize(Roles = "University")]
 		public async Task<IActionResult> EditProfile(string id, [FromBody] UniversityDto universityDto)
         {
-            var username = User.Identity.Name;
-            var user = await _service.UserService.GetDetailsByUserName(username);
-            await _service.UniversityService.UpdateUniversity(id, universityDto, trackChanges: true);
+			var UserName = User.Identity?.Name;
+
+			var user = await _service.UserService.GetDetailsByUserName(UserName);
+
+			if (user.Id != id)
+				return BadRequest(new ApiResponse<Internship> { Success = false, Message = "UniversityId don't match with authorized one", Data = null });
+
+			await _service.UniversityService.UpdateUniversity(id, universityDto, trackChanges: true);
             return NoContent();
         }
 

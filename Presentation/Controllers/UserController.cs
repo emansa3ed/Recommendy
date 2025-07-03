@@ -33,7 +33,14 @@ namespace Presentation.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-                await _service.UserService.ChangePasswordAsync(UserId, changePasswordDto);
+			var UserName = User.Identity?.Name;
+
+			var user = await _service.UserService.GetDetailsByUserName(UserName);
+
+			if (user.Id != UserId)
+				return BadRequest(new ApiResponse<Internship> { Success = false, Message = "UserId don't match with authorized one", Data = null });
+
+			await _service.UserService.ChangePasswordAsync(UserId, changePasswordDto);
             return NoContent();
         }
 
@@ -41,9 +48,13 @@ namespace Presentation.Controllers
 
         public async Task<IActionResult> UploadProfilePicture([FromRoute] string UserId ,IFormFile file)
         {
-          
-           
-                var imageUrl = await _service.UserService.UploadProfilePictureAsync(file, UserId);
+			var UserName = User.Identity?.Name;
+
+			var user = await _service.UserService.GetDetailsByUserName(UserName);
+
+			if (user.Id != UserId)
+				return BadRequest(new ApiResponse<Internship> { Success = false, Message = "UserId don't match with authorized one", Data = null });
+			var imageUrl = await _service.UserService.UploadProfilePictureAsync(file, UserId);
             return NoContent();
            
         }

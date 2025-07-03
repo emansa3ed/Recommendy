@@ -4,6 +4,6 @@ namespace Service.Contracts
 {
     public interface IWebScrapingService
     {
-		public Task<List<WuzzufOpportunityDto>> GetWuzzufOpportunities(int PageNumber);
+		public Task<List<WebScrapingOpportunityDto>> GetWuzzufOpportunities(int PageNumber);
 	}
 }
