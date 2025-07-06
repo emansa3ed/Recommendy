@@ -54,8 +54,14 @@ namespace Presentation.Controllers
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> UpdateStudentProfile( [FromRoute] string StudentId, [FromBody] StudentForUpdateDto studentForUpdate)
         {
+			var UserName = User.Identity?.Name;
 
-            await _service.StudentService.UpdateStudentProfileAsync(StudentId, studentForUpdate);
+			var user = await _service.UserService.GetDetailsByUserName(UserName);
+
+			if (user.Id != StudentId)
+				return BadRequest(new ApiResponse<Internship> { Success = false, Message = "StudentId don't match with authorized one", Data = null });
+
+			await _service.StudentService.UpdateStudentProfileAsync(StudentId, studentForUpdate);
             return NoContent();
 
         }
@@ -67,8 +73,15 @@ namespace Presentation.Controllers
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> GetSavedScholarships([FromRoute] string StudentId)
         {
-            
-                var savedScholarships = await _service.OpportunityService.GetSavedScholarshipsAsync(StudentId);
+
+			var UserName = User.Identity?.Name;
+
+			var user = await _service.UserService.GetDetailsByUserName(UserName);
+
+			if (user.Id != StudentId)
+				return BadRequest(new ApiResponse<Internship> { Success = false, Message = "StudentId don't match with authorized one", Data = null });
+
+			var savedScholarships = await _service.OpportunityService.GetSavedScholarshipsAsync(StudentId);
 
          return Ok(new ApiResponse<IEnumerable< GetScholarshipDto>> {  Success = true , Message = "fetch data  successfully."  ,
              Data = savedScholarships });
@@ -79,8 +92,14 @@ namespace Presentation.Controllers
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> GetSavedInternships([FromRoute] string StudentId)
         {
-            
-            var savedInternships = await _service.OpportunityService.GetSavedInternshipsAsync(StudentId);
+			var UserName = User.Identity?.Name;
+
+			var user = await _service.UserService.GetDetailsByUserName(UserName);
+
+			if (user.Id != StudentId)
+				return BadRequest(new ApiResponse<Internship> { Success = false, Message = "StudentId don't match with authorized one", Data = null });
+
+			var savedInternships = await _service.OpportunityService.GetSavedInternshipsAsync(StudentId);
 
             return Ok(new ApiResponse<IEnumerable<InternshipDto>>
             {

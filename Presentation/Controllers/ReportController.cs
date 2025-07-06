@@ -14,6 +14,7 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Entities.Exceptions;
 using Entities.Models;
+using DocumentFormat.OpenXml.Office2010.Excel;
 namespace Presentation.Controllers
 {
     [Route("api/[controller]")]
@@ -37,7 +38,13 @@ namespace Presentation.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            await _service.ReportService.CreateReport(StudentId, PostId, reportDtoCreation);
+			var UserName = User.Identity?.Name;
+
+			var user = await _service.UserService.GetDetailsByUserName(UserName);
+
+			if (user.Id != StudentId)
+				return BadRequest(new ApiResponse<Internship> { Success = false, Message = "StudentId don't match with authorized one", Data = null });
+			await _service.ReportService.CreateReport(StudentId, PostId, reportDtoCreation);
 
             return Ok();
         }

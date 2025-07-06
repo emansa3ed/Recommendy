@@ -1,5 +1,6 @@
 using Entities.GeneralResponse;
 using Entities.Models;
+using iTextSharp.text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
@@ -198,15 +199,59 @@ namespace Presentation.Controllers
 
 
 
-		[HttpGet("Scholarships/all")]
-		public async Task<IActionResult> GetScholarships([FromQuery] ScholarshipsParameters scholarshipsParameters)
+		[HttpGet("WuzzufOpportunity")]
+		public async Task<IActionResult> GetWuzzufOpportunity([FromQuery] int PageNumber =1)
 		{
 
-			var scholarships = await _service.ScholarshipService.GetAllScholarships(scholarshipsParameters, trackChanges: false);
-			Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(scholarships.MetaData));
 
-			return Ok(new ApiResponse<PagedList<GetScholarshipDto>> { Success = true, Message = "Fetch success", Data = scholarships });
+			var username = User.Identity.Name;
+			var user = await _service.UserService.GetDetailsByUserName(username);
+			var UserSkills = _service.StudentService.GetStudent(user.Id, trackChanges: false).Skills;
+			var opportunities = await _service.WebScrapingService.GetWuzzufOpportunities( PageNumber);
+			
 
+
+			var prompt =
+			"You are an intelligent assistant that recommends relevant opportunities based on user skills." +
+			$"\n\nSkills: {UserSkills}" +
+			$"\n\nHere is a portion of the opportunity data (as JSON): {JsonSerializer.Serialize(opportunities.Select(o=>o.JobTitle).ToList())}" +
+			"\n\nFrom the above list, return only all the JobTitles of opportunities whose JobTitles best match the given skills." +
+			"\nReturn only a comma-separated list of opportunity JobTitles like this: JobTitle1, JobTitle2, JobTitle3, ..." +
+			"\nDo not include any explanation, titles, or extra text — only the IDs.";
+			if (!_memoryCache.Cache.TryGetValue( UserSkills + "GetWuzzufOpportunity" + PageNumber, out string results))
+			{
+
+				 results = await _service.OllamaService.RecommendedOpportunities(
+						prompt,
+						"gemma3:4b-it-q8_0",
+						false,
+						null,
+						"recommendation"
+					);
+
+				var cacheEntryOptions = new MemoryCacheEntryOptions()
+					.SetSize(results.Length)
+					.SetSlidingExpiration(TimeSpan.FromSeconds(240))
+					.SetAbsoluteExpiration(TimeSpan.FromSeconds(320));
+
+				_memoryCache.Cache.Set(UserSkills + "GetWuzzufOpportunity" + PageNumber, results, cacheEntryOptions);
+
+			}
+			var allTitles = results?
+			.Split(',', StringSplitOptions.RemoveEmptyEntries)
+			.Select(id => id.Trim())
+			.Where(id => !string.IsNullOrWhiteSpace(id))
+			.Distinct()
+			.ToList() ?? new List<string>();
+
+			opportunities = opportunities.Where(o => allTitles.Contains(o.JobTitle)).ToList();
+
+			return Ok(new ApiResponse<List<WebScrapingOpportunityDto>>
+			{
+				Success = true,
+				Message = "Fetched Wuzzuf internship opportunities successfully.",
+				Data = opportunities
+			});
 		}
 
 
